@@ -14,9 +14,7 @@
             <th>Nama Barang / Variant</th>
             <th style="width: 150px">Kode Barang</th>
             <th class="text-center" style="width: 150px">Stok Saat Ini</th>
-            @if(auth()->user()->role === 'admin')
             <th style="width: 250px" class="text-center">Aksi</th>
-            @endif
         </tr>
         </thead>
         <tbody>
@@ -33,21 +31,21 @@
                 <td>{{$product->name}} / {{$product->variant}}</td>
                 <td>{{$product->code}}</td>
                 <td class="text-center">{{$product->stock}}</td>
-                @if(auth()->user()->role === 'admin')
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-3">
+                        @if(auth()->user()->role === 'admin')
                         <a href="{{route('admin.products.destroy', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Hapus Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2 btn-delete">
                             <i class="fas fa-trash"></i>
                         </a>
                         <a href="{{route('admin.products.edit', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Edit Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="{{route('admin.products.show', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Lihat Detail Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
+                        @endif
+                        <a href="{{route('admin.products.show', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Lihat Riwayat <br/> Transaksi Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
                             <i class="fas fa-eye"></i>
                         </a>
                     </div>
                 </td>
-                @endif
             </tr>
         @endforeach
         </tbody>

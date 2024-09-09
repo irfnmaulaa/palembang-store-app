@@ -35,7 +35,7 @@
         @endforeach
         @if(count($transaction_products) == 0)
             <tr>
-                <td colspan="7" class="text-center">Tidak ada data</td>
+                <td colspan="9" class="text-center">Tidak ada data</td>
             </tr>
         @endif
         </tbody>
