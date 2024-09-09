@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\Transaction;
+use App\Models\TransactionProduct;
 use App\Rules\ProductCategoryIdRule;
 use Illuminate\Http\Request;
 
@@ -75,6 +77,71 @@ class ProductController extends Controller
             // return view
             return view('admin.products.index', compact('products', 'order_options'));
         }
+    }
+
+    public function show(Request $request, Product $product)
+    {
+        $start = date('Y-m-d');
+        $end = date('Y-m-d');
+
+        if ($request->has('date_range')) {
+            $explode = explode(' - ', $request->query('date_range'));
+            $start = $explode[0];
+            $end = $explode[1];
+        }
+
+        // define instance
+        $transaction_products = TransactionProduct::query()
+            ->select(['transaction_products.*', 'transactions.*'])
+            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+            ->where('transaction_products.is_verified', 1)
+            ->where('transaction_products.product_id', $product->id);
+//            ->whereBetween('transactions.date', [$start, $end]);
+
+        // searching settings
+        if ($request->has('keyword')) {
+            $transaction_products = $transaction_products
+                ->where(function ($query) use ($request) {
+                    $query->where('transaction_products.code', 'LIKE', '%' . $request->get('keyword') . '%');
+                });
+
+        }
+
+        // order-by settings
+        $order = ['transactions.date', 'desc'];
+        if ($request->has('order')) {
+            $order_query = explode('-', $request->get('order'));
+            if (count($order_query) >= 2) $order = $order_query;
+        }
+
+        if ($order[0] === 'created_at') {
+            $order[0] = 'transaction_products.created_at';
+        } elseif ($order[0] === 'code') {
+            $order[0] = 'transactions.code';
+        } elseif ($order[0] === 'type') {
+            $order[0] = 'transactions.type';
+        }
+
+        // order-by statements
+        $transaction_products = $transaction_products->orderBy($order[0], $order[1]);
+
+        // final statements
+        $transaction_products = $transaction_products
+            ->paginate(10)
+            ->appends($request->query());
+
+        // define order options for front-end
+        $order_options = [
+            ['label' => 'Terkahir dibuat', 'order' => 'created_at-desc'],
+            ['label' => 'Pertama dibuat', 'order' => 'created_at-asc'],
+            ['label' => 'Nomor DO A-Z', 'order' => 'code-asc'],
+            ['label' => 'Nomor DO Z-A', 'order' => 'code-desc'],
+            ['label' => 'Tipe A-Z', 'order' => 'type-asc'],
+            ['label' => 'Tipe Z-A', 'order' => 'type-desc'],
+        ];
+
+        // return view
+        return view('admin.products.show', compact('transaction_products', 'order_options', 'start', 'end'));
     }
 
     public function create()

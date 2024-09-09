@@ -44,11 +44,12 @@
                             <table class="table-bordered table-hover table mb-0">
                                 <thead>
                                 <tr>
-                                    <th style="width: 100px;" class="text-center bg-body-tertiary">Quantity</th>
-                                    <th class="bg-body-tertiary">Nama Barang</th>
+                                    <th style="width: 50px;" class="text-center bg-body-tertiary">No</th>
+                                    <th class="bg-body-tertiary">Nama Barang / Variant</th>
                                     <th class="bg-body-tertiary">Kode Barang</th>
+                                    <th style="width: 100px;" class="text-center bg-body-tertiary">Quantity</th>
                                     <th class="bg-body-tertiary">Keterangan</th>
-                                    <th class="bg-body-tertiary text-center">Sisa</th>
+                                    <th class="bg-body-tertiary text-center">Stok Saat Ini</th>
                                     <th style="width: 80px;" class="text-center bg-body-tertiary">Aksi</th>
                                 </tr>
                                 </thead>
@@ -202,22 +203,26 @@
 
                 if(products.length > 0) {
                     products.forEach((product, i) => {
+                        const className = '{{request()->query('type') == 'in' ? 'text-primary fw-bold' : 'text-danger fw-bold'}}';
                         const trInit = `
                         <tr>
-                            <td class="text-center">
-                                ${ getValue(product, 'quantity') }
+                            <td class="${className} text-center">
+                                ${ i+1 }
                             </td>
-                            <td>
+                            <td class="${className}">
                                 ${ JSON.parse(getValue(product, 'product'))?.name || '-' }
                             </td>
-                            <td>
+                            <td class="${className}">
                                 ${ JSON.parse(getValue(product, 'product'))?.code || '-' }
                             </td>
-                            <td>
+                            <td class="${className} text-center">
+                                ${ getValue(product, 'quantity') }
+                            </td>
+                            <td class="${className}">
                                 ${ getValue(product, 'note') }
                             </td>
-                            <td class="text-center">
-                                ${ parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request('type') === 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10)  }
+                            <td class="text-center ${className}">
+                                ${ parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10)  }
                             </td>
                             <td class="text-center">
                                 <a href="#" class="text-danger btn-remove-product" data-index=${ i } title="Hapus"><i class="fas fa-trash"></i></a>
@@ -228,7 +233,7 @@
                         tbody.append(tr)
                     })
                 } else {
-                    tbody.html(`<tr><td class="text-center" colspan="6">Tidak ada data</td></tr>`)
+                    tbody.html(`<tr><td class="text-center" colspan="7">Tidak ada data</td></tr>`)
                 }
             }
 

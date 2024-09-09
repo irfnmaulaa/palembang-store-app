@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('cutoff')->only(['verify', 'create']);
+    }
+
     public function index(Request $request)
     {
         $start = date('Y-m-d');

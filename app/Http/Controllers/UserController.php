@@ -138,4 +138,15 @@ class UserController extends Controller
         // return view
         return view('admin.users.reset_password', compact('item'));
     }
+
+    public function activate(Request $request, User $user)
+    {
+        // store
+        $user->update([
+            'is_active' => $user->is_active ? 0 : 1,
+        ]);
+
+        // return
+        return redirect()->back()->with('message', 'Pengguna berhasil diperbarui');
+    }
 }

@@ -77,7 +77,7 @@
                 <div class="collapse navbar-collapse" id="navbarButtonsExample">
                     <!-- Left links -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        @if(in_array(auth()->user()->role, ['admin', 'staff']))
+                        @if(in_array(auth()->user()->role, ['admin', 'staff', 'super']))
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('admin.transactions.index')}}">Transaksi</a>
                         </li>

@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class="d-flex gap-3" style="white-space: nowrap;">
-                    @if(auth()->user()->role === 'staff')
+                    @if(auth()->user()->role === 'staff' || auth()->user()->role == 'admin')
                         <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-primary btn-lg">
                             Tambah Barang Masuk
                         </a>
@@ -98,14 +98,17 @@
                                 </th>
                                 <th class="bg-body-tertiary" rowspan="2">Tanggal</th>
                                 <th class="bg-body-tertiary" rowspan="2">No DO</th>
-                                <th class="bg-body-tertiary" rowspan="2">Tipe</th>
                                 <th rowspan="2" class="bg-body-tertiary">Dibuat oleh</th>
-                                <th colspan="3" class="bg-body-tertiary text-center">Barang</th>
+                                <th colspan="7" class="bg-body-tertiary text-center">Barang</th>
                             </tr>
                             <tr>
-                                <th class="bg-body-tertiary">Nama Barang</th>
+                                <th class="bg-body-tertiary">Nama Barang / Variant</th>
                                 <th class="bg-body-tertiary">Kode Barang</th>
+                                <th class="bg-body-tertiary text-center" style="width: 100px">Stok Awal</th>
                                 <th class="bg-body-tertiary text-center" style="width: 100px">Quantity</th>
+                                <th class="bg-body-tertiary text-center" style="width: 100px">Stock Akhir</th>
+                                <th class="bg-body-tertiary">Unit</th>
+                                <th class="bg-body-tertiary">Keterangan</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -113,29 +116,25 @@
                                 @php
                                     $count = $tp->transaction_products()->where('is_verified', 0)->count() + 1;
                                     $products = $tp->products()->wherePivot('is_verified', 0)->get();
+                                    $className = $tp->type == 'in' ? 'text-primary fw-bold' : 'text-danger fw-bold';
                                 @endphp
                                 <tr>
-                                    <td rowspan="{{$count}}" class="text-center">
+                                    <td rowspan="{{$count}}" class="text-center {{$className}}">
                                         <label for="tp-{{$tp->id}}" class="form-check d-flex justify-content-center">
                                             <input class="form-check-input transaction-checkbox" type="checkbox" value="" id="tp-{{$tp->id}}" />
                                         </label>
                                     </td>
-                                    <td rowspan="{{$count}}">
+                                    <td rowspan="{{$count}}" class="{{$className}}">
                                         <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
-                                            {{\Carbon\Carbon::parse($tp->date)->format('d/m/Y')}}
+                                            {{\Carbon\Carbon::parse($tp->date)->format('d/m/Y H:i')}}
                                         </label>
                                     </td>
-                                    <td rowspan="{{$count}}">
+                                    <td rowspan="{{$count}}" class="{{$className}}">
                                         <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
                                             {{$tp->code}}
                                         </label>
                                     </td>
-                                    <td rowspan="{{$count}}" class="{{$tp->type === 'out' ? 'text-danger' : 'text-info'}}">
-                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
-                                            Barang {{$tp->type === 'in' ? 'Masuk' : 'Keluar'}}
-                                        </label>
-                                    </td>
-                                    <td rowspan="{{$count}}">
+                                    <td rowspan="{{$count}}" class="{{$className}}">
                                         <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
                                             @if($tp->creator)
                                                 {{$tp->creator->name}}
@@ -147,22 +146,42 @@
                                 </tr>
                                 @foreach($products as $product)
                                     <tr>
-                                        <td>
+                                        <td class="{{$className}}">
                                             <label for="product-{{$product->id}}" class="d-flex gap-2 align-items-center">
                                                 <div class="form-check">
                                                     <input data-parent="tp-{{$tp->id}}" class="form-check-input product-checkbox" type="checkbox" name="transaction_product_ids[]" value="{{$product->pivot->id}}" id="product-{{$product->id}}" />
                                                 </div>
-                                                {{$product->name}}
+                                                {{$product->name}} / {{$product->variant}}
                                             </label>
                                         </td>
-                                        <td>
+                                        <td class="{{$className}}">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center">
                                                 {{$product->code}}
                                             </label>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="{{$className}} text-center">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
+                                                {{$product->pivot->from_stock}}
+                                            </label>
+                                        </td>
+                                        <td class="{{$className}} text-center">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
                                                 {{$product->pivot->quantity}}
+                                            </label>
+                                        </td>
+                                        <td class="{{$className}} text-center">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
+                                                {{$product->pivot->to_stock}}
+                                            </label>
+                                        </td>
+                                        <td class="{{$className}}">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
+                                                {{$product->unit}}
+                                            </label>
+                                        </td>
+                                        <td class="{{$className}}">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
+                                                {{$product->pivot->note}}
                                             </label>
                                         </td>
                                     </tr>
@@ -246,85 +265,7 @@
                     </div>
                 </div>
                 <div class="card-body py-0">
-                    <table class="table table-bordered mb-0 table-sm">
-                        <thead>
-                        <tr>
-                            <th class="bg-body-tertiary" rowspan="2">Tanggal</th>
-                            <th class="bg-body-tertiary" rowspan="2">No DO</th>
-                            <th class="bg-body-tertiary" rowspan="2">Tipe</th>
-                            <th rowspan="2" class="bg-body-tertiary">Dibuat oleh</th>
-                            <th colspan="4" class="bg-body-tertiary text-center">Barang</th>
-                        </tr>
-                        <tr>
-                            <th class="bg-body-tertiary">Nama Barang</th>
-                            <th class="bg-body-tertiary">Kode Barang</th>
-                            <th class="bg-body-tertiary text-center" style="width: 100px">Quantity</th>
-                            <th class="bg-body-tertiary">Diverifikasi oleh</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($transactions_verified as $i => $transaction)
-                            @php
-                                $count = $transaction->transaction_products()->where('is_verified', 1)->count() + 1;
-                                $products = $transaction->products()->wherePivot('is_verified', 1)->get();
-                            @endphp
-                            <tr>
-                                <td rowspan="{{$count}}">
-                                    <label for="tp-{{$transaction->id}}" class="d-flex align-items-center">
-                                        {{\Carbon\Carbon::parse($transaction->date)->format('d/m/Y')}}
-                                    </label>
-                                </td>
-                                <td rowspan="{{$count}}">
-                                    <label for="tp-{{$transaction->id}}" class="d-flex align-items-center">
-                                        {{$transaction->code}}
-                                    </label>
-                                </td>
-                                <td rowspan="{{$count}}" class="{{$transaction->type === 'out' ? 'text-danger' : 'text-info'}}">
-                                    <label for="tp-{{$transaction->id}}" class="d-flex align-items-center">
-                                        Barang {{$transaction->type === 'in' ? 'Masuk' : 'Keluar'}}
-                                    </label>
-                                </td>
-                                <td rowspan="{{$count}}">
-                                    <label for="tp-{{$transaction->id}}" class="d-flex align-items-center">
-                                        @if($transaction->creator)
-                                            {{$transaction->creator->name}}
-                                        @else
-                                            -
-                                        @endif
-                                    </label>
-                                </td>
-                            </tr>
-                            @foreach($products as $product)
-                                <tr>
-                                    <td>
-                                        {{$product->name}}
-                                    </td>
-                                    <td>
-                                        {{$product->code}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$product->pivot->quantity}}
-                                    </td>
-                                    <td>
-                                        @if($product->pivot->verified_by)
-                                            @php
-                                                $verificator = \App\Models\User::find($product->pivot->verified_by);
-                                            @endphp
-                                            {{$verificator->name}}
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endforeach
-                        @if(count($transactions_verified) == 0)
-                            <tr>
-                                <td colspan="7" class="text-center">Tidak ada data</td>
-                            </tr>
-                        @endif
-                        </tbody>
-                    </table>
+                <x-verified-transactions-table :transactions="$transactions_verified"></x-verified-transactions-table>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center align-items-center gap-2">

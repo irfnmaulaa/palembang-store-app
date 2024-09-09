@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', 'activation']], function () {
 
     // Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
@@ -44,6 +44,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth']],
     // Users
     Route::resource('/users', \App\Http\Controllers\UserController::class);
     Route::match(['GET', 'POST'], '/users/{user}/reset-password', [\App\Http\Controllers\UserController::class, 'reset_password'])->name('users.reset_password');
+    Route::post('/users/{user}/activate', [\App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
 
     // Settings
     Route::resource('/settings', \App\Http\Controllers\SettingsController::class);

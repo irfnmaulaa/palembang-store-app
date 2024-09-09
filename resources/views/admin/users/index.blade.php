@@ -12,7 +12,8 @@
             <th>Nama</th>
             <th>Username</th>
             <th>Hak Akses</th>
-            <th style="width: 250px" class="text-center">Aksi</th>
+            <th>Status</th>
+            <th style="width: 350px" class="text-center">Aksi</th>
         </tr>
         </thead>
         <tbody>
@@ -24,12 +25,21 @@
                 <td>
                     {!! $user->role_display !!}
                 </td>
+                <td>
+                    {!! $user->status_display !!}
+                </td>
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-3">
-                        <a href="{{route('admin.users.destroy', [$user])}}" data-mdb-tooltip-init data-mdb-html="true" title='Hapus Kategori <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2 btn-delete {{$user->role === 'super' ? 'disabled' : ''}}">
+                        <a href="" onclick="event.preventDefault(); document.getElementById('form-activate-{{$user->id}}').submit()" data-mdb-tooltip-init data-mdb-html="true" title='{{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}} <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg {{$user->is_active ? '' : 'btn-success'}} d-flex align-items-center gap-2">
+                            {{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}}
+                        </a>
+                        <form id="form-activate-{{$user->id}}" action="{{route('admin.users.activate', [$user])}}" method="POST">
+                            @csrf
+                        </form>
+                        <a href="{{route('admin.users.destroy', [$user])}}" data-mdb-tooltip-init data-mdb-html="true" title='Hapus Pengguna <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2 btn-delete {{$user->role === 'super' ? 'disabled' : ''}}">
                             <i class="fas fa-trash"></i>
                         </a>
-                        <a href="{{route('admin.users.edit', [$user])}}" data-mdb-tooltip-init data-mdb-html="true" title='Edit Kategori <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
+                        <a href="{{route('admin.users.edit', [$user])}}" data-mdb-tooltip-init data-mdb-html="true" title='Edit Pengguna <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
                             <i class="fas fa-edit"></i>
                         </a>
                         <a href="{{route('admin.users.reset_password', [$user])}}" data-mdb-tooltip-init data-mdb-html="true" title='Reset Kata Sandi <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">

@@ -71,4 +71,13 @@ class User extends Authenticatable
                 return '<span class="badge bg-dark">' . $this->role_label . '</span>';
         }
     }
+
+
+    public function getStatusDisplayAttribute()
+    {
+        if ($this->is_active) {
+            return '<span class="badge bg-success badge-lg">' . 'Aktif' . '</span>';
+        }
+        return '<span class="badge bg-secondary badge-lg">' . 'Nonaktif' . '</span>';
+    }
 }
