@@ -10,14 +10,16 @@
 
 @section('cta')
     <div class="d-flex align-items-center gap-3">
-
+        @if(auth()->user()->role === 'admin')
+            <x-export-button table="histories" :param="['date_range' => request()->query('date_range') ?? '']"></x-export-button>
+        @endif
     </div>
 @endsection
 
 @section('top-right')
     <form action="">
         <div class="input-group input-group-lg">
-            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 220px">
+            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 260px">
             <button class="btn btn-primary">Filter</button>
         </div>
     </form>

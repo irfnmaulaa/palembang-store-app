@@ -42,9 +42,12 @@
 
 @section('cta')
     @if(auth()->user()->role === 'admin')
-    <a href="{{route('admin.categories.create')}}" class="btn btn-primary btn-lg">
-        Tambah Kategori
-    </a>
+    <div class="d-flex gap-3">
+        <x-export-button table="categories"></x-export-button>
+        <a href="{{route('admin.categories.create')}}" class="btn btn-primary btn-lg">
+            Tambah Kategori
+        </a>
+    </div>
     @endif
 @endsection
 

@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductDetailExport;
+use App\Exports\ProductsExport;
+use App\Exports\UsersExport;
+use App\Imports\ProductsImport;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
 use App\Rules\ProductCategoryIdRule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -58,15 +64,14 @@ class ProductController extends Controller
             // return json
             return response()->json([
                 'results' => collect($products->items())->map(function ($product) {
-                    $latest_tp = $product->transaction_products()->where('is_verified', 1)->orderByDesc('id')->first();
                     return [
                         'id' => json_encode([
                             'id' => $product->id,
                             'name' => $product->name . ' - ' . $product->variant,
                             'code' => $product->code,
-                            'stock' => @$latest_tp ? $latest_tp->to_stock : 0,
+                            'stock' => $product->stock,
                         ]),
-                        'text' => $product->name . '/' . $product->variant . '/' . $product->code,
+                        'text' => $product->name . ' / ' . $product->variant . ' / ' . $product->code,
                     ];
                 })->toArray(),
                 'pagination' => [
@@ -81,13 +86,13 @@ class ProductController extends Controller
 
     public function show(Request $request, Product $product)
     {
-        $start = date('Y-m-d');
-        $end = date('Y-m-d');
+        $start = date('Y-m') . '-01 00:00:00';
+        $end = date('Y-m-d') . ' 23:59:59';
 
         if ($request->has('date_range')) {
             $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0];
-            $end = $explode[1];
+            $start = $explode[0] . ' 00:00:00';
+            $end = $explode[1] . ' 23:59:59';
         }
 
         // define instance
@@ -95,8 +100,8 @@ class ProductController extends Controller
             ->select(['transaction_products.*', 'transactions.*'])
             ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
             ->where('transaction_products.is_verified', 1)
-            ->where('transaction_products.product_id', $product->id);
-//            ->whereBetween('transactions.date', [$start, $end]);
+            ->where('transaction_products.product_id', $product->id)
+            ->whereBetween('transactions.date', [$start, $end]);
 
         // searching settings
         if ($request->has('keyword')) {
@@ -141,7 +146,7 @@ class ProductController extends Controller
         ];
 
         // return view
-        return view('admin.products.show', compact('transaction_products', 'order_options', 'start', 'end'));
+        return view('admin.products.show', compact('product', 'transaction_products', 'order_options', 'start', 'end'));
     }
 
     public function create()
@@ -219,5 +224,62 @@ class ProductController extends Controller
         return response()->json([
             'status' => 'success',
         ]);
+    }
+
+    public function export($type)
+    {
+        $filename = 'products_' . Carbon::now()->format('YmdHis');
+
+        switch ($type) {
+            case 'excel':
+                return Excel::download(new ProductsExport, $filename . '.xlsx');
+            case 'csv':
+                return Excel::download(new ProductsExport, $filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
+                    'Content-Type' => 'text/csv',
+                ]);
+            case 'pdf':
+                return Excel::download(new ProductsExport, $filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            default:
+                return "url export salah";
+        }
+    }
+
+    public function export_detail(Request $request, Product $product, $type)
+    {
+        if ($request->has('date_range') && $request->query('date_range') != '') {
+            $explode = explode(' - ', $request->query('date_range'));
+            $start = $explode[0] . ' 00:00:00';
+            $end = $explode[1] . ' 23:59:59';
+        } else {
+            $start = date('Y-m') . '-01 00:00:00';
+            $end = date('Y-m-d') . ' 23:59:59';
+        }
+
+        $filename = 'product_'. str_replace(' ', '-', $product->name) .'_' . str_replace(' ', '-', $product->variant) . '_' . str_replace(' ', '-', $product->code) . '_' . Carbon::now()->format('YmdHis');
+
+        switch ($type) {
+            case 'excel':
+                return (new ProductDetailExport($product, $start, $end))->download($filename . '.xlsx');
+            case 'csv':
+                return (new ProductDetailExport($product, $start, $end))->download($filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
+                    'Content-Type' => 'text/csv',
+                ]);
+            case 'pdf':
+                return (new ProductDetailExport($product, $start, $end))->download($filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            default:
+                return "url export salah";
+        }
+    }
+
+    public function import(Request $request)
+    {
+        // validation
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx']
+        ]);
+
+        Excel::import(new ProductsImport, $request->file('file'));
+
+        return redirect()->back()->with('message', 'Impor data barang berhasil');
     }
 }

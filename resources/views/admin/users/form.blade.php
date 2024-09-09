@@ -12,7 +12,7 @@
                 @method('PUT')
             @endif
 
-            <x-textfield label="Nama Lengkap" name="name" type="text" :item="$item"></x-textfield>
+            <x-textfield label="Nama Lengkap" name="name" type="text" :item="$item" autofocus></x-textfield>
             <x-textfield label="Username" name="username" type="text" :item="$item"></x-textfield>
 
             @if(@!$item)

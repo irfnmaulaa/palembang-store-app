@@ -37,7 +37,7 @@
                             <div class="d-flex align-items-end justify-content-between">
                                 <h3 class="card-title mb-0">Daftar {{$action}}</h3>
                                 <div class="d-flex gap-3">
-                                    <x-textfield label="Tanggal" name="date" type="date" :item="$item"></x-textfield>
+                                    <x-textfield label="Tanggal" name="date" type="datetime-local" :item="$item"></x-textfield>
                                     <x-textfield label="No DO" name="code" type="text" :item="$item"></x-textfield>
                                 </div>
                             </div>
@@ -47,9 +47,9 @@
                                     <th style="width: 50px;" class="text-center bg-body-tertiary">No</th>
                                     <th class="bg-body-tertiary">Nama Barang / Variant</th>
                                     <th class="bg-body-tertiary">Kode Barang</th>
-                                    <th style="width: 100px;" class="text-center bg-body-tertiary">Quantity</th>
+                                    <th style="width: 150px;" class="text-center bg-body-tertiary">Quantity</th>
                                     <th class="bg-body-tertiary">Keterangan</th>
-                                    <th class="bg-body-tertiary text-center">Stok Saat Ini</th>
+                                    <th style="width: 150px;" class="bg-body-tertiary text-center">Stok Saat Ini</th>
                                     <th style="width: 80px;" class="text-center bg-body-tertiary">Aksi</th>
                                 </tr>
                                 </thead>
@@ -100,8 +100,8 @@
             } );
 
             let products = []
-            if(localStorage.getItem('_products')) {
-                products = JSON.parse(localStorage.getItem('_products'))
+            if(localStorage.getItem('_products_{{request()->query('type')}}')) {
+                products = JSON.parse(localStorage.getItem('_products_{{request()->query('type')}}'))
             }
 
             $('#form-add-product').submit(function (e) {
@@ -199,11 +199,11 @@
                 const tbody = $('#table-body-products')
                 tbody.html('')
 
-                localStorage.setItem('_products', JSON.stringify(products))
+                localStorage.setItem('_products_{{request()->query('type')}}', JSON.stringify(products))
 
                 if(products.length > 0) {
                     products.forEach((product, i) => {
-                        const className = '{{request()->query('type') == 'in' ? 'text-primary fw-bold' : 'text-danger fw-bold'}}';
+                        const className = '{{request()->query('type') == 'in' ? 'text-primary' : 'text-danger'}}';
                         const trInit = `
                         <tr>
                             <td class="${className} text-center">
@@ -222,7 +222,7 @@
                                 ${ getValue(product, 'note') }
                             </td>
                             <td class="text-center ${className}">
-                                ${ parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10)  }
+                                ${ parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10) }
                             </td>
                             <td class="text-center">
                                 <a href="#" class="text-danger btn-remove-product" data-index=${ i } title="Hapus"><i class="fas fa-trash"></i></a>
@@ -298,11 +298,11 @@
             const dateEl = $('input[name="date"]')
 
             codeEl.change(function() {
-                localStorage.setItem('_transaction_code', codeEl.val())
+                localStorage.setItem('_transaction_code_{{request()->query('type')}}', codeEl.val())
             })
 
-            if(localStorage.getItem('_transaction_code')) {
-                codeEl.val(localStorage.getItem('_transaction_code'))
+            if(localStorage.getItem('_transaction_code_{{request()->query('type')}}')) {
+                codeEl.val(localStorage.getItem('_transaction_code_{{request()->query('type')}}'))
             }
 
             $('.btn-save').click(function (e) {
@@ -312,7 +312,7 @@
                     Swal.fire({
                         icon: "error",
                         title: "Gagal",
-                        text: "No DO wajib diisi",
+                        text: "No DO wajib diisi.",
                     }).then(() => {
                         setTimeout(() => {
                             codeEl.focus()
@@ -325,7 +325,20 @@
                     Swal.fire({
                         icon: "error",
                         title: "Gagal",
-                        text: "Tanggal wajib diisi",
+                        text: "Tanggal wajib diisi.",
+                    }).then(() => {
+                        setTimeout(() => {
+                            dateEl.focus()
+                        }, 300)
+                    })
+                    return
+                }
+
+                if(products.length <= 0) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Data barang tidak boleh kosong.",
                     }).then(() => {
                         setTimeout(() => {
                             dateEl.focus()
@@ -351,7 +364,7 @@
                     reverseButtons: true
                 }).then((result) => {
                     const code = codeEl.val()
-                    const date = dateEl.val()
+                    const date = convertDatetimeLocal(dateEl.val())
                     if ( result.isConfirmed ) {
                         $.ajax({
                             url: '{{route('admin.transactions.store')}}',
@@ -375,22 +388,42 @@
                                     title: "Sukses",
                                     text: "Transaksi berhasil disimpan",
                                 }).then(() => {
-                                    localStorage.removeItem('_transaction_code')
-                                    localStorage.removeItem('_products')
+                                    localStorage.removeItem('_transaction_code_{{request()->query('type')}}')
+                                    localStorage.removeItem('_products_{{request()->query('type')}}')
                                     window.location = '{{route('admin.transactions.index')}}'
                                 })
                             },
-                            error: function () {
+                            error: function (response) {
                                 Swal.fire({
                                     icon: "error",
                                     title: "Gagal",
-                                    text: "Transaksi gagal disimpan. Coba sekali lagi.",
+                                    text: Object.values(response.responseJSON.errors).flat().join(' '),
                                 })
                             }
                         })
                     }
                 });
             })
+
+            function convertDatetimeLocal(datetimeLocalString) {
+                // Create a Date object from the datetime-local string
+                const date = new Date(datetimeLocalString);
+
+                // Format the date to Y-m-d H:i:s
+                const formatted = date.getFullYear() + '-' +
+                    padZero(date.getMonth() + 1) + '-' +
+                    padZero(date.getDate()) + ' ' +
+                    padZero(date.getHours()) + ':' +
+                    padZero(date.getMinutes()) + ':' +
+                    padZero(date.getSeconds());
+
+                return formatted;
+            }
+
+            // Helper function to pad single digits with a leading zero
+            function padZero(num) {
+                return num.toString().padStart(2, '0');
+            }
         })
     </script>
 @endsection

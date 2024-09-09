@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductDetailExport;
+use App\Exports\TransactionsExport;
+use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -11,13 +14,13 @@ class HistoryController extends Controller
 {
     public function index(Request $request)
     {
-        $start = date('Y-m-d');
-        $end = date('Y-m-d');
+        $start = date('Y-m-d')  . ' 00:00:00';
+        $end = date('Y-m-d')  . ' 23:59:59';
 
         if ($request->has('date_range')) {
             $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0];
-            $end = $explode[1];
+            $start = $explode[0]  . ' 00:00:00';
+            $end = $explode[1] . ' 23:59:59';
         }
 
         // define instance
@@ -75,5 +78,32 @@ class HistoryController extends Controller
 
         // return view
         return view('admin.histories.index', compact('transactions', 'order_options', 'start', 'end'));
+    }
+
+    public function export(Request $request, $type)
+    {
+        if ($request->has('date_range') && $request->query('date_range') != '') {
+            $explode = explode(' - ', $request->query('date_range'));
+            $start = $explode[0] . ' 00:00:00';
+            $end = $explode[1] . ' 23:59:59';
+        } else {
+            $start = date('Y-m') . '-01 00:00:00';
+            $end = date('Y-m-d') . ' 23:59:59';
+        }
+
+        $filename = 'transactions_' . Carbon::now()->format('YmdHis');
+
+        switch ($type) {
+            case 'excel':
+                return (new TransactionsExport($start, $end))->download($filename . '.xlsx');
+            case 'csv':
+                return (new TransactionsExport($start, $end))->download($filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
+                    'Content-Type' => 'text/csv',
+                ]);
+            case 'pdf':
+                return (new TransactionsExport($start, $end))->download($filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            default:
+                return "url export salah";
+        }
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Models\ProductCategory;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -68,6 +71,9 @@ class UserController extends Controller
 
         // hashing password
         $validated['password'] = bcrypt($validated['password']);
+
+        // set default active
+        $validated['is_active'] = 1;
 
         // store
         User::create($validated);
@@ -147,6 +153,24 @@ class UserController extends Controller
         ]);
 
         // return
-        return redirect()->back()->with('message', 'Pengguna berhasil diperbarui');
+        return redirect()->back()->with('message', 'Pengguna berhasil ' . ($user->is_active ? ' diaktifkan' : ' dinonaktifkan'));
+    }
+
+    public function export($type)
+    {
+        $filename = 'users_' . Carbon::now()->format('YmdHis');
+
+        switch ($type) {
+            case 'excel':
+                return Excel::download(new UsersExport, $filename . '.xlsx');
+            case 'csv':
+                return Excel::download(new UsersExport, $filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
+                    'Content-Type' => 'text/csv',
+                ]);
+            case 'pdf':
+                return Excel::download(new UsersExport, $filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            default:
+                return "url export salah";
+        }
     }
 }

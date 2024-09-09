@@ -9,9 +9,9 @@
     <tr>
         <th class="bg-body-tertiary">Nama Barang / Variant</th>
         <th class="bg-body-tertiary">Kode Barang</th>
-        <th class="bg-body-tertiary text-center" style="width: 100px">Stok Awal</th>
-        <th class="bg-body-tertiary text-center" style="width: 100px">Quantity</th>
-        <th class="bg-body-tertiary text-center" style="width: 100px">Akhir</th>
+        <th class="bg-body-tertiary text-center" style="width: 120px">Stok Awal</th>
+        <th class="bg-body-tertiary text-center" style="width: 120px">Quantity</th>
+        <th class="bg-body-tertiary text-center" style="width: 120px">Akhir</th>
         <th class="bg-body-tertiary">Satuan</th>
         <th class="bg-body-tertiary">Keterangan</th>
         <th class="bg-body-tertiary">Diverifikasi oleh</th>
@@ -22,12 +22,12 @@
         @php
             $count = $transaction->transaction_products()->where('is_verified', 1)->count() + 1;
             $products = $transaction->products()->wherePivot('is_verified', 1)->get();
-            $className = $transaction->type == 'in' ? 'text-primary fw-bold' : 'text-danger fw-bold';
+            $className = $transaction->type == 'in' ? 'text-primary' : 'text-danger';
         @endphp
         <tr>
             <td rowspan="{{$count}}" class="{{$className}}">
                 <label for="tp-{{$transaction->id}}" class="d-flex align-items-center">
-                    {{\Carbon\Carbon::parse($transaction->date)->format('d/m/Y H:i')}}
+                    {{\Carbon\Carbon::parse($transaction->date)->format('d/m/Y H.i')}}
                 </label>
             </td>
             <td rowspan="{{$count}}" class="{{$className}}">
@@ -83,7 +83,7 @@
     @endforeach
     @if(count($transactions) == 0)
         <tr>
-            <td colspan="7" class="text-center">Tidak ada data</td>
+            <td colspan="11" class="text-center">Tidak ada data</td>
         </tr>
     @endif
     </tbody>

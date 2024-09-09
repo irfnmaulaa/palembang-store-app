@@ -8,24 +8,22 @@
     <table class="table table-bordered mb-0 table-sm">
         <thead>
         <tr>
-            <th class="bg-body-tertiary">Tanggal</th>
-            <th class="bg-body-tertiary">No DO</th>
+            <th class="bg-body-tertiary" style="width: 180px">Tanggal</th>
+            <th class="bg-body-tertiary" style="width: 150px">No DO</th>
             <th class="bg-body-tertiary">Nama Barang</th>
-            <th class="bg-body-tertiary">Kode Barang</th>
-            <th class="bg-body-tertiary text-center" style="width: 100px">Stok Awal</th>
-            <th class="bg-body-tertiary text-center" style="width: 100px">Quantity</th>
-            <th class="bg-body-tertiary text-center" style="width: 100px">Stok Akhir</th>
+            <th class="bg-body-tertiary" style="width: 150px">Kode Barang</th>
+            <th class="bg-body-tertiary text-center" style="width: 120px">Stok Awal</th>
+            <th class="bg-body-tertiary text-center" style="width: 120px">Quantity</th>
+            <th class="bg-body-tertiary text-center" style="width: 120px">Stok Akhir</th>
             <th class="bg-body-tertiary">Keterangan</th>
-            <th class="bg-body-tertiary">Dibuat oleh</th>
-            <th class="bg-body-tertiary">Diverifikasi oleh</th>
         </tr>
         <tbody>
         @foreach($transaction_products as $transaction_product)
             @php
-            $className = $transaction_product->type == 'in' ? 'text-primary fw-bold' : 'text-danger fw-bold';
+                $className = $transaction_product->type == 'in' ? 'text-primary' : 'text-danger';
             @endphp
             <tr>
-                <td class="{{$className}}">{{\Carbon\Carbon::parse($transaction_product->date)->format('d/m/Y H:i')}}</td>
+                <td class="{{$className}}">{{\Carbon\Carbon::parse($transaction_product->date)->format('d/m/Y H.i')}}</td>
                 <td class="{{$className}}">{{$transaction_product->code}}</td>
                 <td class="{{$className}}">{{$transaction_product->product->name}}</td>
                 <td class="{{$className}}">{{$transaction_product->product->code}}</td>
@@ -33,8 +31,6 @@
                 <td class="{{$className}} text-center">{{$transaction_product->quantity}}</td>
                 <td class="{{$className}} text-center">{{$transaction_product->to_stock}}</td>
                 <td class="{{$className}}">{{$transaction_product->note}}</td>
-                <td class="{{$className}}">{{$transaction_product->creator->name}}</td>
-                <td class="{{$className}}">{{$transaction_product->verificator->name}}</td>
             </tr>
         @endforeach
         @if(count($transaction_products) == 0)
@@ -48,14 +44,14 @@
 
 @section('cta')
     <div class="d-flex align-items-center gap-3">
-
+        <x-export-button table="product-detail" :param="['product'=>$product->id, 'date_range' => request()->query('date_range') ?? '']"></x-export-button>
     </div>
 @endsection
 
 @section('top-right')
     <form action="">
         <div class="input-group input-group-lg">
-            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 220px">
+            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 260px">
             <button class="btn btn-primary">Filter</button>
         </div>
     </form>
@@ -64,7 +60,8 @@
 @section('breadcrumbs')
     <div class="d-flex align-items-center gap-2 fs-6 text-muted">
         <a href="{{route('admin.dashboard')}}">Beranda</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
-        Riwayat Transaksi
+        <a href="{{route('admin.products.index')}}">Data Barang</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+        Riwayat Transaksi Barang
     </div>
 @endsection
 

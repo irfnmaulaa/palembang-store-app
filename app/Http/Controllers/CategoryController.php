@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CategoriesExport;
+use App\Exports\ProductsExport;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -116,5 +120,23 @@ class CategoryController extends Controller
         return response()->json([
             'status' => 'success',
         ]);
+    }
+
+    public function export($type)
+    {
+        $filename = 'categories_' . Carbon::now()->format('YmdHis');
+
+        switch ($type) {
+            case 'excel':
+                return Excel::download(new CategoriesExport, $filename . '.xlsx');
+            case 'csv':
+                return Excel::download(new CategoriesExport, $filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
+                    'Content-Type' => 'text/csv',
+                ]);
+            case 'pdf':
+                return Excel::download(new CategoriesExport, $filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            default:
+                return "url export salah";
+        }
     }
 }

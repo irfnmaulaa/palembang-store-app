@@ -17,13 +17,13 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        $start = date('Y-m-d');
-        $end = date('Y-m-d');
+        $start = date('Y-m-d') . ' 00:00:00';
+        $end = date('Y-m-d') . ' 23:59:59';
 
         if ($request->has('date_range')) {
             $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0];
-            $end = $explode[1];
+            $start = $explode[0] . ' 00:00:00';
+            $end = $explode[1]  . ' 23:59:59';
         }
 
         // define instance
@@ -130,7 +130,7 @@ class TransactionController extends Controller
     public function create()
     {
         $item = [
-            'date' => date('Y-m-d'),
+            'date' => date('Y-m-d H:i:s'),
             'code' => ''
         ];
         $action = request('type') === 'in' ? 'Barang Masuk' : 'Barang Keluar';
@@ -142,13 +142,15 @@ class TransactionController extends Controller
         // validation
         $validated = $request->validate([
             'code' => ['required', 'unique:transactions,code'],
-            'date' => ['required', 'date_format:Y-m-d'],
+            'date' => ['required', 'date_format:Y-m-d H:i:s'],
             'products' => ['required', 'array'],
             'products.*' => ['required'],
             'products.*.product_id' => ['required', 'exists:products,id'],
             'products.*.quantity' => ['required', 'numeric', 'min:1'],
             'products.*.note' => ['required'],
             'type' => ['required', 'in:in,out'],
+        ], [
+            'code.unique' => 'Nomor DO sudah ada sebelumnya.'
         ]);
 
         // create transaction

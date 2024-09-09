@@ -12,6 +12,8 @@
             </div>
         </div>
 
+        <x-alert></x-alert>
+
         <form action="" method="POST">
             @csrf
             <div class="card border shadow-none">

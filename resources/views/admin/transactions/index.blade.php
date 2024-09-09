@@ -15,26 +15,26 @@
                 </div>
                 <div class="d-flex gap-3" style="white-space: nowrap;">
                     @if(auth()->user()->role === 'staff' || auth()->user()->role == 'admin')
-                        <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-primary btn-lg">
-                            Tambah Barang Masuk
-                        </a>
-                        <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-danger btn-lg">
-                            Tambah Barang Keluar
-                        </a>
-                    @endif
-                        <div style="border-left: 1px solid #ddd" class="ps-3">
-                            <form action="">
-                                <input type="hidden" name="page" value="1">
-                                <input type="hidden" name="page2" value="1">
-                                @foreach(request()->except(['keyword', 'keyword2', 'page', 'page2', 'date_range']) as $key => $value)
-                                    <input type="hidden" name="{{$key}}" value="{{$value}}">
-                                @endforeach
-                                <div class="input-group input-group-lg">
-                                    <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 220px">
-                                    <button class="btn btn-primary">Filter</button>
-                                </div>
-                            </form>
+                        <div class="d-flex gap-3 pe-3" style="border-right: 1px solid #ddd">
+                            <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-primary btn-lg">
+                                Tambah Barang Masuk
+                            </a>
+                            <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-danger btn-lg">
+                                Tambah Barang Keluar
+                            </a>
                         </div>
+                    @endif
+                    <form action="">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="page2" value="1">
+                        @foreach(request()->except(['keyword', 'keyword2', 'page', 'page2', 'date_range']) as $key => $value)
+                            <input type="hidden" name="{{$key}}" value="{{$value}}">
+                        @endforeach
+                        <div class="input-group input-group-lg">
+                            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 260px">
+                            <button class="btn btn-primary">Filter</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -104,9 +104,9 @@
                             <tr>
                                 <th class="bg-body-tertiary">Nama Barang / Variant</th>
                                 <th class="bg-body-tertiary">Kode Barang</th>
-                                <th class="bg-body-tertiary text-center" style="width: 100px">Stok Awal</th>
-                                <th class="bg-body-tertiary text-center" style="width: 100px">Quantity</th>
-                                <th class="bg-body-tertiary text-center" style="width: 100px">Stock Akhir</th>
+                                <th class="bg-body-tertiary text-center" style="width: 120px">Stok Awal</th>
+                                <th class="bg-body-tertiary text-center" style="width: 120px">Quantity</th>
+                                <th class="bg-body-tertiary text-center" style="width: 120px">Stock Akhir</th>
                                 <th class="bg-body-tertiary">Unit</th>
                                 <th class="bg-body-tertiary">Keterangan</th>
                             </tr>
@@ -116,7 +116,7 @@
                                 @php
                                     $count = $tp->transaction_products()->where('is_verified', 0)->count() + 1;
                                     $products = $tp->products()->wherePivot('is_verified', 0)->get();
-                                    $className = $tp->type == 'in' ? 'text-primary fw-bold' : 'text-danger fw-bold';
+                                    $className = $tp->type == 'in' ? 'text-primary' : 'text-danger';
                                 @endphp
                                 <tr>
                                     <td rowspan="{{$count}}" class="text-center {{$className}}">
@@ -126,7 +126,7 @@
                                     </td>
                                     <td rowspan="{{$count}}" class="{{$className}}">
                                         <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
-                                            {{\Carbon\Carbon::parse($tp->date)->format('d/m/Y H:i')}}
+                                            {{\Carbon\Carbon::parse($tp->date)->format('d/m/Y H.i')}}
                                         </label>
                                     </td>
                                     <td rowspan="{{$count}}" class="{{$className}}">
@@ -189,7 +189,7 @@
                             @endforeach
                             @if(count($transactions_pending) == 0)
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada data</td>
+                                    <td colspan="11" class="text-center">Tidak ada data</td>
                                 </tr>
                             @endif
                             </tbody>
