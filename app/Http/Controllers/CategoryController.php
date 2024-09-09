@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
@@ -47,7 +48,73 @@ class CategoryController extends Controller
             ['label' => 'Pertama dibuat', 'order' => 'created_at-asc'],
         ];
 
-        // return view
-        return view('admin.categories.index', compact('categories', 'order_options'));
+        if ($request->ajax()) {
+            // return json
+            return response()->json([
+                'results' => collect($categories->items())->map(function ($category) {
+                    return [
+                        'id' => $category->id,
+                        'text' => $category->name,
+                    ];
+                })->toArray(),
+                'pagination' => [
+                    'more' => $categories->hasMorePages(),
+                ]
+            ]);
+        } else {
+            // return view
+            return view('admin.categories.index', compact('categories', 'order_options'));
+        }
+    }
+
+    public function create()
+    {
+        $item = null;
+        return view('admin.categories.form', compact('item'));
+    }
+
+    public function store(Request $request)
+    {
+        // validation
+        $validated = $request->validate([
+            'name' => ['required'],
+        ]);
+
+        // store
+        ProductCategory::create($validated);
+
+        // return
+        return redirect()->back()->with('message', 'Kategori berhasil ditambahkan');
+    }
+
+    public function edit(ProductCategory $category)
+    {
+        $item = $category;
+        return view('admin.categories.form', compact('item'));
+    }
+
+    public function update(Request $request, ProductCategory $category)
+    {
+        // validation
+        $validated = $request->validate([
+            'name' => ['required'],
+        ]);
+
+        // store
+        $category->update($validated);
+
+        // return
+        return redirect()->back()->with('message', 'Kategori berhasil diperbarui');
+    }
+
+    public function destroy(ProductCategory $category)
+    {
+        // delete
+        $category->delete();
+
+        // return
+        return response()->json([
+            'status' => 'success',
+        ]);
     }
 }

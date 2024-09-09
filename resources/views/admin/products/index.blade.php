@@ -5,22 +5,23 @@
 ])
 
 @section('table')
-    <table class="table table-bordered mb-0 table-sm table-hover">
+    <table class="table table-striped mb-0 table-sm table-hover">
         <thead>
         <tr>
             <th style="width: 80px" class="text-center">No</th>
-            <th style="width: 100px" class="text-center">Kode</th>
-            <th>Nama Barang - Variant</th>
             <th>Kategori</th>
+            <th>Nama Barang / Variant</th>
+            <th style="width: 150px">Kode Barang</th>
+            <th class="text-center" style="width: 150px">Stok Saat Ini</th>
+            @if(auth()->user()->role === 'admin')
             <th style="width: 250px" class="text-center">Aksi</th>
+            @endif
         </tr>
         </thead>
         <tbody>
         @foreach($products as $i => $product)
             <tr>
                 <td class="text-center">{{number_format($products->firstItem() + $i, '0', ',', '.')}}</td>
-                <td class="text-center">{{$product->code}}</td>
-                <td>{{$product->name}} - {{$product->variant}}</td>
                 <td>
                     @if($product->category)
                         {{$product->category->name}}
@@ -28,6 +29,10 @@
                         -
                     @endif
                 </td>
+                <td>{{$product->name}} / {{$product->variant}}</td>
+                <td>{{$product->code}}</td>
+                <td class="text-center">{{$product->stock}}</td>
+                @if(auth()->user()->role === 'admin')
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-3">
                         <a href="{{route('admin.products.destroy', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Hapus Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2 btn-delete">
@@ -41,6 +46,7 @@
                         </a>
                     </div>
                 </td>
+                @endif
             </tr>
         @endforeach
         </tbody>
@@ -48,9 +54,11 @@
 @endsection
 
 @section('cta')
+    @if(auth()->user()->role === 'admin')
     <a href="{{route('admin.products.create')}}" class="btn btn-primary btn-lg">
         Tambah Barang
     </a>
+    @endif
 @endsection
 
 @section('breadcrumbs')

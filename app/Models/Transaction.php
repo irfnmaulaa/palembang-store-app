@@ -10,9 +10,15 @@ class Transaction extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, TransactionProduct::class)->withPivot([
+            'id',
             'quantity',
             'from_stock',
             'to_stock',

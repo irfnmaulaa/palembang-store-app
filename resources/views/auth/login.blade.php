@@ -31,7 +31,7 @@
     <main style="width: 100vw; height: 100vh;" class="d-flex align-items-center justify-content-center">
         <div class="container">
             <div class="row justify-content-center">
-                <h2 class="text-center mb-3">
+                <h2 class="text-center mb-4">
                     {{config('app.name')}}
                 </h2>
                 <div class="col-md-4">
@@ -40,20 +40,30 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <x-alert></x-alert>
+                                <h4 class="mb-3">Masuk</h4>
 
                                 <div class="d-flex flex-column gap-3">
-                                    <div class="form-outline" data-mdb-input-init>
-                                        <input type="text" id="username" class="form-control form-control-lg" name="username" value="{{old('username')}}" autofocus/>
-                                        <label class="form-label" for="username">Username</label>
+                                    <div>
+                                        <div class="form-outline" data-mdb-input-init>
+                                            <input type="text" id="username" class="form-control form-control-lg" name="username" value="{{old('username')}}" autofocus/>
+                                            <label class="form-label" for="username">Username</label>
+                                        </div>
+                                        @if($errors->first('username'))
+                                            <small class="text-danger">{{ $errors->first('username') }}</small>
+                                        @endif
                                     </div>
 
-                                    <div class="form-outline" data-mdb-input-init>
-                                        <input type="password" id="password" class="form-control form-control-lg" name="password"/>
-                                        <label class="form-label" for="password">Password</label>
+                                    <div>
+                                        <div class="form-outline" data-mdb-input-init>
+                                            <input type="password" id="password" class="form-control form-control-lg" name="password"/>
+                                            <label class="form-label" for="password">Kata Sandi</label>
+                                        </div>
+                                        @if($errors->first('password'))
+                                            <small class="text-danger">{{ $errors->first('password') }}</small>
+                                        @endif
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                    <button type="submit" class="btn btn-primary btn-lg">Masuk</button>
                                 </div>
 
                             </div>

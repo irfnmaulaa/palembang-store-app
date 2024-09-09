@@ -37,4 +37,38 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function products_created()
+    {
+        return $this->hasMany(Product::class, 'created_by');
+    }
+
+    public function transactions_created()
+    {
+        return $this->hasMany(Transaction::class, 'created_by');
+    }
+
+    public function getRoleLabelAttribute()
+    {
+        switch ($this->role) {
+            case 'super':
+                return 'Super Admin';
+            case 'admin':
+                return 'Admin Toko';
+            default:
+                return 'Admin Gudang';
+        }
+    }
+
+    public function getRoleDisplayAttribute()
+    {
+        switch ($this->role) {
+            case 'super':
+                return '<span class="badge bg-warning">' . $this->role_label . '</span>';
+            case 'admin':
+                return '<span class="badge bg-primary">' . $this->role_label . '</span>';
+            default:
+                return '<span class="badge bg-dark">' . $this->role_label . '</span>';
+        }
+    }
 }

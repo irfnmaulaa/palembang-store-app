@@ -5,13 +5,15 @@
 ])
 
 @section('table')
-    <table class="table table-bordered mb-0 table-sm">
+    <table class="table table-striped mb-0 table-sm">
         <thead>
         <tr>
             <th style="width: 80px" class="text-center">No</th>
             <th>Nama</th>
             <th style="width: 200px" class="text-center">Jumlah Barang</th>
+            @if(auth()->user()->role === 'admin')
             <th style="width: 250px" class="text-center">Aksi</th>
+            @endif
         </tr>
         </thead>
         <tbody>
@@ -20,6 +22,7 @@
                 <td class="text-center">{{$categories->firstItem() + $i}}</td>
                 <td>{{$category->name}}</td>
                 <td class="text-center">{{$category->products_count}}</td>
+                @if(auth()->user()->role === 'admin')
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-3">
                         <a href="{{route('admin.categories.destroy', [$category])}}" data-mdb-tooltip-init data-mdb-html="true" title='Hapus Kategori <br/> "{{$category->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2 btn-delete">
@@ -28,11 +31,9 @@
                         <a href="{{route('admin.categories.edit', [$category])}}" data-mdb-tooltip-init data-mdb-html="true" title='Edit Kategori <br/> "{{$category->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="{{route('admin.categories.show', [$category])}}" data-mdb-tooltip-init data-mdb-html="true" title='Lihat Barang - Barang <br/> "{{$category->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
-                            <i class="fas fa-eye"></i>
-                        </a>
                     </div>
                 </td>
+                @endif
             </tr>
         @endforeach
         </tbody>
@@ -40,9 +41,11 @@
 @endsection
 
 @section('cta')
+    @if(auth()->user()->role === 'admin')
     <a href="{{route('admin.categories.create')}}" class="btn btn-primary btn-lg">
         Tambah Kategori
     </a>
+    @endif
 @endsection
 
 @section('breadcrumbs')

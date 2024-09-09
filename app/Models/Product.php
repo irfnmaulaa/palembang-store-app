@@ -14,4 +14,18 @@ class Product extends Model
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id', 'id');
     }
+
+    public function transaction_products()
+    {
+        return $this->hasMany(TransactionProduct::class);
+    }
+
+    public function getStockAttribute()
+    {
+        $tp = $this->transaction_products()->where('is_verified', 1)->orderByDesc('id')->first();
+        if ($tp) {
+            return $tp->to_stock;
+        }
+        return 0;
+    }
 }

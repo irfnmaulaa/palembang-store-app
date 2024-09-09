@@ -35,6 +35,16 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth']],
     Route::resource('/products', \App\Http\Controllers\ProductController::class);
 
     // Transactions
+    Route::put('/transactions/verify', [\App\Http\Controllers\TransactionController::class, 'verify'])->name('transactions.verify');
     Route::resource('/transactions', \App\Http\Controllers\TransactionController::class);
 
+    // Histories
+    Route::resource('/histories', \App\Http\Controllers\HistoryController::class);
+
+    // Users
+    Route::resource('/users', \App\Http\Controllers\UserController::class);
+    Route::match(['GET', 'POST'], '/users/{user}/reset-password', [\App\Http\Controllers\UserController::class, 'reset_password'])->name('users.reset_password');
+
+    // Settings
+    Route::resource('/settings', \App\Http\Controllers\SettingsController::class);
 });
