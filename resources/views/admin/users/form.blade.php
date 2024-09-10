@@ -25,7 +25,7 @@
                     <option value="">Pilih hak akses</option>
                     <option value="super" {{@$item->role === 'super' || old('role') === 'super' ? 'selected' : ''}}>Super Admin</option>
                     <option value="admin" {{@$item->role === 'admin' || old('role') === 'admin' ? 'selected' : ''}}>Admin Toko</option>
-                    <option value="staff" {{@$item->role === 'staff' || old('role') === 'staff' ? 'selected' : ''}}>Admin Gudang</option>
+                    <option value="staff" {{@$item->role === 'staff' || old('role') === 'staff' ? 'selected' : ''}}>Gudang</option>
                 </select>
                 @if($errors->first('role'))
                     <small class="text-danger mb-0">{{$errors->first('role')}}</small>
