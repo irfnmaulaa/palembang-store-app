@@ -31,6 +31,9 @@
                         <a href="{{route('admin.categories.edit', [$category])}}" data-mdb-tooltip-init data-mdb-html="true" title='Edit Kategori <br/> "{{$category->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <a href="{{route('admin.products.index', ['product_category_id' => $category->id])}}" data-mdb-tooltip-init data-mdb-html="true" title='Lihat Barang - Barang <br/> Kategori "{{$category->name}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
+                            <i class="fas fa-eye"></i>
+                        </a>
                     </div>
                 </td>
                 @endif

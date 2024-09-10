@@ -98,3 +98,62 @@
         <a href="{{route('admin.dashboard')}}">Beranda</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i> Data Barang
     </div>
 @endsection
+
+@section('filter')
+    <form action="" method="GET">
+        @foreach(request()->except(['product_category_id', 'page']) as $key => $value)
+            <input type="hidden" name="{{$key}}" value="{{$value}}">
+        @endforeach
+
+        <div class="d-flex align-items-center gap-2" style="min-width: 320px; white-space: nowrap;">
+            <span><small class="text-muted">Kategori</small></span>
+            <div class="input-group input-group-lg">
+                <select name="product_category_id" id="product_category_id" class="form-control form-control-lg select-category">
+                    @if(request('product_category_id') && $category = \App\Models\ProductCategory::find(request('product_category_id')))
+                        <option value="{{ $category->id }}">
+                            {{$category->name}}
+                        </option>
+                    @else
+                        <option value="">Semua Kategori</option>
+                    @endif
+                </select>
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+            @if(request()->has('product_category_id'))
+            <button style="all: unset; font-size: 14px;" class="text-danger text-decoration-underline" form="form-reset-filter">Reset</button>
+            @endif
+        </div>
+    </form>
+    <form action="" id="form-reset-filter">
+        @foreach(request()->except(['product_category_id', 'page']) as $key => $value)
+            <input type="hidden" name="{{$key}}" value="{{$value}}">
+        @endforeach
+    </form>
+@endsection
+
+@section('js')
+    <script>
+        $(document).ready(function () {
+            $( '.select-category' ).select2( {
+                theme: "bootstrap-5",
+                width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+                placeholder: $( this ).data( 'placeholder' ),
+                ajax: {
+                    delay: 250,
+                    url: '{{route('admin.categories.index')}}',
+                    data: function (params) {
+                        var query = {
+                            keyword: params.term,
+                            page: params.page || 1
+                        }
+                        // Query parameters will be ?search=[term]&page=[page]
+                        return query;
+                    }
+                },
+            } );
+        })
+    </script>
+@endsection
+

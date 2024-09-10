@@ -41,6 +41,11 @@ class ProductController extends Controller
                 ->orWhere('product_categories.name', 'LIKE', '%' . $request->get('keyword') . '%');
         }
 
+        // filter by product category
+        if ($request->has('product_category_id')) {
+            $products = $products->where('products.product_category_id', $request->get('product_category_id'));
+        }
+
         // order-by settings
         $order = ['category', 'asc'];
         if ($request->has('order')) {
