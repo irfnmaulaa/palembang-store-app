@@ -38,7 +38,7 @@
                             <i class="fas fa-edit"></i>
                         </a>
                         <a href="{{route('admin.users.reset_password', [$user])}}" data-mdb-tooltip-init data-mdb-html="true" title='Reset Kata Sandi <br/> "{{$user->name}}"' class="btn px-3 py-2 shadow-none border btn-lg d-flex align-items-center gap-2">
-                            <i class="fas fa-lock"></i>
+                            <i class="fas fa-key"></i>
                         </a>
                         <a href="" onclick="event.preventDefault(); document.getElementById('form-activate-{{$user->id}}').submit()" data-mdb-tooltip-init data-mdb-html="true" title='{{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}} <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg {{$user->is_active ? '' : 'btn-success'}} d-flex align-items-center gap-2">
                             {{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}}
