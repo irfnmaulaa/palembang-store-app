@@ -308,7 +308,9 @@
 
             var channel = pusher.subscribe('page-refresh');
             channel.bind('refresh-triggered', function(data) {
-                getTransactions(data.message)
+                if(data.user.username !== '{{ auth()->user()->username }}') {
+                    getTransactions(data.message)
+                }
             });
 
             const transactionsPendingWrap = $('#pending-transactions-wrap')
@@ -353,7 +355,7 @@
                 summary.html(transactions.summary)
             }
 
-            $('#check_all').change(function() {
+            $('body').delegate('#check_all', 'change', function() {
                 if($(this).is(':checked')) {
                     $(this).parents('table').find('tbody input[type="checkbox"]').prop('checked', true).trigger('change');
                 } else {
@@ -361,7 +363,7 @@
                 }
             })
 
-            $('.product-checkbox').change(function () {
+            $('body').delegate('.product-checkbox', 'change', function () {
                 const parent = $(this).data('parent')
                 if($(`input[data-parent=${ parent }]:checked`).length >= $(`input[data-parent=${ parent }]`).length) {
                     $(`#${parent}`).prop('checked', true)
@@ -370,7 +372,7 @@
                 }
             })
 
-            $('.transaction-checkbox').change(function () {
+            $('body').delegate('.transaction-checkbox', 'change', function () {
                 const parent = $(this).attr('id')
                 if($(this).is(':checked')) {
                     $(`input[data-parent=${parent}]`).prop('checked', true)
@@ -379,7 +381,7 @@
                 }
             })
 
-            $('table tbody input[type="checkbox"]').change(function() {
+            $('body').delegate('table tbody input[type="checkbox"]', 'change', function() {
                 const checkedCount = $(this).parents('table').find('tbody input[type="checkbox"]:checked').length
                 if(checkedCount >= $(this).parents('table').find('tbody input[type="checkbox"]').length) {
                     $(this).parents('table').find('#check_all').prop('checked', true)
@@ -396,8 +398,6 @@
 
             $('.btn-reject, .btn-verify').click(function(e) {
                 e.preventDefault()
-
-                const url = $('#form-verify').attr('action')
 
                 const isForDelete = $(e.target).hasClass('btn-reject')
 
