@@ -55,4 +55,10 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
 
     // Settings
     Route::resource('/settings', \App\Http\Controllers\SettingsController::class);
+
+    // For testing
+    Route::get('/test', function () {
+        broadcast(new \App\Events\RefreshPageEvent('hello'));
+    });
+
 });

@@ -293,45 +293,53 @@
 @endsection
 
 @section('js')
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script>
         $(document).ready(function() {
+
+            @if(config('app.debug'))
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+            @endif
+
+            var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+                cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+            });
+
+            var channel = pusher.subscribe('page-refresh');
+            channel.bind('refresh-triggered', function(data) {
+                getTransactions(data.message)
+            });
 
             const transactionsPendingWrap = $('#pending-transactions-wrap')
             const transactionsVerifiedWrap = $('#verified-transactions-wrap')
 
-            function getTransactions() {
+            function getTransactions(message = '') {
                 const url = '{!! request()->fullUrl() !!}'
                 $.ajax({
                     url,
                     method: 'GET',
                     success: function ({ transactions_pending, transactions_verified }) {
-                        if(transactions_pending.table) {
-                            renderTransactionsPending(transactions_pending)
-                            renderTransactionsVerified(transactions_verified)
-                        }
+                        Swal.fire({
+                            text: message || 'Terdapat transaksi baru yang perlu direview',
+                            icon: "success",
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                        })
+                        renderTransactionsPending(transactions_pending)
+                        renderTransactionsVerified(transactions_verified)
                     }
                 })
             }
-            setInterval(() => {
-                getTransactions()
-            }, 1000 * 10) // update every 10 seconds
 
             function renderTransactionsPending(transactions) {
                 const tbody = transactionsPendingWrap.find('.table-body');
                 const pagination = transactionsPendingWrap.find('.table-pagination');
                 const summary = transactionsPendingWrap.find('.table-summary');
-                if(tbody.find('tr').length !== $(`<table>${ transactions.table }</table>`).find('tr').length) {
-                    tbody.html(transactions.table)
-                    Swal.fire({
-                        text: 'Terdapat transaksi baru yang perlu direview',
-                        icon: "success",
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                    })
-                }
+                tbody.html(transactions.table)
                 pagination.html(transactions.pagination)
                 summary.html(transactions.summary)
             }

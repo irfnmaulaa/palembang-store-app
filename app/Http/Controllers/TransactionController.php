@@ -198,6 +198,9 @@ class TransactionController extends Controller
             ]);
         }
 
+        // broadcast to other user for transaction update
+        broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja menambahkan transaksi barang ' . ($validated['type'] === 'in' ? 'masuk' : 'keluar')));
+
         return response()->json([
             'status' => 'success',
             'message' => 'Transaksi berhasil disimpan',
@@ -227,6 +230,9 @@ class TransactionController extends Controller
                 ]);
             }
         }
+
+        // broadcast to other user for transaction update
+        broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja ' . ($is_deleted ? 'menghapus' : 'memverifikasi') . ' data transaksi pending.'));
 
         return redirect()->back()->with('message', 'Transaksi berhasil ' . ($is_deleted ? 'dihapus' : 'diverifikasi'));
     }
