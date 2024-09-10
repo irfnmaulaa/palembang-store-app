@@ -14,14 +14,16 @@ class HistoryController extends Controller
 {
     public function index(Request $request)
     {
-        $start = date('Y-m-d')  . ' 00:00:00';
+        $start = date('Y')  . '-01-01 00:00:00';
         $end = date('Y-m-d')  . ' 23:59:59';
 
         // get first transaction
+        /*
         $first_transaction = Transaction::orderBy('created_at')->first();
         if ($first_transaction) {
             $start = $first_transaction->created_at->format('Y-m-d H:i:s');
         }
+        */
 
         if ($request->has('date_range')) {
             $explode = explode(' - ', $request->query('date_range'));
