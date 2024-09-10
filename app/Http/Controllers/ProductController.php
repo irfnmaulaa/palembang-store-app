@@ -20,7 +20,18 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         // define instance
-        $products = Product::query()->join('product_categories', 'products.product_category_id', '=', 'product_categories.id')->select('products.*');
+        $products = Product::query()
+            ->select('products.*')
+            ->addSelect([
+                'latest_stock' => function($query) {
+                    $query->select('to_stock')
+                        ->from('transaction_products')
+                        ->whereColumn('transaction_products.product_id', 'products.id')
+                        ->orderByDesc('id')
+                        ->limit(1);
+                }
+            ])
+            ->join('product_categories', 'products.product_category_id', '=', 'product_categories.id');
 
         // searching settings
         if ($request->has('keyword')) {
@@ -39,7 +50,7 @@ class ProductController extends Controller
 
         if ($order[0] == 'category') $order[0] = 'product_categories.name';
         if ($order[0] == 'name') $order[0] = 'products.name';
-        if ($order[0] == 'created_at') $order[0] = 'products.created_at';
+        if ($order[0] == 'created_at') $order[0] = 'products.created_at'; 
 
         // order-by statements
         $products = $products->orderBy($order[0], $order[1]);
@@ -56,6 +67,8 @@ class ProductController extends Controller
             ['label' => 'Nama kategori Z-A', 'order' => 'category-desc'],
             ['label' => 'Nama barang A-Z', 'order' => 'name-asc'],
             ['label' => 'Nama barang Z-A', 'order' => 'name-desc'],
+            ['label' => 'Stok paling banyak', 'order' => 'latest_stock-desc'],
+            ['label' => 'Stok paling sedikit', 'order' => 'latest_stock-asc'],
             ['label' => 'Terkahir dibuat', 'order' => 'created_at-desc'],
             ['label' => 'Pertama dibuat', 'order' => 'created_at-asc'],
         ];

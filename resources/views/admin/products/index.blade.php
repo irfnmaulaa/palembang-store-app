@@ -30,7 +30,7 @@
                 </td>
                 <td>{{$product->name}} / {{$product->variant}}</td>
                 <td>{{$product->code}}</td>
-                <td class="text-center">{{$product->stock}}</td>
+                <td class="text-center">{{$product->latest_stock}}</td>
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-3">
                         @if(auth()->user()->role === 'admin')
