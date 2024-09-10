@@ -16,7 +16,10 @@ class ProductsImport implements ToModel
     */
     public function model(array $row)
     {
-        if ($row[0] != 'KATEGORI') {
+        // skip to 2nd row
+        if (strtoupper($row[0]) != 'KATEGORI') {
+
+            // define category. create if doesn't exist
             $category = ProductCategory::where('name', $row[0])->first();
             if (!$category) {
                 $category = ProductCategory::create([
@@ -24,36 +27,45 @@ class ProductsImport implements ToModel
                 ]);
             }
 
-            $product = Product::create([
-                'product_category_id' => $category->id,
-                'name'    => $row[1],
-                'variant'    => $row[2],
-                'code'     => $row[3],
-                'unit'    => $row[4],
-                'created_by'    => auth()->user()->id,
-            ]);
+            // define product by code
+            $product = Product::where('code', $row[3])->first();
 
-            if (!empty($row[5])) {
-                $transaction = Transaction::create([
-                    'date' => date('Y-m-d H:i:s'),
-                    'type' => 'in',
-                    'created_by' => auth()->user()->id,
-                    'code' => 'I ' . date('dmy'),
+            // import if product doesn't duplicated
+            if (!$product) {
+
+                // create product
+                $product = Product::create([
+                    'product_category_id' => $category->id,
+                    'name'    => $row[1],
+                    'variant'    => $row[2],
+                    'code'     => $row[3],
+                    'unit'    => $row[4],
+                    'created_by'    => auth()->user()->id,
                 ]);
-                $transaction->transaction_products()->create([
-                    'product_id' => $product->id,
-                    'quantity' => $row[5],
-                    'from_stock' => 0,
-                    'to_stock' => $row[5],
-                    'note' => 'IMPORT',
-                    'is_verified' => 1,
-                    'verified_by' => auth()->user()->id,
-                    'created_by' => auth()->user()->id,
-                    'verified_at' => date('Y-m-d H:i:s'),
-                ]);
+
+                // if current stock is filled. create a products-in transaction
+                if (!empty($row[5])) {
+                    $transaction = Transaction::create([
+                        'date' => date('Y-m-d H:i:s'),
+                        'type' => 'in',
+                        'created_by' => auth()->user()->id,
+                        'code' => 'I ' . date('dmyHis'),
+                    ]);
+                    $transaction->transaction_products()->create([
+                        'product_id' => $product->id,
+                        'quantity' => $row[5],
+                        'from_stock' => 0,
+                        'to_stock' => $row[5],
+                        'note' => 'IMPORT',
+                        'is_verified' => 1,
+                        'verified_by' => auth()->user()->id,
+                        'created_by' => auth()->user()->id,
+                        'verified_at' => date('Y-m-d H:i:s'),
+                    ]);
+                }
+
+                return $product;
             }
-
-            return $product;
         }
     }
 }
