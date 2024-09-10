@@ -222,7 +222,13 @@ class TransactionController extends Controller
             }
 
             if ($is_deleted) {
+                $transaction_id = $transaction_product->transaction_id;
                 $transaction_product->delete();
+
+                // delete transaction if doesn't have any transaction product
+                if (TransactionProduct::where('transaction_id', $transaction_id)->count() <= 0) {
+                    Transaction::destroy($transaction_id);
+                }
             } else {
                 $transaction_product->update([
                     'is_verified' => 1,
