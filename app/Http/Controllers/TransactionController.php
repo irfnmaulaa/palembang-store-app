@@ -86,8 +86,8 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.date', [$start, $end])
-            ->orderByDesc('transactions.date');
+            ->whereBetween('transactions.date', [$start, $end]);
+            // ->orderByDesc('transactions.date');
 
         // searching settings
         if ($request->has('keyword2')) {
@@ -123,8 +123,24 @@ class TransactionController extends Controller
             ->paginate(5, ['*'], 'page2')
             ->appends($request->query());
 
-        // return view
-        return view('admin.transactions.index', compact('transactions_pending', 'transactions_verified', 'order_options', 'start', 'end'));
+        if ($request->ajax()) {
+            // return json
+            return response()->json([
+                'transactions_pending' => [
+                    'table' => view('admin.transactions.ajax.table-pending', ['transactions' => $transactions_pending])->render(),
+                    'pagination' => view('admin.transactions.ajax.pagination', ['transactions' => $transactions_pending])->render(),
+                    'summary' => view('admin.transactions.ajax.summary', ['transactions' => $transactions_pending])->render(),
+                ],
+                'transactions_verified' => [
+                    'table' => view('admin.transactions.ajax.table', ['transactions' => $transactions_verified])->render(),
+                    'pagination' => view('admin.transactions.ajax.pagination', ['transactions' => $transactions_verified])->render(),
+                    'summary' => view('admin.transactions.ajax.summary', ['transactions' => $transactions_verified])->render(),
+                ],
+            ]);
+        } else {
+            // return view
+            return view('admin.transactions.index', compact('transactions_pending', 'transactions_verified', 'order_options', 'start', 'end'));
+        }
     }
 
     public function create()

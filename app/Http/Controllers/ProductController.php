@@ -50,7 +50,7 @@ class ProductController extends Controller
 
         if ($order[0] == 'category') $order[0] = 'product_categories.name';
         if ($order[0] == 'name') $order[0] = 'products.name';
-        if ($order[0] == 'created_at') $order[0] = 'products.created_at'; 
+        if ($order[0] == 'created_at') $order[0] = 'products.created_at';
 
         // order-by statements
         $products = $products->orderBy($order[0], $order[1]);

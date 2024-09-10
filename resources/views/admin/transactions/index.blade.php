@@ -2,7 +2,9 @@
 
 @section('content')
     <div class="d-flex flex-column gap-5">
-        <div class="d-flex flex-column gap-3">
+
+        {{-- Pending Transactions --}}
+        <div id="pending-transactions-wrap" class="d-flex flex-column gap-3">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex flex-column gap-1">
                     <div class="d-flex">
@@ -111,7 +113,7 @@
                                 <th class="bg-body-tertiary">Keterangan</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="table-body">
                             @foreach($transactions_pending as $i => $tp)
                                 @php
                                     $count = $tp->transaction_products()->where('is_verified', 0)->count() + 1;
@@ -202,23 +204,27 @@
                             @if(auth()->user()->role === 'admin')
                                 <button type="submit" form="form-verify" class="btn btn-success btn-lg btn-verify disabled">Verifikasi</button>
                             @endif
-                            
+
                             @if(in_array(auth()->user()->role, ['admin', 'staff']))
                                 <button type="submit" form="form-verify" name="delete" value="1" class="btn btn-outline-danger btn-reject btn-lg disabled">Hapus</button>
                             @endif
                         </div>
-                        {{ $transactions_pending->links('vendor.pagination.bootstrap-4') }}
+                        <div class="table-pagination">
+                            {{ $transactions_pending->links('vendor.pagination.bootstrap-4') }}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            @if(count($transactions_pending) > 0)
-                <div class="text-muted"><small>Ditampilkan {{number_format($transactions_pending->firstItem(), 0, ',', '.')}} - {{number_format($transactions_pending->count() - 1 + $transactions_pending->firstItem(), 0, ',', '.')}} dari {{number_format($transactions_pending->total(), 0, ',', '.')}} data</small></div>
-            @endif
+            <div class="table-summary">
+                @if(count($transactions_pending) > 0)
+                    <div class="text-muted"><small>Ditampilkan {{number_format($transactions_pending->firstItem(), 0, ',', '.')}} - {{number_format($transactions_pending->count() - 1 + $transactions_pending->firstItem(), 0, ',', '.')}} dari {{number_format($transactions_pending->total(), 0, ',', '.')}} data</small></div>
+                @endif
+            </div>
         </div>
 
         {{-- Verified Transactions --}}
-        <div class="d-flex flex-column gap-3">
+        <div id="verified-transactions-wrap" class="d-flex flex-column gap-3">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex flex-column gap-1">
                     <h2 class="mb-0">Data Transaksi <span class="text-success">Terverifikasi</span></h2>
@@ -267,19 +273,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body py-0">
+                <div class="table-body card-body py-0">
                 <x-verified-transactions-table :transactions="$transactions_verified"></x-verified-transactions-table>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-center align-items-center gap-2">
+                    <div class="table-pagination d-flex justify-content-center align-items-center gap-2">
                         {{ $transactions_verified->links('vendor.pagination.bootstrap-4') }}
                     </div>
                 </div>
             </div>
 
-            @if(count($transactions_verified) > 0)
-                <div class="text-muted"><small>Ditampilkan {{number_format($transactions_verified->firstItem(), 0, ',', '.')}} - {{number_format($transactions_verified->count() - 1 + $transactions_verified->firstItem(), 0, ',', '.')}} dari {{number_format($transactions_verified->total(), 0, ',', '.')}} data</small></div>
-            @endif
+            <div class="table-summary">
+                @if(count($transactions_verified) > 0)
+                    <div class="text-muted"><small>Ditampilkan {{number_format($transactions_verified->firstItem(), 0, ',', '.')}} - {{number_format($transactions_verified->count() - 1 + $transactions_verified->firstItem(), 0, ',', '.')}} dari {{number_format($transactions_verified->total(), 0, ',', '.')}} data</small></div>
+                @endif
+            </div>
         </div>
     </div>
 @endsection
@@ -287,6 +295,56 @@
 @section('js')
     <script>
         $(document).ready(function() {
+
+            const transactionsPendingWrap = $('#pending-transactions-wrap')
+            const transactionsVerifiedWrap = $('#verified-transactions-wrap')
+
+            function getTransactions() {
+                const url = '{!! request()->fullUrl() !!}'
+                $.ajax({
+                    url,
+                    method: 'GET',
+                    success: function ({ transactions_pending, transactions_verified }) {
+                        if(transactions_pending.table) {
+                            renderTransactionsPending(transactions_pending)
+                            renderTransactionsVerified(transactions_verified)
+                        }
+                    }
+                })
+            }
+            setInterval(() => {
+                getTransactions()
+            }, 1000 * 10) // update every 10 seconds
+
+            function renderTransactionsPending(transactions) {
+                const tbody = transactionsPendingWrap.find('.table-body');
+                const pagination = transactionsPendingWrap.find('.table-pagination');
+                const summary = transactionsPendingWrap.find('.table-summary');
+                if(tbody.find('tr').length !== $(`<table>${ transactions.table }</table>`).find('tr').length) {
+                    tbody.html(transactions.table)
+                    Swal.fire({
+                        text: 'Terdapat transaksi baru yang perlu direview',
+                        icon: "success",
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    })
+                }
+                pagination.html(transactions.pagination)
+                summary.html(transactions.summary)
+            }
+
+            function renderTransactionsVerified(transactions) {
+                const tbody = transactionsVerifiedWrap.find('.table-body');
+                const pagination = transactionsVerifiedWrap.find('.table-pagination');
+                const summary = transactionsVerifiedWrap.find('.table-summary');
+                tbody.html(transactions.table)
+                pagination.html(transactions.pagination)
+                summary.html(transactions.summary)
+            }
+
             $('#check_all').change(function() {
                 if($(this).is(':checked')) {
                     $(this).parents('table').find('tbody input[type="checkbox"]').prop('checked', true).trigger('change');
