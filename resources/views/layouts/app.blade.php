@@ -48,6 +48,12 @@
         td, th {
             vertical-align: middle;
         }
+        .card-item:hover {
+            cursor: grab;
+        }
+        .card-item:active {
+            cursor: grabbing;
+        }
     </style>
 
     <!-- MDB -->
@@ -88,29 +94,15 @@
                 <div class="collapse navbar-collapse" id="navbarButtonsExample">
                     <!-- Left links -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        @if(in_array(auth()->user()->role, ['admin', 'staff', 'super']))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.transactions.index')}}">Transaksi</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.histories.index')}}">Riwayat</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.products.index')}}">Barang</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.categories.index')}}">Kategori</a>
-                        </li>
-                        @endif
 
-                        @if(in_array(auth()->user()->role, ['super']))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.users.index')}}">Pengguna</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.settings.index')}}">Pengaturan</a>
-                        </li>
-                        @endif
+                        @foreach(collect(get_menus())->filter(function ($menu) { return in_array(auth()->user()->role, $menu->allowed_roles); })->all() as $menu)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route($menu->link)}}">
+                                    {{$menu->label}}
+                                </a>
+                            </li>
+                        @endforeach
+                        
                     </ul>
                     <!-- Left links -->
 
