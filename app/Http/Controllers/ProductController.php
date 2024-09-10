@@ -86,7 +86,7 @@ class ProductController extends Controller
 
     public function show(Request $request, Product $product)
     {
-        $start = date('Y-m') . '-01 00:00:00';
+        $start = $product->created_at->format('Y-m-d H:i:s');
         $end = date('Y-m-d') . ' 23:59:59';
 
         if ($request->has('date_range')) {
@@ -251,7 +251,7 @@ class ProductController extends Controller
             $start = $explode[0] . ' 00:00:00';
             $end = $explode[1] . ' 23:59:59';
         } else {
-            $start = date('Y-m') . '-01 00:00:00';
+            $start = $product->created_at->format('Y-m-d H:i:s');
             $end = date('Y-m-d') . ' 23:59:59';
         }
 
