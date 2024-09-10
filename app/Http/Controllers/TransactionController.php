@@ -199,7 +199,7 @@ class TransactionController extends Controller
         }
 
         // broadcast to other user for transaction update
-        broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja menambahkan transaksi barang ' . ($validated['type'] === 'in' ? 'masuk' : 'keluar' . '.')));
+        broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja menambahkan transaksi barang ' . ($validated['type'] === 'in' ? 'masuk' : 'keluar')  . '.'));
 
         return response()->json([
             'status' => 'success',
