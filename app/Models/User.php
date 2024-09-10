@@ -56,7 +56,7 @@ class User extends Authenticatable
             case 'admin':
                 return 'Admin Toko';
             default:
-                return 'Admin Gudang';
+                return 'Gudang';
         }
     }
 
