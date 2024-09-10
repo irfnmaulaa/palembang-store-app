@@ -202,7 +202,10 @@
                             @if(auth()->user()->role === 'admin')
                                 <button type="submit" form="form-verify" class="btn btn-success btn-lg btn-verify disabled">Verifikasi</button>
                             @endif
-                            <button type="submit" form="form-verify" name="delete" value="1" class="btn btn-outline-danger btn-reject btn-lg disabled">Hapus</button>
+                            
+                            @if(in_array(auth()->user()->role, ['admin', 'staff']))
+                                <button type="submit" form="form-verify" name="delete" value="1" class="btn btn-outline-danger btn-reject btn-lg disabled">Hapus</button>
+                            @endif
                         </div>
                         {{ $transactions_pending->links('vendor.pagination.bootstrap-4') }}
                     </div>
