@@ -13,6 +13,7 @@ use App\Models\TransactionProduct;
 use App\Rules\ProductCategoryIdRule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -35,9 +36,9 @@ class ProductController extends Controller
             ->leftJoin('product_categories', 'products.product_category_id', '=', 'product_categories.id');
 
         // searching settings
-        if ($request->has('keyword')) {
+        if ($request->query('keyword')) {
             $products = $products
-                ->where('products.name', 'LIKE', '%' . $request->get('keyword') . '%')
+                ->where(DB::raw("CONCAT(products.name, ' ', products.variant)"), 'LIKE', '%' . $request->get('keyword') . '%')
                 ->orWhere('product_categories.name', 'LIKE', '%' . $request->get('keyword') . '%');
         }
 

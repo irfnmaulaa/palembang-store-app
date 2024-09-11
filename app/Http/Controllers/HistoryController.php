@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HistoryController extends Controller
 {
@@ -41,10 +42,10 @@ class HistoryController extends Controller
             ->whereBetween('transactions.date', [$start, $end]);
 
         // searching settings
-        if ($request->has('keyword')) {
+        if ($request->query('keyword')) {
             $transactions = $transactions
                 ->where(function ($query) use ($request) {
-                    $query->where('products.name', 'LIKE', '%' . $request->get('keyword') . '%')
+                    $query->where(DB::raw("CONCAT(products.name, ' ', products.variant)"), 'LIKE', '%' . $request->get('keyword') . '%')
                         ->orWhere('transaction_products.note', 'LIKE', '%' . $request->get('keyword') . '%')
                         ->orWhere('transactions.code', 'LIKE', '%' . $request->get('keyword') . '%');
                 });
@@ -82,7 +83,7 @@ class HistoryController extends Controller
             ['label' => 'Nomor DO Z-A', 'order' => 'code-desc'],
             ['label' => 'Tipe A-Z', 'order' => 'type-asc'],
             ['label' => 'Tipe Z-A', 'order' => 'type-desc'],
-        ]; 
+        ];
 
         // return view
         return view('admin.histories.index', compact('transactions', 'order_options', 'start', 'end'));

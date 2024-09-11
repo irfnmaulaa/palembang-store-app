@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
@@ -96,9 +97,9 @@ class CategoryController extends Controller
         $products = $category->products();
 
         // searching settings
-        if ($request->has('keyword')) {
+        if ($request->query('keyword')) {
             $products = $products
-                ->where('name', 'LIKE', '%' . $request->get('keyword') . '%')
+                ->where(DB::raw("CONCAT(name, ' ', variant)"), 'LIKE', '%' . $request->get('keyword') . '%')
                 ->orWhere('code', 'LIKE', '%' . $request->get('keyword') . '%');
         }
 
