@@ -1,36 +1,93 @@
 @extends('layouts.index', [
-    'title' => 'Riwayat Transaksi Barang',
+    'title' => 'Buku Besar',
     'data' => $transaction_products,
     'order_options' => $order_options
 ])
 
+@section('header')
+    <div class="card shadow-none border">
+        <div class="card-body">
+            <div class="mb-3 d-flex align-items-center justify-content-between">
+                <h3 class="text-uppercase mb-0">{{$product->name}} {{$product->variant}}</h3>
+                @if(auth()->user()->role === 'admin')
+                <div class="d-flex gap-3">
+                    <a href="{{route('admin.products.edit', [$product])}}" class="btn btn-lg btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i> Edit Barang
+                    </a>
+                    <a href="{{route('admin.products.destroy', [$product])}}" class="btn btn-delete with-pin btn-lg btn-outline-danger">
+                        <i class="fas fa-trash me-1"></i> Hapus Barang
+                    </a>
+                </div>
+                @endif
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                        <tr>
+                            <td style="width: 160px;">Nama Barang</td>
+                            <td style="width: 10px" class="text-center">:</td>
+                            <td>{{$product->name}} {{$product->variant}}</td>
+                        </tr>
+                        <tr>
+                            <td>Kode Barang</td>
+                            <td>:</td>
+                            <td>{{$product->code}}</td>
+                        </tr>
+                        <tr>
+                            <td>Kategori</td>
+                            <td>:</td>
+                            <td>
+                                @if($product->category)
+                                    <a href="{{route('admin.categories.show', [$product->category])}}">{{$product->category->name}}</a>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Stok saat ini</td>
+                            <td>:</td>
+                            <td>{{$product->stock ?? 0}} {{$product->unit}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('table')
-    <table class="table table-bordered mb-0 table-sm">
+    <table class="table table-hover mb-0 table-sm">
         <thead>
         <tr>
             <th class="bg-body-tertiary" style="width: 180px">Tanggal</th>
             <th class="bg-body-tertiary" style="width: 150px">No DO</th>
-            <th class="bg-body-tertiary">Nama Barang</th>
-            <th class="bg-body-tertiary" style="width: 150px">Kode Barang</th>
-            <th class="bg-body-tertiary text-center" style="width: 120px">Stok Awal</th>
-            <th class="bg-body-tertiary text-center" style="width: 120px">Quantity</th>
-            <th class="bg-body-tertiary text-center" style="width: 120px">Stok Akhir</th>
             <th class="bg-body-tertiary">Keterangan</th>
+            <th class="bg-body-tertiary text-center" style="width: 60px">M</th>
+            <th class="bg-body-tertiary text-center" style="width: 60px">K</th>
+            <th class="bg-body-tertiary text-center" style="width: 60px">S</th>
+            <th class="bg-body-tertiary text-center" style="width: 120px">ID</th>
         </tr>
         <tbody>
         @foreach($transaction_products as $transaction_product)
             @php
-                $className = $transaction_product->type == 'in' ? 'text-primary' : 'text-danger';
+                $type = $transaction_product->type;
+                $className = get_table_row_classname($type);
             @endphp
             <tr>
-                <td class="{{$className}}">{{\Carbon\Carbon::parse($transaction_product->date)->format('d/m/Y H.i')}}</td>
+                <td class="{{$className}}">{{\Carbon\Carbon::parse($transaction_product->date)->format('d/m/Y')}}</td>
                 <td class="{{$className}}">{{$transaction_product->code}}</td>
-                <td class="{{$className}}">{{$transaction_product->product->name}}</td>
-                <td class="{{$className}}">{{$transaction_product->product->code}}</td>
-                <td class="{{$className}} text-center">{{$transaction_product->from_stock}}</td>
-                <td class="{{$className}} text-center">{{$transaction_product->quantity}}</td>
-                <td class="{{$className}} text-center">{{$transaction_product->to_stock}}</td>
                 <td class="{{$className}}">{{$transaction_product->note}}</td>
+                <td class="{{$className}} text-center">{{$type === 'in' ? $transaction_product->quantity : '0'}}</td>
+                <td class="{{$className}} text-center">{{$type === 'out' ? $transaction_product->quantity : '0'}}</td>
+                <td class="{{$className}} text-center">{{$transaction_product->to_stock}}</td>
+                <td class="{{$className}} text-center">
+                    @if($transaction_product->transaction->creator)
+                        {{ $transaction_product->transaction->creator->name }}
+                    @endif
+                </td>
             </tr>
         @endforeach
         @if(count($transaction_products) == 0)
@@ -43,9 +100,11 @@
 @endsection
 
 @section('cta')
+    @if(auth()->user()->role === 'admin')
     <div class="d-flex align-items-center gap-3">
         <x-export-button table="product-detail" :param="['product'=>$product->id, 'date_range' => request()->query('date_range') ?? '']"></x-export-button>
     </div>
+    @endif
 @endsection
 
 @section('top-right')
@@ -61,7 +120,7 @@
     <div class="d-flex align-items-center gap-2 fs-6 text-muted">
         <a href="{{route('admin.dashboard')}}">Beranda</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
         <a href="{{route('admin.products.index')}}">Data Barang</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
-        Riwayat Transaksi Barang
+        Buku Besar
     </div>
 @endsection
 

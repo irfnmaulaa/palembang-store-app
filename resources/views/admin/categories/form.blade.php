@@ -12,11 +12,15 @@
                 @method('PUT')
             @endif
 
-            <x-textfield label="Nama Kategori" name="name" type="text" :item="$item"></x-textfield>
+            <x-textfield label="Nama Kategori" name="name" type="text" :item="$item" autofocus></x-textfield>
 
             <div class="mt-2 d-flex gap-3">
                 <button type="submit" class="btn btn-primary btn-lg">Simpan</button>
-                <a href="{{route('admin.categories.index')}}" class="btn btn-outline-primary btn-lg">Batalkan</a>
+                @if(@$item)
+                    <a href="{{route('admin.categories.show', [$item])}}" class="btn btn-outline-primary btn-lg">Kembali</a>
+                @else
+                    <a href="{{route('admin.categories.index')}}" class="btn btn-outline-primary btn-lg">Kembali</a>
+                @endif
             </div>
         </form>
     </div>

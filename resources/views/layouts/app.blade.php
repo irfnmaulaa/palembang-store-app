@@ -54,6 +54,12 @@
         .card-item:active {
             cursor: grabbing;
         }
+        .btn:focus {
+            outline: 3px solid #0653da;
+        }
+        a:not(.btn):hover {
+            text-decoration: underline;
+        }
     </style>
 
     <!-- MDB -->
@@ -102,7 +108,7 @@
                                 </a>
                             </li>
                         @endforeach
-                        
+
                     </ul>
                     <!-- Left links -->
 
@@ -152,44 +158,73 @@
             e.preventDefault()
 
             const url = $(this).attr('href')
+            const withPin = $(this).hasClass('with-pin')
+
+            let additionalConfig = {}
+            if (withPin) {
+                additionalConfig = {
+                    input: 'password',
+                    showLoaderOnConfirm: true,
+                    preConfirm: async (pin) => new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: '{{route('admin.users.check_pin')}}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{csrf_token()}}',
+                                pin,
+                            },
+                            success: () => {
+                                resolve({ pin })
+                            },
+                            error: ({responseJSON}) => {
+                                Swal.showValidationMessage(responseJSON.message || `Pin tidak valid`);
+                                resolve()
+                            },
+                        })
+                    }),
+                    allowOutsideClick: () => !Swal.isLoading()
+                }
+            }
 
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
-                    confirmButton: "btn btn-outline-danger btn-lg ms-2",
-                    cancelButton: "btn btn-danger btn-lg"
+                    confirmButton: "btn btn-danger btn-lg",
+                    cancelButton: "btn btn-outline-danger btn-lg ms-3"
                 },
                 buttonsStyling: false
             });
             swalWithBootstrapButtons.fire({
-                title: "Apakah kamu yakin ingin menghapus?",
-                text: "Data yang telah dihapus tidak bisa dikembalikan.",
+                title: withPin ? "Konfirmasi penghapusan" : "Apakah kamu yakin ingin menghapus?",
+                text: withPin ? "Masukan PIN untuk menghapus data" : "Data yang telah dihapus tidak bisa dikembalikan.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Ya, hapus",
+                confirmButtonText: withPin ? "Hapus data" : "Ya, hapus",
                 cancelButtonText: "Tidak",
-                reverseButtons: true
+                ...additionalConfig,
             }).then((result) => {
                 if ( result.isConfirmed ) {
                     $.ajax({
-                        method: 'DELETE',
+                        method: 'POST',
                         data: {
                             _token: '{{csrf_token()}}',
-                            _method: 'PUT',
+                            _method: 'DELETE',
+                            pin: result.value.pin,
                         },
                         url,
-                        success: function () {
+                        success: function (response) {
                             swalWithBootstrapButtons.fire({
                                 title: "Berhasil",
                                 text: "Data berhasil dihapus",
                                 icon: "success"
                             }).then(result => {
-                                location.reload()
+                                window.location = response.redirect_url
                             })
                         },
-                        error: function () {
+                        error: function ({ responseJSON }) {
+                            const message = responseJSON?.message || 'Data gagal dihapus karna terdapat data dari tabel lain yang berelasi dengan data ini atau hak akses tidak diperbolehkan.'
                             swalWithBootstrapButtons.fire({
                                 title: "Gagal",
-                                text: "Data gagal dihapus karna terdapat data dari tabel lain yang berelasi dengan data ini atau hak akses tidak diperbolehkan.",
+                                text: message,
                                 icon: "error"
                             })
                         }

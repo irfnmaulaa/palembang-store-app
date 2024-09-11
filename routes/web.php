@@ -18,7 +18,7 @@ Route::get('/', function () {
     if (auth()->guest()) {
         return redirect()->route('login');
     } else {
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.products.index');
     }
 });
 
@@ -32,6 +32,8 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     // Categories
     Route::get('/categories/export/{type}', [\App\Http\Controllers\CategoryController::class, 'export'])->name('categories.export');
     Route::resource('/categories', \App\Http\Controllers\CategoryController::class);
+    Route::post('/categories/{category}/add-product', [\App\Http\Controllers\CategoryController::class, 'add_product'])->name('categories.add_product');
+    Route::delete('/categories/{category}/remove-product', [\App\Http\Controllers\CategoryController::class, 'remove_product'])->name('categories.remove_product');
 
     // Products
     Route::post('/products/import', [\App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
@@ -51,7 +53,9 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::get('/users/export/{type}', [\App\Http\Controllers\UserController::class, 'export'])->name('users.export');
     Route::resource('/users', \App\Http\Controllers\UserController::class);
     Route::match(['GET', 'POST'], '/users/{user}/reset-password', [\App\Http\Controllers\UserController::class, 'reset_password'])->name('users.reset_password');
+    Route::match(['GET', 'POST'], '/users/{user}/reset-pin', [\App\Http\Controllers\UserController::class, 'reset_pin'])->name('users.reset_pin');
     Route::post('/users/{user}/activate', [\App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
+    Route::post('/users/check-pin', [\App\Http\Controllers\UserController::class, 'check_pin'])->name('users.check_pin');
 
     // Settings
     Route::resource('/settings', \App\Http\Controllers\SettingsController::class);

@@ -4,17 +4,20 @@
     <div class="d-flex flex-column gap-3">
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex flex-column gap-1">
-                <h2 class="mb-0">{{$title}}</h2>
+                <h2 class="mb-0 text-uppercase">{{$title}}</h2>
                 @yield('breadcrumbs')
             </div>
             @yield('cta')
         </div>
+
+        @yield('header')
 
         <div class="card border shadow-none">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-3">
                         @yield('top-left')
+                        @if(!@$withNoSearch)
                         <form action="" method="GET">
                             <input type="hidden" name="page" value="1">
                             @foreach(request()->except(['keyword', 'page']) as $key => $value)
@@ -27,8 +30,10 @@
                                 </button>
                             </div>
                         </form>
+                        @endif
                     </div>
                     <div class="d-flex align-items-center gap-3">
+                        @if(!@$withNoOrder)
                         <form action="" method="GET">
                             @if(isset($order_options))
                                 @foreach(request()->except(['order', 'page']) as $key => $value)
@@ -51,12 +56,16 @@
                                 </div>
                             @endif
                         </form>
-                        @yield('filter')
+                        @endif
+
+                        @if(!@$withNoFilter)
+                            @yield('filter')
+                        @endif
                         @yield('top-right')
                     </div>
                 </div>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body py-0">
                 @yield('table')
             </div>
             <div class="card-body">

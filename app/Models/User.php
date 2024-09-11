@@ -51,24 +51,20 @@ class User extends Authenticatable
     public function getRoleLabelAttribute()
     {
         switch ($this->role) {
-            case 'super':
-                return 'Super Admin';
             case 'admin':
-                return 'Admin Toko';
+                return 'Administrator';
             default:
-                return 'Gudang';
+                return 'User';
         }
     }
 
     public function getRoleDisplayAttribute()
     {
         switch ($this->role) {
-            case 'super':
-                return '<span class="badge bg-warning">' . $this->role_label . '</span>';
             case 'admin':
-                return '<span class="badge bg-primary">' . $this->role_label . '</span>';
+                return '<span class="badge bg-warning">' . $this->role_label . '</span>';
             default:
-                return '<span class="badge bg-dark">' . $this->role_label . '</span>';
+                return '<span class="badge bg-primary">' . $this->role_label . '</span>';
         }
     }
 

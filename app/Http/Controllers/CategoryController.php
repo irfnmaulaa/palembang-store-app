@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
         // final statements
         $categories = $categories
-            ->paginate(10)
+            ->paginate(get_per_page_default())
             ->appends($request->query());
 
         // define order options for front-end
@@ -91,6 +91,25 @@ class CategoryController extends Controller
         return redirect()->back()->with('message', 'Kategori berhasil ditambahkan');
     }
 
+    public function show(Request $request, ProductCategory $category)
+    {
+        $products = $category->products();
+
+        // searching settings
+        if ($request->has('keyword')) {
+            $products = $products
+                ->where('name', 'LIKE', '%' . $request->get('keyword') . '%')
+                ->orWhere('code', 'LIKE', '%' . $request->get('keyword') . '%');
+        }
+
+        // final statement
+        $products = $products
+            ->orderBy('name')
+            ->paginate(get_per_page_default());
+
+        return view('admin.categories.show', compact('category', 'products'));
+    }
+
     public function edit(ProductCategory $category)
     {
         $item = $category;
@@ -114,11 +133,19 @@ class CategoryController extends Controller
     public function destroy(ProductCategory $category)
     {
         // delete
-        $category->delete();
+        try {
+            $category->delete();
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Tidak dapat menghapus karna terdapat data dari tabel lain yang berelasi dengan data ini.'
+            ], 400);
+        }
 
         // return
         return response()->json([
             'status' => 'success',
+            'redirect_url' => route('admin.categories.index')
         ]);
     }
 
@@ -138,5 +165,50 @@ class CategoryController extends Controller
             default:
                 return "url export salah";
         }
+    }
+
+    public function add_product(Request $request, ProductCategory $category)
+    {
+        // validation
+        $validated = $request->validate([
+            'product_ids' => ['required', 'array'],
+        ]);
+
+        // define product ids
+        $product_ids = collect($validated['product_ids'])->map(function ($product) {
+            return json_decode($product)->id;
+        })->all();
+
+        // add products to category
+        Product::whereIn('id', $product_ids)->update([
+            'product_category_id' => $category->id,
+        ]);
+
+        // return
+        return redirect()->back()->with('message', 'Barang berhasil dimasukan');
+    }
+
+    public function remove_product(Request $request, ProductCategory $category)
+    {
+        // validation
+        $validated = $request->validate([
+            'product_ids' => ['required', 'array'],
+        ]);
+
+        // define uncategorized category
+        $uncategorized = ProductCategory::where('name', '-')->first();
+        if (!$uncategorized) {
+            $uncategorized = ProductCategory::create([
+                'name' => '-'
+            ]);
+        }
+
+        // remove product from category
+        $category->products()->whereIn('id', $validated['product_ids'])->update([
+            'product_category_id' => $uncategorized->id,
+        ]);
+
+        // return
+        return redirect()->back()->with('message', 'Barang berhasil dikeluarkan');
     }
 }

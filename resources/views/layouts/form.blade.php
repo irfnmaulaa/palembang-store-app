@@ -4,7 +4,7 @@
     <div class="d-flex flex-column gap-3">
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex flex-column gap-1">
-                <h2 class="mb-0">{{$title}}</h2>
+                <h2 class="mb-0 text-uppercase">{{$title}}</h2>
                 @yield('breadcrumbs')
             </div>
         </div>

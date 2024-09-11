@@ -8,6 +8,7 @@ use App\Models\Old\Transaction;
 use App\Models\Old\User;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -22,15 +23,15 @@ class DatabaseSeeder extends Seeder
     {
 
         $roles = [
-            'BOS' => 'super',
+            'BOS' => 'admin',
             'GDG' => 'staff',
             'ADM' => 'admin',
-            'SRM' => 'staff',
-            'EVA' => 'staff',
+            'SRM' => 'admin',
+            'EVA' => 'admin',
         ];
         foreach (User::all() as $user) {
             \App\Models\User::create([
-                'name' => $user->name,
+                'name' => $user->identifier,
                 'username' => $user->username,
                 'password' => $user->password,
                 'role' => $roles[$user->identifier],
@@ -62,7 +63,6 @@ class DatabaseSeeder extends Seeder
                 'product_category_id' => $item->type_id,
                 'name' => $item->name,
                 'unit' => $item->unit,
-                'description' => $item->description,
                 'code' => $item->code,
                 'variant' => $item->variant,
                 'created_at' => $item->created_at,
@@ -70,65 +70,14 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        foreach (Transaction::where('id', '>', 10433)->take(1000)->orderBy('id')->get() as $transaction) {
-            $items = json_decode(json_decode($transaction->items));
-            if (!empty($items->data) && is_array($items->data) && count($items->data) > 0) {
-                $type = $items->data[0]->method;
-
-                $new_transaction = \App\Models\Transaction::create([
-                    'id' => $transaction->id,
-                    'code' => $transaction->invoice,
-                    'date' => $transaction->created_at,
-                    'type' => $type,
-                    'created_by' => $transaction->user_id,
-                    'created_at' => $transaction->created_at,
-                    'updated_by' => 3,
-                    'updated_at' => $transaction->updated_at,
-                ]);
-
-                foreach ($items->data as $item) {
-                    $product = Product::find($item->item->id);
-                    if (!$product) {
-                        $product = $item->item;
-
-                        if (isset($product->type_id)) {
-                            $type = ProductCategory::find($product->type_id);
-                            if (!$type) {
-                                ProductCategory::create([
-                                    'id' => $product->type_id,
-                                    'name' => 'Unknown',
-                                ]);
-                            }
-                        }
-
-                        Product::create([
-                            'id' => $product->id,
-                            'product_category_id' => isset($product->type_id) ? $product->type_id : null,
-                            'name' => $product->name,
-                            'unit' => $product->unit,
-                            'description' => $product->description,
-                            'code' => $product->code,
-                            'variant' => $product->variant,
-                            'created_at' => $product->created_at,
-                            'updated_at' => $product->updated_at,
-                        ]);
-                    }
-
-                    $new_transaction->transaction_products()->create([
-                        'product_id' => $item->item->id,
-                        'quantity' => $item->quantity,
-                        'from_stock' => $item->item->stock,
-                        'to_stock' => $item->remaining,
-                        'is_verified' => $item->status,
-                        'note' => $item->description,
-                        'created_by' => $transaction->user_id,
-                        'verified_by' => 3,
-                        'updated_by' => 3,
-                    ]);
-                }
-            } else {
-                echo 'Transaction ID: ' . $transaction->id . "\n";
-            }
+        $settings = [
+            [
+                'key' => 'working_end',
+                'value' => '17:00:00',
+            ],
+        ];
+        foreach ($settings as $setting) {
+            Setting::create($setting);
         }
     }
 }

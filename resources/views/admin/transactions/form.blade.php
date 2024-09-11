@@ -1,5 +1,5 @@
 @extends('layouts.form', [
-    'title' => (@$item ? 'Edit' : 'Tambah') . ' ' . $action
+    'title' => $action
 ])
 
 @section('form')
@@ -19,12 +19,16 @@
                               </select>
                           </div>
 
+                          @if(request()->query('type') === 'in')
+                              <x-textfield label="Kode Barang" name="product_code" type="text"></x-textfield>
+                          @endif
+
                           <x-textfield label="Quantity" name="quantity" type="number"></x-textfield>
 
                           <x-textarea label="Keterangan" name="note"></x-textarea>
 
-                          <div class="mt-2 d-flex gap-3">
-                              <button type="submit" class="btn btn-outline-primary btn-lg w-100">Tambahkan Barang</button>
+                          <div class="form-group mt-2 d-flex gap-3">
+                              <button type="submit" class="btn btn-outline-primary btn-lg w-100">Input</button>
                           </div>
                       </form>
                   </div>
@@ -37,19 +41,19 @@
                             <div class="d-flex align-items-end justify-content-between">
                                 <h3 class="card-title mb-0">Daftar {{$action}}</h3>
                                 <div class="d-flex gap-3">
-                                    <x-textfield label="Tanggal" name="date" type="datetime-local" :item="$item"></x-textfield>
+                                    @if(auth()->user()->role === 'admin')
+                                        <x-textfield label="Tanggal" name="date" type="date" :item="$item"></x-textfield>
+                                    @endif
                                     <x-textfield label="No DO" name="code" type="text" :item="$item"></x-textfield>
                                 </div>
                             </div>
                             <table class="table-bordered table-hover table mb-0">
                                 <thead>
                                 <tr>
-                                    <th style="width: 50px;" class="text-center bg-body-tertiary">No</th>
-                                    <th class="bg-body-tertiary">Nama Barang / Variant</th>
-                                    <th class="bg-body-tertiary">Kode Barang</th>
                                     <th style="width: 150px;" class="text-center bg-body-tertiary">Quantity</th>
+                                    <th class="bg-body-tertiary">Nama Barang</th>
                                     <th class="bg-body-tertiary">Keterangan</th>
-                                    <th style="width: 150px;" class="bg-body-tertiary text-center">Stok Saat Ini</th>
+                                    <th style="width: 150px;" class="bg-body-tertiary text-center">Sisa</th>
                                     <th style="width: 80px;" class="text-center bg-body-tertiary">Aksi</th>
                                 </tr>
                                 </thead>
@@ -98,6 +102,24 @@
                     }
                 },
             } );
+
+            $('.select-product').select2('open')
+
+            $('.select-product').on('select2:close', function () {
+                const productCode = JSON.parse($('.select-product').val())?.code || ''
+                $('[name="product_code"]').val(productCode)
+
+                const nextInput = $(this).parents('.form-group').next('.form-group').find('input')
+                nextInput.focus()
+            })
+
+            $('input,textarea,select').on('keydown', (e) => {
+                if(e.key === 'Enter') {
+                    e.preventDefault()
+                    const nextInput = $(e.target).parents('.form-group').next('.form-group').find('input,textarea,select,[type="submit"]')
+                    nextInput.focus()
+                }
+            })
 
             let products = []
             if(localStorage.getItem('_products_{{request()->query('type')}}')) {
@@ -157,7 +179,6 @@
                     return
                 }
 
-                // console.log(JSON.parse(getValue(product, 'product'))?.id)
                 const prodIndex = products.findIndex(p => JSON.parse(getValue(p, 'product'))?.id == JSON.parse(getValue(product, 'product'))?.id)
                 if(prodIndex > -1) {
                     const swalWithBootstrapButtons = Swal.mixin({
@@ -181,7 +202,7 @@
                             renderTableProducts()
 
                             $(this)[0].reset()
-                            $( '.select-product' ).val(null).trigger('change')
+                            $( '.select-product' ).val(null).trigger('change').select2('open')
                         }
                     });
                 } else {
@@ -189,7 +210,7 @@
                     renderTableProducts()
 
                     $(this)[0].reset()
-                    $( '.select-product' ).val(null).trigger('change')
+                    $( '.select-product' ).val(null).trigger('change').select2('open')
                 }
 
             })
@@ -203,20 +224,14 @@
 
                 if(products.length > 0) {
                     products.forEach((product, i) => {
-                        const className = '{{request()->query('type') == 'in' ? 'text-primary' : 'text-danger'}}';
+                        const className = '{{get_table_row_classname(request()->query('type'))}}';
                         const trInit = `
                         <tr>
                             <td class="${className} text-center">
-                                ${ i+1 }
+                                ${ getValue(product, 'quantity') }
                             </td>
                             <td class="${className}">
                                 ${ JSON.parse(getValue(product, 'product'))?.name || '-' }
-                            </td>
-                            <td class="${className}">
-                                ${ JSON.parse(getValue(product, 'product'))?.code || '-' }
-                            </td>
-                            <td class="${className} text-center">
-                                ${ getValue(product, 'quantity') }
                             </td>
                             <td class="${className}">
                                 ${ getValue(product, 'note') }
@@ -364,7 +379,7 @@
                     reverseButtons: true
                 }).then((result) => {
                     const code = codeEl.val()
-                    const date = convertDatetimeLocal(dateEl.val())
+                    const date = dateEl.val() || ''
                     if ( result.isConfirmed ) {
                         $.ajax({
                             url: '{{route('admin.transactions.store')}}',
@@ -377,6 +392,7 @@
                                 products: products.map(p => {
                                     return {
                                         product_id: JSON.parse(getValue(p, 'product')).id,
+                                        product_code: getValue(p, 'product_code'),
                                         quantity: getValue(p, 'quantity'),
                                         note: getValue(p, 'note'),
                                     }
@@ -404,26 +420,6 @@
                     }
                 });
             })
-
-            function convertDatetimeLocal(datetimeLocalString) {
-                // Create a Date object from the datetime-local string
-                const date = new Date(datetimeLocalString);
-
-                // Format the date to Y-m-d H:i:s
-                const formatted = date.getFullYear() + '-' +
-                    padZero(date.getMonth() + 1) + '-' +
-                    padZero(date.getDate()) + ' ' +
-                    padZero(date.getHours()) + ':' +
-                    padZero(date.getMinutes()) + ':' +
-                    padZero(date.getSeconds());
-
-                return formatted;
-            }
-
-            // Helper function to pad single digits with a leading zero
-            function padZero(num) {
-                return num.toString().padStart(2, '0');
-            }
         })
     </script>
 @endsection

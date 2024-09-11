@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
+            $table->string('pin')->nullable();
             $table->enum('role', ['super', 'admin', 'staff'])->default('staff');
+            $table->tinyInteger('is_active')->default(1);
             $table->rememberToken();
             $table->timestamps();
         });

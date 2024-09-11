@@ -11,10 +11,19 @@
             @if(@$item)
                 @method('PUT')
             @endif
+
+            <x-textfield label="Nama Barang" name="name" type="text" :item="$item" autofocus></x-textfield>
+
+            <x-textfield label="Varian" name="variant" type="text" :item="$item"></x-textfield>
+
+            <x-textfield label="Kode" name="code" type="text" :item="$item"></x-textfield>
+
+            <x-textfield label="Satuan" name="unit" type="text" :item="$item"></x-textfield>
+
             <div class="form-group">
                 <label for="product_category_id">Pilih Kategori</label>
                 <select name="product_category_id" id="product_category_id" class="form-control select-category">
-                    @if(@$item)
+                    @if(@$item && $item->category)
                         <option value="{{$item->product_category_id}}" selected="selected">
                             {{$item->category->name}}
                         </option>
@@ -25,17 +34,14 @@
                 @endif
             </div>
 
-            <x-textfield label="Nama Barang" name="name" type="text" :item="$item"></x-textfield>
-
-            <x-textfield label="Varian" name="variant" type="text" :item="$item"></x-textfield>
-
-            <x-textfield label="Kode" name="code" type="text" :item="$item"></x-textfield>
-
-            <x-textfield label="Satuan" name="unit" type="text" :item="$item"></x-textfield>
-
             <div class="mt-2 d-flex gap-3">
                 <button type="submit" class="btn btn-primary btn-lg">Simpan</button>
-                <a href="{{route('admin.products.index')}}" class="btn btn-outline-primary btn-lg">Batalkan</a>
+
+                @if(@$item)
+                    <a href="{{route('admin.products.show', [$item])}}" class="btn btn-outline-primary btn-lg">Kembali</a>
+                @else
+                    <a href="{{route('admin.products.index')}}" class="btn btn-outline-primary btn-lg">Kembali</a>
+                @endif
             </div>
         </form>
     </div>
@@ -74,5 +80,73 @@
                 }
             } );
         })
+
+        $('input,textarea,select').on('keydown', (e) => {
+            if(e.key === 'Enter') {
+                e.preventDefault()
+                const nextInput = $(e.target).parents('.form-group').next('.form-group').find('input,textarea,select')
+                if(nextInput.hasClass('select-category')) {
+                    $('.select-category').select2('open')
+                    $('.select-category').on('select2:close', function () {
+                        console.log($('[type="submit"]'))
+                        $('[type="submit"]').focus()
+                    })
+                } else {
+                    nextInput.focus()
+                }
+            }
+        })
     </script>
+
+    @if(@$item)
+        <script>
+            $('form').submit(function (e) {
+                if($(this).find('[name="pin"]').length <= 0) {
+                    e.preventDefault()
+
+                    const swalWithBootstrapButtons = Swal.mixin({
+                        customClass: {
+                            confirmButton: `btn btn-primary btn-lg me-3`,
+                            cancelButton: `btn btn-outline-primary btn-lg`
+                        },
+                        buttonsStyling: false
+                    });
+                    swalWithBootstrapButtons.fire({
+                        title: "Konfirmasi Pembaruan",
+                        text: 'Masukan PIN untuk dapat memperbarui detail barang',
+                        input: "password",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: 'Perbarui Barang',
+                        cancelButtonText: "Batalkan",
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (pin) => new Promise((resolve, reject) => {
+                            $.ajax({
+                                url: '{{route('admin.users.check_pin')}}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{csrf_token()}}',
+                                    pin,
+                                },
+                                success: () => {
+                                    const pinInput = $(`<input type="hidden" name="pin" value="${ pin }"/>`)
+                                    $('form').prepend(pinInput)
+                                    resolve()
+                                },
+                                error: ({responseJSON}) => {
+                                    Swal.showValidationMessage(responseJSON.message || `Pin tidak valid`);
+                                    resolve()
+                                },
+                            })
+                        }),
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if(result.isConfirmed) {
+                            $('form').submit()
+                        }
+                    });
+                }
+            })
+        </script>
+    @endif
 @endsection

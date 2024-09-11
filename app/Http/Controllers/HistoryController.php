@@ -45,7 +45,7 @@ class HistoryController extends Controller
             $transactions = $transactions
                 ->where(function ($query) use ($request) {
                     $query->where('products.name', 'LIKE', '%' . $request->get('keyword') . '%')
-                        ->orWhere('products.code', 'LIKE', '%' . $request->get('keyword') . '%')
+                        ->orWhere('transaction_products.note', 'LIKE', '%' . $request->get('keyword') . '%')
                         ->orWhere('transactions.code', 'LIKE', '%' . $request->get('keyword') . '%');
                 });
 
@@ -71,7 +71,7 @@ class HistoryController extends Controller
 
         // final statements
         $transactions = $transactions
-            ->paginate(10)
+            ->paginate(get_per_page_default())
             ->appends($request->query());
 
         // define order options for front-end
@@ -82,7 +82,7 @@ class HistoryController extends Controller
             ['label' => 'Nomor DO Z-A', 'order' => 'code-desc'],
             ['label' => 'Tipe A-Z', 'order' => 'type-asc'],
             ['label' => 'Tipe Z-A', 'order' => 'type-desc'],
-        ];
+        ]; 
 
         // return view
         return view('admin.histories.index', compact('transactions', 'order_options', 'start', 'end'));

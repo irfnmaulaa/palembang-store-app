@@ -7,6 +7,7 @@ use App\Models\ProductCategory;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -38,7 +39,7 @@ class UserController extends Controller
 
         // final statements
         $users = $users
-            ->paginate(10)
+            ->paginate(get_per_page_default())
             ->appends($request->query());
 
         // define order options for front-end
@@ -61,16 +62,29 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // validation
-        $validated = $request->validate([
-            'name' => ['required'],
+        // define rules
+        $rules = [
+            'name' => ['required', 'min:3', 'max:4'],
             'username' => ['required', 'unique:users,username'],
-            'password' => ['required', 'min:6'],
-            'role' => ['required', 'in:super,admin,staff'],
-        ]);
+            'password' => ['required', 'min:4'],
+            'role' => ['required', 'in:admin,staff'],
+        ];
+
+        // set pin required if admin
+        if ($request->role === 'admin') {
+            $rules['pin'] = ['required', 'digits:6'];
+        }
+
+        // validation
+        $validated = $request->validate($rules);
 
         // hashing password
         $validated['password'] = bcrypt($validated['password']);
+
+        // hashing pin
+        if (!empty($validated['pin'])) {
+            $validated['pin'] = bcrypt($validated['pin']);
+        }
 
         // set default active
         $validated['is_active'] = 1;
@@ -104,21 +118,43 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Pengguna berhasil diperbarui');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         // forbidden
-        if ($user->role === 'super' || auth()->user()->role != 'super') {
+        if (auth()->user()->role != 'admin') {
             return response()->json([
-                'message' => 'forbidden'
+                'status' => 'forbidden',
+                'message' => 'Tidak dapat menghapus kecuali Administrator',
             ], 403);
         }
 
+        // validation
+        $validated = $request->validate([
+            'pin' => ['nullable'],
+        ]);
+
+        // check pin
+        if (empty($validated['pin']) || !Hash::check($validated['pin'], $request->user()->pin)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Pin tidak valid',
+            ], 400);
+        }
+
         // delete
-        $user->delete();
+        try {
+            $user->delete();
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Tidak dapat menghapus karna terdapat data dari tabel lain yang berelasi dengan data ini.'
+            ], 400);
+        }
 
         // return
         return response()->json([
             'status' => 'success',
+            'redirect_url' => route('admin.users.index')
         ]);
     }
 
@@ -136,13 +172,36 @@ class UserController extends Controller
             ]);
 
             // return
-            return redirect()->back()->with('message', 'Password berhasil direset');
+            return redirect()->route('admin.users.edit', [$user])->with('message', 'Password berhasil direset');
         }
 
         $item = $user;
 
         // return view
         return view('admin.users.reset_password', compact('item'));
+    }
+
+    public function reset_pin(Request $request, User $user)
+    {
+        if ($request->isMethod('POST')) {
+            // validation
+            $validated = $request->validate([
+                'pin' => ['required', 'confirmed'],
+            ]);
+
+            // update password
+            $user->update([
+                'pin' => bcrypt($validated['pin'])
+            ]);
+
+            // return
+            return redirect()->route('admin.users.edit', [$user])->with('message', 'Pin berhasil direset');
+        }
+
+        $item = $user;
+
+        // return view
+        return view('admin.users.reset_pin', compact('item'));
     }
 
     public function activate(Request $request, User $user)
@@ -172,5 +231,26 @@ class UserController extends Controller
             default:
                 return "url export salah";
         }
+    }
+
+    public function check_pin(Request $request)
+    {
+        // validation
+        $validated = $request->validate([
+            'pin' => ['required'],
+        ]);
+
+        // check pin
+        if (Hash::check($validated['pin'], $request->user()->pin)) {
+            return response()->json([
+                'status' => 'success',
+            ]);
+        }
+
+        // pin is invalid
+        return response()->json([
+            'status' => 'failed',
+            'message' => 'Pin tidak valid'
+        ], 400);
     }
 }

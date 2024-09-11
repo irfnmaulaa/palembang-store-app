@@ -1,7 +1,8 @@
 @extends('layouts.index', [
     'title' => 'Riwayat Transaksi',
     'data' => $transactions,
-    'order_options' => $order_options
+    'order_options' => $order_options,
+    'withNoOrder' => true,
 ])
 
 @section('table')

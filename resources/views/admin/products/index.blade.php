@@ -1,53 +1,53 @@
 @extends('layouts.index', [
     'title' => 'Data Barang',
     'data' => $products,
-    'order_options' => $order_options
+    'order_options' => $order_options,
+    'withNoOrder' => true,
+    'withNoFilter' => true
 ])
 
 @section('table')
     <x-alert></x-alert>
-    <table class="table table-striped mb-0 table-sm table-hover">
+    <table class="table mb-0 table-sm table-hover">
         <thead>
         <tr>
-            <th style="width: 80px" class="text-center">No</th>
-            <th>Kategori</th>
-            <th>Nama Barang / Variant</th>
+            <th style="width: 200px">Kategori</th>
+            <th>Nama Barang</th>
             <th style="width: 150px">Kode Barang</th>
-            <th class="text-center" style="width: 150px">Stok Saat Ini</th>
-            <th style="width: 250px" class="text-center">Aksi</th>
+            <th class="text-center" style="width: 180px">Stok Saat Ini</th>
         </tr>
         </thead>
         <tbody>
         @foreach($products as $i => $product)
             <tr>
-                <td class="text-center">{{number_format($products->firstItem() + $i, '0', ',', '.')}}</td>
                 <td>
                     @if($product->category)
-                        {{$product->category->name}}
+                        <a href="{{route('admin.categories.show', [$product->category])}}">
+                            {{$product->category->name}}
+                        </a>
                     @else
                         -
                     @endif
                 </td>
-                <td>{{$product->name}} / {{$product->variant}}</td>
-                <td>{{$product->code}}</td>
-                <td class="text-center">{{$product->latest_stock}}</td>
+                <td>
+                    <a href="{{route('admin.products.show', [$product])}}">
+                        {{$product->name}} {{$product->variant}}
+                    </a>
+                </td>
+                <td>
+                    {{$product->code}}
+                </td>
                 <td class="text-center">
-                    <div class="d-flex justify-content-center gap-3">
-                        @if(auth()->user()->role === 'admin')
-                        <a href="{{route('admin.products.destroy', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Hapus Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2 btn-delete">
-                            <i class="fas fa-trash"></i>
-                        </a>
-                        <a href="{{route('admin.products.edit', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Edit Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        @endif
-                        <a href="{{route('admin.products.show', [$product])}}" data-mdb-tooltip-init data-mdb-html="true" title='Lihat Riwayat <br/> Transaksi Barang <br/> "{{$product->name}} - {{$product->variant}}"' class="btn p-2 shadow-none border btn-lg d-flex align-items-center gap-2">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </div>
+                    {{$product->latest_stock ? $product->latest_stock : '0'}}
+                    {{$product->unit}}
                 </td>
             </tr>
         @endforeach
+        @if(count($products) <= 0)
+            <tr>
+                <td colspan="4" class="text-center">Tidak ada data</td>
+            </tr>
+        @endif
         </tbody>
     </table>
 @endsection

@@ -8,7 +8,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex flex-column gap-1">
                     <div class="d-flex">
-                        <h2 class="mb-0">Data Transaksi <span class="text-warning">Pending</span></h2>
+                        <h2 class="mb-0">TRANSAKSI <span class="text-warning">PENDING</span></h2>
                     </div>
                     <div class="d-flex align-items-center gap-2 fs-6 text-muted">
                         <a href="{{route('admin.dashboard')}}">Beranda</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
@@ -17,80 +17,29 @@
                 </div>
                 <div class="d-flex gap-3" style="white-space: nowrap;">
                     @if(auth()->user()->role === 'staff' || auth()->user()->role == 'admin')
-                        <div class="d-flex gap-3 pe-3" style="border-right: 1px solid #ddd">
-                            <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-primary btn-lg">
-                                Tambah Barang Masuk
+                        <div class="d-flex gap-3">
+                            <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-danger btn-lg">
+                                Barang Masuk
                             </a>
-                            <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-danger btn-lg">
-                                Tambah Barang Keluar
+                            <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-dark btn-lg">
+                                Barang Keluar
                             </a>
                         </div>
                     @endif
-                    <form action="">
-                        <input type="hidden" name="page" value="1">
-                        <input type="hidden" name="page2" value="1">
-                        @foreach(request()->except(['keyword', 'keyword2', 'page', 'page2', 'date_range']) as $key => $value)
-                            <input type="hidden" name="{{$key}}" value="{{$value}}">
-                        @endforeach
-                        <div class="input-group input-group-lg">
-                            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 260px">
-                            <button class="btn btn-primary">Filter</button>
-                        </div>
-                    </form>
                 </div>
             </div>
 
             <x-alert></x-alert>
 
             <div class="card border shadow-none overflow-hidden">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <form action="" method="GET">
-                            <input type="hidden" name="page" value="1">
-                            @foreach(request()->except(['keyword', 'page']) as $key => $value)
-                                <input type="hidden" name="{{$key}}" value="{{$value}}">
-                            @endforeach
-                            <div class="input-group input-group-lg" style="max-width: 300px;">
-                                <input type="text" id="keyword" class="form-control form-control-lg" placeholder="Cari.." name="keyword" value="{{request('keyword')}}"/>
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <div class="d-flex align-items-center gap-3">
-                            <form action="" method="GET">
-                                @if(isset($order_options))
-                                    @foreach(request()->except(['order', 'page']) as $key => $value)
-                                        <input type="hidden" name="{{$key}}" value="{{$value}}">
-                                    @endforeach
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span><small class="text-muted">Urutkan</small></span>
-                                        <div class="input-group input-group-lg">
-                                            <select name="order" id="order" class="form-control form-control-lg">
-                                                @foreach($order_options as $order_option)
-                                                    <option value="{{$order_option['order']}}" {{request('order') === $order_option['order'] ? 'selected' : ''}}>
-                                                        {{ $order_option['label'] }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <button class="btn btn-primary" type="submit">
-                                                <i class="fas fa-sort"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endif
-                            </form>
-                            @yield('filter')
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body py-0">
+                <div class="card-body py-4">
                     <form action="{{ route('admin.transactions.verify') }}" id="form-verify" method="POST">
                         @csrf
                         @method('PUT')
                         <table class="table table-responsive table-sm table-bordered table-hover mb-0">
                             <thead>
                             <tr>
+                                @if(auth()->user()->role === 'admin')
                                 <th class="bg-body-tertiary" rowspan="2" style="width: 50px;">
                                     <div class="d-flex justify-content-center">
                                         <div class="form-check">
@@ -98,19 +47,18 @@
                                         </div>
                                     </div>
                                 </th>
+                                @endif
                                 <th class="bg-body-tertiary" rowspan="2">Tanggal</th>
                                 <th class="bg-body-tertiary" rowspan="2">No DO</th>
-                                <th rowspan="2" class="bg-body-tertiary">Dibuat oleh</th>
                                 <th colspan="7" class="bg-body-tertiary text-center">Barang</th>
                             </tr>
                             <tr>
-                                <th class="bg-body-tertiary">Nama Barang / Variant</th>
-                                <th class="bg-body-tertiary">Kode Barang</th>
-                                <th class="bg-body-tertiary text-center" style="width: 120px">Stok Awal</th>
                                 <th class="bg-body-tertiary text-center" style="width: 120px">Quantity</th>
-                                <th class="bg-body-tertiary text-center" style="width: 120px">Stock Akhir</th>
-                                <th class="bg-body-tertiary">Unit</th>
+                                <th class="bg-body-tertiary">Nama Barang</th>
+                                <th class="bg-body-tertiary">Kode Barang</th>
                                 <th class="bg-body-tertiary">Keterangan</th>
+                                <th class="bg-body-tertiary text-center" style="width: 120px">Sisa</th>
+                                <th class="bg-body-tertiary text-center">ID</th>
                             </tr>
                             </thead>
                             <tbody class="table-body">
@@ -118,42 +66,45 @@
                                 @php
                                     $count = $tp->transaction_products()->where('is_verified', 0)->count() + 1;
                                     $products = $tp->products()->wherePivot('is_verified', 0)->get();
-                                    $className = $tp->type == 'in' ? 'text-primary' : 'text-danger';
+                                    $className = get_table_row_classname($tp->type);
                                 @endphp
                                 <tr>
+                                    @if(auth()->user()->role === 'admin')
                                     <td rowspan="{{$count}}" class="text-center {{$className}}">
-                                        <label for="tp-{{$tp->id}}" class="form-check d-flex justify-content-center">
-                                            <input class="form-check-input transaction-checkbox" type="checkbox" value="" id="tp-{{$tp->id}}" />
+
+                                    </td>
+                                    @endif
+                                    <td rowspan="{{$count}}" class="{{$className}}">
+                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
+                                            {{\Carbon\Carbon::parse($tp->date)->format('d/m/Y')}}
                                         </label>
                                     </td>
                                     <td rowspan="{{$count}}" class="{{$className}}">
-                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
-                                            {{\Carbon\Carbon::parse($tp->date)->format('d/m/Y H.i')}}
-                                        </label>
-                                    </td>
-                                    <td rowspan="{{$count}}" class="{{$className}}">
-                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
-                                            {{$tp->code}}
-                                        </label>
-                                    </td>
-                                    <td rowspan="{{$count}}" class="{{$className}}">
-                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center">
-                                            @if($tp->creator)
-                                                {{$tp->creator->name}}
-                                            @else
-                                                -
+                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center d-flex gap-2 align-items-center">
+                                            @if(auth()->user()->role === 'admin')
+                                            <div class="form-check">
+                                                <input class="form-check-input transaction-checkbox" type="checkbox" value="" id="tp-{{$tp->id}}" />
+                                            </div>
                                             @endif
+                                            {{$tp->code}}
                                         </label>
                                     </td>
                                 </tr>
                                 @foreach($products as $product)
                                     <tr>
+                                        <td class="{{$className}} text-center">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
+                                                {{$product->pivot->quantity}}
+                                            </label>
+                                        </td>
                                         <td class="{{$className}}">
                                             <label for="product-{{$product->id}}" class="d-flex gap-2 align-items-center">
+                                                @if(auth()->user()->role === 'admin')
                                                 <div class="form-check">
                                                     <input data-parent="tp-{{$tp->id}}" class="form-check-input product-checkbox" type="checkbox" name="transaction_product_ids[]" value="{{$product->pivot->id}}" id="product-{{$product->id}}" />
                                                 </div>
-                                                {{$product->name}} / {{$product->variant}}
+                                                @endif
+                                                {{$product->name}} {{$product->variant}}
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
@@ -163,27 +114,19 @@
                                         </td>
                                         <td class="{{$className}} text-center">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                                                {{$product->pivot->from_stock}}
-                                            </label>
-                                        </td>
-                                        <td class="{{$className}} text-center">
-                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                                                {{$product->pivot->quantity}}
-                                            </label>
-                                        </td>
-                                        <td class="{{$className}} text-center">
-                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                                                {{$product->pivot->to_stock}}
-                                            </label>
-                                        </td>
-                                        <td class="{{$className}}">
-                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
-                                                {{$product->unit}}
+                                                {{$product->pivot->to_stock}} {{$product->unit}}
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
                                                 {{$product->pivot->note}}
+                                            </label>
+                                        </td>
+                                        <td class="{{$className}}">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
+                                                @if($tp->creator)
+                                                    {{$tp->creator->name}}
+                                                @endif
                                             </label>
                                         </td>
                                     </tr>
@@ -198,14 +141,12 @@
                         </table>
                     </form>
                 </div>
-                <div class="card-body">
+                @if($transactions_pending->hasPages() || auth()->user()->role == 'admin')
+                <div class="card-body pt-0">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="d-flex gap-3">
                             @if(auth()->user()->role === 'admin')
                                 <button type="submit" form="form-verify" class="btn btn-success btn-lg btn-verify disabled">Verifikasi</button>
-                            @endif
-
-                            @if(in_array(auth()->user()->role, ['admin', 'staff']))
                                 <button type="submit" form="form-verify" name="delete" value="1" class="btn btn-outline-danger btn-reject btn-lg disabled">Hapus</button>
                             @endif
                         </div>
@@ -214,6 +155,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
 
             <div class="table-summary">
@@ -227,53 +169,12 @@
         <div id="verified-transactions-wrap" class="d-flex flex-column gap-3">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex flex-column gap-1">
-                    <h2 class="mb-0">Data Transaksi <span class="text-success">Terverifikasi</span></h2>
+                    <h2 class="mb-0">TRANSAKSI <span class="text-success">TERVERIFIKASI</span></h2>
                 </div>
             </div>
 
             <div class="card border shadow-none overflow-hidden">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <form action="" method="GET">
-                            <input type="hidden" name="page" value="1">
-                            @foreach(request()->except(['keyword2', 'page']) as $key => $value)
-                                <input type="hidden" name="{{$key}}" value="{{$value}}">
-                            @endforeach
-                            <div class="input-group input-group-lg" style="max-width: 300px;">
-                                <input type="text" id="keyword2" class="form-control form-control-lg" placeholder="Cari.." name="keyword2" value="{{request('keyword2')}}"/>
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <div class="d-flex align-items-center gap-3">
-                            <form action="" method="GET">
-                                @if(isset($order_options))
-                                    @foreach(request()->except(['order2', 'page2']) as $key => $value)
-                                        <input type="hidden" name="{{$key}}" value="{{$value}}">
-                                    @endforeach
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span><small class="text-muted">Urutkan</small></span>
-                                        <div class="input-group input-group-lg">
-                                            <select name="order2" id="order2" class="form-control form-control-lg">
-                                                @foreach($order_options as $order_option)
-                                                    <option value="{{$order_option['order']}}" {{request('order2') === $order_option['order'] ? 'selected' : ''}}>
-                                                        {{ $order_option['label'] }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <button class="btn btn-primary" type="submit">
-                                                <i class="fas fa-sort"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endif
-                            </form>
-                            @yield('filter')
-                        </div>
-                    </div>
-                </div>
-                <div class="table-body card-body py-0">
+                <div class="table-body card-body py-0 pt-4">
                 <x-verified-transactions-table :transactions="$transactions_verified"></x-verified-transactions-table>
                 </div>
                 <div class="card-body">
@@ -404,19 +305,40 @@
                 if(isForDelete) {
                     const swalWithBootstrapButtons = Swal.mixin({
                         customClass: {
-                            confirmButton: `btn btn-danger btn-lg ms-2`,
+                            confirmButton: `btn btn-danger btn-lg me-3`,
                             cancelButton: `btn btn-outline-danger btn-lg`
                         },
                         buttonsStyling: false
                     });
                     swalWithBootstrapButtons.fire({
-                        title: "Konfirmasi",
-                        text: 'Apakah kamu yakin ingin menghapus data yang dipilih?',
+                        title: "Konfirmasi hapus",
+                        input: 'password',
+                        text: 'Masukan PIN untuk dapat menghapus transaksi',
                         icon: "warning",
                         showCancelButton: true,
-                        confirmButtonText: 'Ya, hapus',
+                        confirmButtonText: 'Hapus Transaksi',
                         cancelButtonText: "Batalkan",
-                        reverseButtons: true
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (pin) => new Promise((resolve, reject) => {
+                            $.ajax({
+                                url: '{{route('admin.users.check_pin')}}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{csrf_token()}}',
+                                    pin,
+                                },
+                                success: () => {
+                                    const pinInput = $(`<input type="hidden" name="pin" value="${ pin }"/>`)
+                                    $('#form-verify').prepend(pinInput)
+                                    resolve()
+                                },
+                                error: ({responseJSON}) => {
+                                    Swal.showValidationMessage(responseJSON.message || `Pin tidak valid`);
+                                    resolve()
+                                },
+                            })
+                        }),
+                        allowOutsideClick: () => !Swal.isLoading()
                     }).then((result) => {
                         if(result.isConfirmed) {
                             const deleteForm = $(`<input type="hidden" name="delete" value="1"/>`)
@@ -426,19 +348,40 @@
                 } else {
                     const swalWithBootstrapButtons = Swal.mixin({
                         customClass: {
-                            confirmButton: `btn btn-success btn-lg ms-2`,
+                            confirmButton: `btn btn-success btn-lg me-3`,
                             cancelButton: `btn btn-outline-success btn-lg`
                         },
                         buttonsStyling: false
                     });
                     swalWithBootstrapButtons.fire({
-                        title: "Konfirmasi",
-                        text: 'Apakah kamu ingin memverifikasi data yang dipilih?',
+                        title: "Konfirmasi Verifikasi",
+                        text: 'Masukan PIN untuk dapat memverifikasi transaksi',
+                        input: "password",
                         icon: "warning",
                         showCancelButton: true,
-                        confirmButtonText: 'Ya, verifikasi',
+                        confirmButtonText: 'Verifikasi Transaksi',
                         cancelButtonText: "Batalkan",
-                        reverseButtons: true
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (pin) => new Promise((resolve, reject) => {
+                            $.ajax({
+                                url: '{{route('admin.users.check_pin')}}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{csrf_token()}}',
+                                    pin,
+                                },
+                                success: () => {
+                                    const pinInput = $(`<input type="hidden" name="pin" value="${ pin }"/>`)
+                                    $('#form-verify').prepend(pinInput)
+                                    resolve()
+                                },
+                                error: ({responseJSON}) => {
+                                    Swal.showValidationMessage(responseJSON.message || `Pin tidak valid`);
+                                    resolve()
+                                },
+                            })
+                        }),
+                        allowOutsideClick: () => !Swal.isLoading()
                     }).then((result) => {
                         if(result.isConfirmed) {
                             $('#form-verify').submit()

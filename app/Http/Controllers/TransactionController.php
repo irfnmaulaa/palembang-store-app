@@ -7,14 +7,10 @@ use App\Models\Transaction;
 use App\Models\TransactionProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class TransactionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('cutoff')->only(['verify', 'create']);
-    }
-
     public function index(Request $request)
     {
         $start = date('Y-m-d') . ' 00:00:00';
@@ -33,7 +29,7 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 0)
-            ->whereBetween('transactions.date', [$start, $end]);
+            ->whereBetween('transactions.created_at', [$start, $end]);
 
         // searching settings
         if ($request->has('keyword')) {
@@ -86,7 +82,7 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.date', [$start, $end]);
+            ->whereBetween('transactions.created_at', [$start, $end]);
             // ->orderByDesc('transactions.date');
 
         // searching settings
@@ -120,7 +116,7 @@ class TransactionController extends Controller
 
         // final statements
         $transactions_verified = $transactions_verified
-            ->paginate(5, ['*'], 'page2')
+            ->paginate(get_per_page_default(), ['*'], 'page2')
             ->appends($request->query());
 
         if ($request->ajax()) {
@@ -146,7 +142,7 @@ class TransactionController extends Controller
     public function create()
     {
         $item = [
-            'date' => date('Y-m-d H:i:s'),
+            'date' => date('Y-m-d'),
             'code' => ''
         ];
         $action = request('type') === 'in' ? 'Barang Masuk' : 'Barang Keluar';
@@ -157,17 +153,22 @@ class TransactionController extends Controller
     {
         // validation
         $validated = $request->validate([
-            'code' => ['required', 'unique:transactions,code'],
-            'date' => ['required', 'date_format:Y-m-d H:i:s'],
+            'code' => ['required'],
+            'date' => ['nullable', 'date_format:Y-m-d'],
             'products' => ['required', 'array'],
             'products.*' => ['required'],
             'products.*.product_id' => ['required', 'exists:products,id'],
             'products.*.quantity' => ['required', 'numeric', 'min:1'],
             'products.*.note' => ['required'],
             'type' => ['required', 'in:in,out'],
-        ], [
-            'code.unique' => 'Nomor DO sudah ada sebelumnya.'
         ]);
+
+        // default now for date
+        if (!$validated['date']) {
+            $validated['date'] = date('Y-m-d H:i:s');
+        } else {
+            $validated['date'] .= ' ' . date('H:i:s');
+        }
 
         // create transaction
         $transaction = $request->user()->transactions_created()->create([
@@ -179,6 +180,14 @@ class TransactionController extends Controller
         // create transaction products
         foreach ($validated['products'] as $p) {
             $product = Product::find($p['product_id']);
+
+            // update product code
+            if (!empty($p['product_code']) && $validated['type'] === 'in' && $product->code != $p['product_code']) {
+                $product->update([
+                    'code' => $p['product_code'],
+                ]);
+            }
+
             $last_product_transaction = $product->transaction_products()->where('is_verified', 1)->orderByDesc('id')->first();
             $last_product_stock = $last_product_transaction ? $last_product_transaction->to_stock : 0;
 
@@ -212,7 +221,13 @@ class TransactionController extends Controller
         $validated = $request->validate([
             'transaction_product_ids' => ['required', 'array'],
             'transaction_product_ids.*' => ['required', 'exists:transaction_products,id'],
+            'pin' => ['nullable'],
         ]);
+
+        // check pin
+        if (empty($validated['pin']) || !Hash::check($validated['pin'], $request->user()->pin)) {
+            return redirect()->back()->with('messageError', 'Pin tidak valid');
+        }
 
         $is_deleted = $request->has('delete');
         foreach ($validated['transaction_product_ids'] as $transaction_product_id) {

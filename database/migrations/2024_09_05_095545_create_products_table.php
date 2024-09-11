@@ -20,9 +20,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('variant');
             $table->string('unit')->nullable();
-            $table->string('description')->nullable();
-            $table->bigInteger('latest_stock')->nullable();
-            $table->timestamp('latest_stock_updated_at')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users');
             $table->unsignedBigInteger('updated_by')->nullable();

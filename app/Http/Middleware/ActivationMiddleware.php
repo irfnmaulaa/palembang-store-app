@@ -16,7 +16,7 @@ class ActivationMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->user()->is_active && in_array(auth()->user()->role, ['admin', 'staff'])) {
+        if (!auth()->user()->is_active && in_array(auth()->user()->role, ['staff'])) {
             abort(405);
         }
         return $next($request);

@@ -13,6 +13,7 @@ use App\Models\TransactionProduct;
 use App\Rules\ProductCategoryIdRule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
@@ -31,13 +32,12 @@ class ProductController extends Controller
                         ->limit(1);
                 }
             ])
-            ->join('product_categories', 'products.product_category_id', '=', 'product_categories.id');
+            ->leftJoin('product_categories', 'products.product_category_id', '=', 'product_categories.id');
 
         // searching settings
         if ($request->has('keyword')) {
             $products = $products
                 ->where('products.name', 'LIKE', '%' . $request->get('keyword') . '%')
-                ->orWhere('products.code', 'LIKE', '%' . $request->get('keyword') . '%')
                 ->orWhere('product_categories.name', 'LIKE', '%' . $request->get('keyword') . '%');
         }
 
@@ -63,7 +63,7 @@ class ProductController extends Controller
         // final statements
         $products = $products
             ->with(['category'])
-            ->paginate(10)
+            ->paginate( get_per_page_default() )
             ->appends($request->query());
 
         // define order options for front-end
@@ -89,7 +89,7 @@ class ProductController extends Controller
                             'code' => $product->code,
                             'stock' => $product->stock,
                         ]),
-                        'text' => $product->name . ' / ' . $product->variant . ' / ' . $product->code,
+                        'text' => $product->name . ' ' . $product->variant . ($product->code ? (' / ' . $product->code) : ''),
                     ];
                 })->toArray(),
                 'pagination' => [
@@ -131,7 +131,7 @@ class ProductController extends Controller
         }
 
         // order-by settings
-        $order = ['transactions.date', 'desc'];
+        $order = ['transactions.date', 'asc'];
         if ($request->has('order')) {
             $order_query = explode('-', $request->get('order'));
             if (count($order_query) >= 2) $order = $order_query;
@@ -150,13 +150,13 @@ class ProductController extends Controller
 
         // final statements
         $transaction_products = $transaction_products
-            ->paginate(10)
+            ->paginate(get_per_page_default())
             ->appends($request->query());
 
         // define order options for front-end
         $order_options = [
-            ['label' => 'Terkahir dibuat', 'order' => 'created_at-desc'],
-            ['label' => 'Pertama dibuat', 'order' => 'created_at-asc'],
+            ['label' => 'Pertama dibuat', 'order' => 'created_at-desc'],
+            ['label' => 'Terkahir dibuat', 'order' => 'created_at-asc'],
             ['label' => 'Nomor DO A-Z', 'order' => 'code-asc'],
             ['label' => 'Nomor DO Z-A', 'order' => 'code-desc'],
             ['label' => 'Tipe A-Z', 'order' => 'type-asc'],
@@ -180,8 +180,8 @@ class ProductController extends Controller
             'name' => ['required'],
             'product_category_id' => ['required', new ProductCategoryIdRule()],
             'variant' => ['required'],
-            'code' => ['nullable', 'unique:products,code'],
-            'unit' => ['nullable'],
+            'code' => ['required', 'nullable'],
+            'unit' => ['required', 'nullable'],
         ]);
 
         // check product category
@@ -213,9 +213,15 @@ class ProductController extends Controller
             'name' => ['required'],
             'product_category_id' => ['required', new ProductCategoryIdRule()],
             'variant' => ['required'],
-            'code' => ['nullable', 'unique:products,code,' . $product->id],
-            'unit' => ['nullable'],
+            'code' => ['required', 'nullable'],
+            'unit' => ['required', 'nullable'],
+            'pin' => ['nullable'],
         ]);
+
+        // check pin
+        if (empty($validated['pin']) || !Hash::check($validated['pin'], $request->user()->pin)) {
+            return redirect()->back()->with('messageError', 'Pin tidak valid');
+        }
 
         // check product category
         $explode = explode('_', $validated['product_category_id']);
@@ -226,21 +232,42 @@ class ProductController extends Controller
             $validated['product_category_id'] = $category->id;
         }
 
-        // store
-        $product->update($validated);
+        // update
+        $product->update(collect($validated)->except(['pin'])->toArray());
 
         // return
         return redirect()->back()->with('message', 'Barang berhasil diperbarui');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
+        // validation
+        $validated = $request->validate([
+            'pin' => ['nullable'],
+        ]);
+
+        // check pin
+        if (empty($validated['pin']) || !Hash::check($validated['pin'], $request->user()->pin)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Pin tidak valid',
+            ], 400);
+        }
+
         // delete
-        $product->delete();
+        try {
+            $product->delete();
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Tidak dapat menghapus karna terdapat data dari tabel lain yang berelasi dengan data ini.'
+            ], 400);
+        }
 
         // return
         return response()->json([
             'status' => 'success',
+            'redirect_url' => route('admin.products.index')
         ]);
     }
 
