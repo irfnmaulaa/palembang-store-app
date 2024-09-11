@@ -29,7 +29,7 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 0)
-            ->whereBetween('transactions.created_at', [$start, $end]);
+            ->whereBetween('transactions.date', [$start, $end]);
 
         // searching settings
         if ($request->has('keyword')) {
@@ -82,7 +82,7 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.created_at', [$start, $end]);
+            ->whereBetween('transactions.date', [$start, $end]);
             // ->orderByDesc('transactions.date');
 
         // searching settings

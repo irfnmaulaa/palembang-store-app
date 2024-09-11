@@ -13,7 +13,7 @@ class UsersExport implements FromCollection
     public function collection()
     {
         $data = collect([
-            ['No', 'Nama', 'Username', 'Hak Akses']
+            ['No', 'ID', 'Nama Pengguna', 'Hak Akses']
         ]);
 
         return $data->merge(User::all()->map(function ($user, $i) {

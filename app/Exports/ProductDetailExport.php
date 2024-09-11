@@ -25,7 +25,7 @@ class ProductDetailExport implements FromCollection
     public function collection()
     {
         $data = collect([
-            ['Tanggal', 'Tipe', 'No DO', 'Nama Barang', 'Variant', 'Kode Barang', 'Stok Awal', 'Quantity', 'Stock Akhir', 'Dibuat oleh', 'Diverifikasi oleh']
+            ['Tanggal', 'Tipe', 'No DO', 'Keterangan', 'M', 'K', 'S', 'ID']
         ]);
 
         $transaction_products = TransactionProduct::query()
@@ -39,10 +39,10 @@ class ProductDetailExport implements FromCollection
 
         return $data->merge($transaction_products->map(function ($tp, $i) {
             $type = $tp->transaction->type === 'in' ? 'Barang Masuk' : 'Barang Keluar';
-            $date = Carbon::parse($tp->transaction->date)->format('d/m/Y H.i');
+            $date = Carbon::parse($tp->transaction->date)->format('d/m/Y');
             $code = $tp->transaction->code;
 
-            return [ $date, $type, $code, $tp->product->name, $tp->product->variant, $tp->product->code, $tp->from_stock, $tp->quantity, $tp->to_stock, $tp->creator->name, $tp->verificator->name];
+            return [ $date, $type, $code, $tp->note, $tp->transaction->type === 'in' ? $tp->quantity : '0' , $tp->transaction->type === 'out' ? $tp->quantity : '0', $tp->to_stock . '', $tp->creator->name];
         }));
     }
 }

@@ -49,6 +49,9 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::get('/histories/export/{type}', [\App\Http\Controllers\HistoryController::class, 'export'])->name('histories.export');
     Route::resource('/histories', \App\Http\Controllers\HistoryController::class);
 
+    // Check Stock
+    Route::resource('/check_stocks', \App\Http\Controllers\CheckStockController::class);
+
     // Users
     Route::get('/users/export/{type}', [\App\Http\Controllers\UserController::class, 'export'])->name('users.export');
     Route::resource('/users', \App\Http\Controllers\UserController::class);

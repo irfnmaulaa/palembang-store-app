@@ -14,7 +14,7 @@ class ProductsExport implements FromCollection
     public function collection()
     {
         $data = collect([
-            ['No', 'Kategori', 'Nama Barang', 'Variant', 'Kode Barang', 'Stok']
+            ['No', 'Kategori', 'Nama Barang', 'Kode Barang', 'Stok']
         ]);
 
         $products = Product::query()
@@ -29,7 +29,7 @@ class ProductsExport implements FromCollection
                 $category = $product->category->name;
             }
 
-            return [ $i + 1, $category, $product->name, $product->variant, $product->code, (string) $product->stock ];
+            return [ $i + 1, $category, $product->name . ' ' . $product->variant, $product->code, (string) $product->stock ];
         }));
     }
 }

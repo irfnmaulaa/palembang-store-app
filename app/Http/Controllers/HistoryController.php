@@ -99,10 +99,12 @@ class HistoryController extends Controller
             $start = date('Y-m') . '-01 00:00:00';
 
             // get first transaction
+            /*
             $first_transaction = Transaction::orderBy('created_at')->first();
             if ($first_transaction) {
                 $start = $first_transaction->created_at->format('Y-m-d H:i:s');
             }
+            */
 
             $end = date('Y-m-d') . ' 23:59:59';
         }

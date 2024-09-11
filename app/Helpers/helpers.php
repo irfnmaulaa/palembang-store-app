@@ -31,7 +31,7 @@ if (!function_exists('get_menus')) {
                 ],
                 (object) [
                     'label' => 'Cek Stok',
-                    'link' => 'admin.settings.index',
+                    'link' => 'admin.check_stocks.index',
                     'allowed_roles' => ['admin']
                 ],
                 (object) [

@@ -9,7 +9,7 @@
     <table class="table table-hover mb-0 table-sm">
         <thead>
         <tr>
-            <th>Nama</th>
+            <th>Nama Kategori</th>
             <th style="width: 200px" class="text-center">Jumlah Barang</th>
         </tr>
         </thead>
@@ -24,6 +24,11 @@
                 </td>
             </tr>
         @endforeach
+        @if(count($categories) <= 0)
+            <tr>
+                <td colspan="2" class="text-center">Tidak ada data</td>
+            </tr>
+        @endif
         </tbody>
     </table>
 @endsection

@@ -301,7 +301,7 @@ class ProductController extends Controller
             $end = date('Y-m-d') . ' 23:59:59';
         }
 
-        $filename = 'product_'. str_replace(' ', '-', $product->name) .'_' . str_replace(' ', '-', $product->variant) . '_' . str_replace(' ', '-', $product->code) . '_' . Carbon::now()->format('YmdHis');
+        $filename = $product->name . ' ' . $product->variant . ' - ' . Carbon::now()->format('YmdHis');
 
         switch ($type) {
             case 'excel':

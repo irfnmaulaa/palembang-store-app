@@ -16,15 +16,26 @@
                     </div>
                 </div>
                 <div class="d-flex gap-3" style="white-space: nowrap;">
-                    @if(auth()->user()->role === 'staff' || auth()->user()->role == 'admin')
-                        <div class="d-flex gap-3">
-                            <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-danger btn-lg">
-                                Barang Masuk
-                            </a>
-                            <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-dark btn-lg">
-                                Barang Keluar
-                            </a>
-                        </div>
+                    <div class="d-flex gap-3">
+                        <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-danger btn-lg">
+                            Barang Masuk
+                        </a>
+                        <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-dark btn-lg">
+                            Barang Keluar
+                        </a>
+                    </div>
+                    @if(auth()->user()->role == 'admin')
+                        <form action="" style="border-left: 1px solid #ddd;" class="ps-3">
+                            <input type="hidden" name="page" value="1">
+                            <input type="hidden" name="page2" value="1">
+                            @foreach(request()->except(['keyword', 'keyword2', 'page', 'page2', 'date_range']) as $key => $value)
+                                <input type="hidden" name="{{$key}}" value="{{$value}}">
+                            @endforeach
+                            <div class="input-group input-group-lg">
+                                <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 250px">
+                                <button class="btn btn-primary">Filter</button>
+                            </div>
+                        </form>
                     @endif
                 </div>
             </div>
