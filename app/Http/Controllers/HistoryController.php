@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 
 class HistoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('super_admin')->except(['index']);
+    }
+
     public function index(Request $request)
     {
         $start = date('Y')  . '-01-01 00:00:00';
@@ -109,7 +114,7 @@ class HistoryController extends Controller
             $end = date('Y-m-d') . ' 23:59:59';
         }
 
-        $filename = 'transactions_' . Carbon::now()->format('YmdHis');
+        $filename = 'TRANSAKSI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
 
         switch ($type) {
             case 'excel':

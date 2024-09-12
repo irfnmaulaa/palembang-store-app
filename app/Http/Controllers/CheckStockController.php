@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CheckStockExport;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class CheckStockController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('super_admin')->except(['index']);
+    }
+
     public function index(Request $request)
     {
         // define instance
@@ -69,6 +75,7 @@ class CheckStockController extends Controller
             ->orderBy('products.name')
             ->get();
 
-        return view('admin.check_stocks.print.index', compact('products'));
+        $filename = 'CEK_STOK_' . date('YmdHis') . '.xlsx';
+        return (new CheckStockExport($products))->download($filename);
     }
 }

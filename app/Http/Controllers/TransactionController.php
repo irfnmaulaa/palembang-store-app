@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransactionExport;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
@@ -11,6 +12,12 @@ use Illuminate\Support\Facades\Hash;
 
 class TransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('cutoff')->only(['verify']);
+        $this->middleware('super_admin')->except(['index', 'create', 'store', 'export_per_transaction']);
+    }
+
     public function index(Request $request)
     {
         $start = date('Y-m-d') . ' 00:00:00';
@@ -161,6 +168,7 @@ class TransactionController extends Controller
             'products.*.quantity' => ['required', 'numeric', 'min:1'],
             'products.*.note' => ['required'],
             'type' => ['required', 'in:in,out'],
+            'with_print' => ['nullable', 'boolean'],
         ]);
 
         // default now for date
@@ -199,10 +207,10 @@ class TransactionController extends Controller
 
             $transaction->transaction_products()->create([
                 'product_id' => $p['product_id'],
-               'quantity' => $p['quantity'],
-               'from_stock' => $from_stock,
-               'to_stock' => $to_stock,
-               'note' => $p['note'],
+                'quantity' => $p['quantity'],
+                'from_stock' => $from_stock,
+                'to_stock' => $to_stock,
+                'note' => $p['note'],
                 'created_by' => auth()->user()->id,
             ]);
         }
@@ -213,6 +221,7 @@ class TransactionController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Transaksi berhasil disimpan',
+            'redirect_url' => $validated['with_print'] ? route('admin.transactions.index', ['with_print' => 1, 'transaction_id' => $transaction->id]) : route('admin.transactions.index')
         ]);
     }
 
@@ -256,5 +265,11 @@ class TransactionController extends Controller
         broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja ' . ($is_deleted ? 'menghapus' : 'memverifikasi') . ' data transaksi pending.'));
 
         return redirect()->back()->with('message', 'Transaksi berhasil ' . ($is_deleted ? 'dihapus' : 'diverifikasi'));
+    }
+
+    public function export_per_transaction(Transaction $transaction)
+    {
+        $filename = 'TRANSAKSI_' . str_replace('/', '-', $transaction->code) . '_' . date('YmdHis') . '.pdf';
+        return (new TransactionExport($transaction))->download($filename, \Maatwebsite\Excel\Excel::DOMPDF);
     }
 }

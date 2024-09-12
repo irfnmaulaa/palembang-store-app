@@ -37,11 +37,11 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body text-center">
-                            Akun kamu sedang tidak aktif. <br> Hubungi admin untuk mengaktifkan akun.
+                            Kamu tidak diperbolehkan mengakses halaman ini.
                         </div>
                         <div class="card-body pt-0 text-center">
-                            <a href="" class="btn btn-lg btn-primary">
-                                Muat Ulang
+                            <a href="{{ url()->previous() }}" class="btn btn-lg btn-primary">
+                                Kembali
                             </a>
                         </div>
                     </div>

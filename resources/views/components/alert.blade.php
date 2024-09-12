@@ -6,6 +6,18 @@
             text: "{{session('message')}}",
         });
     </script>
+@elseif(session('messagePopup'))
+        <script>
+            Swal.fire({
+                icon: "success",
+                text: "{{session('messagePopup')}}",
+                toast: true,
+                position: 'top-end',
+                timer: 5000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+        </script>
 @elseif(session('messageError'))
     <script>
         Swal.fire({

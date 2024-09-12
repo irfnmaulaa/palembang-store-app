@@ -48,14 +48,14 @@
                     {{$product->code}}
                 </label>
             </td>
-            <td class="{{$className}} text-center">
-                <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                    {{$product->pivot->to_stock}} {{$product->unit}}
-                </label>
-            </td>
             <td class="{{$className}}">
                 <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
                     {{$product->pivot->note}}
+                </label>
+            </td>
+            <td class="{{$className}} text-center">
+                <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
+                    {{$product->pivot->to_stock}} {{$product->unit}}
                 </label>
             </td>
             <td class="{{$className}}">

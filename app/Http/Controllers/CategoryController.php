@@ -13,6 +13,11 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('super_admin')->except(['index']);
+    }
+
     public function index(Request $request)
     {
         // define instance
@@ -152,7 +157,7 @@ class CategoryController extends Controller
 
     public function export($type)
     {
-        $filename = 'categories_' . Carbon::now()->format('YmdHis');
+        $filename = 'KATEGORI_' . Carbon::now()->format('YmdHis');
 
         switch ($type) {
             case 'excel':

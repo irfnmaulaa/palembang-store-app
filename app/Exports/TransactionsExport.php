@@ -46,7 +46,7 @@ class TransactionsExport implements FromCollection
                 $creator = $tp->creator->name;
             }
 
-            return [ $date, $type, $code, $tp->quantity, $tp->product->name . ' ' . $tp->product->variant, $tp->product->code, $tp->note, $tp->to_stock, $creator];
+            return [ $date, $type, $code, $tp->quantity, $tp->product->name . ' ' . $tp->product->variant, $tp->product->code, $tp->note, $tp->to_stock . ' ' . $tp->product->unit, $creator];
         }));
     }
 }

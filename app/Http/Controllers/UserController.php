@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PendingTransactionsExport;
 use App\Exports\UsersExport;
 use App\Models\ProductCategory;
 use App\Models\User;
@@ -14,7 +15,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('super_admin');
+        $this->middleware('super_admin')->except(['close_store']);
     }
 
     public function index(Request $request)
@@ -212,7 +213,7 @@ class UserController extends Controller
         ]);
 
         // return
-        return redirect()->back()->with('message', 'Pengguna berhasil ' . ($user->is_active ? ' diaktifkan' : ' dinonaktifkan'));
+        return redirect()->back()->with('messagePopup', 'Pengguna berhasil ' . ($user->is_active ? ' diaktifkan' : ' dinonaktifkan') . '.');
     }
 
     public function export($type)
@@ -252,5 +253,23 @@ class UserController extends Controller
             'status' => 'failed',
             'message' => 'Pin tidak valid'
         ], 400);
+    }
+
+    public function close_store(Request $request)
+    {
+        // deactivate user
+        User::find($request->user()->id)->update([
+            'is_active' => false,
+        ]);
+
+        // logout
+        auth()->logout();
+
+        // define pending transaction filename
+        $filename = 'TRANSAKSI PENDING_' . date('YmdHis');
+
+        // print pending transaction
+        return (new PendingTransactionsExport())
+            ->download($filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
     }
 }

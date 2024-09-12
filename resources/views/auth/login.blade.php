@@ -40,6 +40,8 @@
                         <div class="card">
                             <div class="card-body">
 
+                                <x-alert></x-alert>
+
                                 <h4 class="mb-3">Masuk</h4>
 
                                 <div class="d-flex flex-column gap-3">

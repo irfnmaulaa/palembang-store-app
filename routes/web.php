@@ -44,6 +44,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     // Transactions
     Route::put('/transactions/verify', [\App\Http\Controllers\TransactionController::class, 'verify'])->name('transactions.verify');
     Route::resource('/transactions', \App\Http\Controllers\TransactionController::class);
+    Route::get('/transactions/{transaction}/export', [\App\Http\Controllers\TransactionController::class, 'export_per_transaction'])->name('transactions.export_per_transaction');
 
     // Histories
     Route::get('/histories/export/{type}', [\App\Http\Controllers\HistoryController::class, 'export'])->name('histories.export');
@@ -59,6 +60,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::match(['GET', 'POST'], '/users/{user}/reset-pin', [\App\Http\Controllers\UserController::class, 'reset_pin'])->name('users.reset_pin');
     Route::post('/users/{user}/activate', [\App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
     Route::post('/users/check-pin', [\App\Http\Controllers\UserController::class, 'check_pin'])->name('users.check_pin');
+    Route::post('/users/close-store', [\App\Http\Controllers\UserController::class, 'close_store'])->name('users.close_store');
 
     // Settings
     Route::resource('/settings', \App\Http\Controllers\SettingsController::class);

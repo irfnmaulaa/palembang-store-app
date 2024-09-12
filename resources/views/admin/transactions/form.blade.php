@@ -61,12 +61,12 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between gap-3">
+                            <a href="" class="btn btn-outline-danger btn-reset btn-lg">Kosongkan Tabel</a>
                             <div class="d-flex gap-3">
-{{--                                <a href="" class="btn btn-outline-success btn-print btn-lg"><i class="fas fa-print me-2"></i> Cetak Tabel</a>--}}
-                                <a href="" class="btn btn-outline-danger btn-reset btn-lg">Kosongkan Tabel</a>
+                                <a href="" class="btn btn-outline-success btn-save with-print btn-print btn-lg"><i class="fas fa-print me-2"></i> Simpan dan Cetak</a>
+                                <a href="" class="btn btn-primary btn-lg btn-save">Simpan {{$action}}</a>
                             </div>
-                            <a href="" class="btn btn-primary btn-lg btn-save">Simpan {{$action}}</a>
                         </div>
                     </div>
                 </div>
@@ -362,6 +362,8 @@
                     return
                 }
 
+                const with_print = $(this).hasClass('with-print')
+
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
                         confirmButton: "btn btn-primary btn-lg ms-2",
@@ -396,9 +398,10 @@
                                         quantity: getValue(p, 'quantity'),
                                         note: getValue(p, 'note'),
                                     }
-                                })
+                                }),
+                                with_print: with_print ? 1 : 0,
                             },
-                            success: function () {
+                            success: function ({ redirect_url = null }) {
                                 Swal.fire({
                                     icon: "success",
                                     title: "Sukses",
@@ -406,7 +409,7 @@
                                 }).then(() => {
                                     localStorage.removeItem('_transaction_code_{{request()->query('type')}}')
                                     localStorage.removeItem('_products_{{request()->query('type')}}')
-                                    window.location = '{{route('admin.transactions.index')}}'
+                                    window.location = redirect_url || '{{route('admin.transactions.index')}}'
                                 })
                             },
                             error: function (response) {

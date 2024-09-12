@@ -19,6 +19,11 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('super_admin')->except(['index', 'show']);
+    }
+
     public function index(Request $request)
     {
         // define instance
@@ -274,7 +279,7 @@ class ProductController extends Controller
 
     public function export($type)
     {
-        $filename = 'products_' . Carbon::now()->format('YmdHis');
+        $filename = 'BARANG_' . Carbon::now()->format('YmdHis');
 
         switch ($type) {
             case 'excel':
@@ -301,7 +306,7 @@ class ProductController extends Controller
             $end = date('Y-m-d') . ' 23:59:59';
         }
 
-        $filename = $product->name . ' ' . $product->variant . ' - ' . Carbon::now()->format('YmdHis');
+        $filename = str_replace('/', '-', $product->name) . ' ' . str_replace('/', '-', $product->variant) . '_' . Carbon::now()->format('YmdHis');
 
         switch ($type) {
             case 'excel':

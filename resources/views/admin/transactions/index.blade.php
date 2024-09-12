@@ -123,14 +123,14 @@
                                                 {{$product->code}}
                                             </label>
                                         </td>
-                                        <td class="{{$className}} text-center">
-                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                                                {{$product->pivot->to_stock}} {{$product->unit}}
-                                            </label>
-                                        </td>
                                         <td class="{{$className}}">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
                                                 {{$product->pivot->note}}
+                                            </label>
+                                        </td>
+                                        <td class="{{$className}} text-center">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
+                                                {{$product->pivot->to_stock}} {{$product->unit}}
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
@@ -152,13 +152,17 @@
                         </table>
                     </form>
                 </div>
-                @if($transactions_pending->hasPages() || auth()->user()->role == 'admin')
                 <div class="card-body pt-0">
                     <div class="d-flex justify-content-between align-items-center gap-2">
                         <div class="d-flex gap-3">
                             @if(auth()->user()->role === 'admin')
                                 <button type="submit" form="form-verify" class="btn btn-success btn-lg btn-verify disabled">Verifikasi</button>
                                 <button type="submit" form="form-verify" name="delete" value="1" class="btn btn-outline-danger btn-reject btn-lg disabled">Hapus</button>
+                            @elseif(auth()->user()->role === 'staff')
+                                <button type="button" class="btn btn-outline-dark btn-lg btn-close-store">Tutup Gudang <i class="fas fa-sign-out ms-2"></i></button>
+                                <form action="{{ route('admin.users.close_store') }}" id="form-close-store" method="POST">
+                                    @csrf
+                                </form>
                             @endif
                         </div>
                         <div class="table-pagination">
@@ -166,7 +170,6 @@
                         </div>
                     </div>
                 </div>
-                @endif
             </div>
 
             <div class="table-summary">
@@ -401,6 +404,34 @@
                 }
             })
 
+            $('.btn-close-store').click(function (e) {
+                e.preventDefault()
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: `btn btn-dark btn-lg me-3`,
+                        cancelButton: `btn btn-outline-dark btn-lg`
+                    },
+                    buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Konfirmasi tutup gudang",
+                    text: 'Apakah kamu yakin ingin tutup gudang?',
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, tutup gudang',
+                    cancelButtonText: "Batalkan",
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        $('#form-close-store').submit()
+                        setTimeout(() => {
+                            window.location = '{{route('login')}}'
+                        }, 500)
+                    }
+                });
+
+            })
+
             const start = moment('{{$start}}');
             const end = moment('{{$end}}');
 
@@ -420,5 +451,12 @@
                 }
             });
         })
+
+        @if(request()->has('with_print') && request()->has('transaction_id'))
+            window.location = '{{ route('admin.transactions.export_per_transaction', ['transaction' => request()->query('transaction_id')]) }}'
+            setTimeout(() => {
+                window.location = '{{ route('admin.transactions.index') }}'
+            }, 500)
+        @endif
     </script>
 @endsection
