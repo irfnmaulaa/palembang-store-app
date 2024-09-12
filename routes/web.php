@@ -70,4 +70,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
         broadcast(new \App\Events\RefreshPageEvent('hello'));
     });
 
+    Route::get('/rec/check', [\App\Http\Controllers\RedundantErrorCheckerController::class, 'check'])->name('rec.check');
+    Route::resource('/rec', \App\Http\Controllers\RedundantErrorCheckerController::class);
+
 });
