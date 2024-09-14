@@ -79,6 +79,10 @@ class UserController extends Controller
         // validation
         $validated = $request->validate($rules);
 
+        // set username to uppercase
+        $validated['username'] = strtoupper($validated['username']);
+        $validated['name'] = strtoupper($validated['name']);
+
         // hashing password
         $validated['password'] = bcrypt($validated['password']);
 
@@ -111,6 +115,10 @@ class UserController extends Controller
             'username' => ['required', 'unique:users,username,' . $user->id],
             'role' => ['required', 'in:admin,staff'],
         ]);
+
+        // set username to uppercase
+        $validated['username'] = strtoupper($validated['username']);
+        $validated['name'] = strtoupper($validated['name']);
 
         // store
         $user->update($validated);

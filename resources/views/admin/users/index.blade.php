@@ -11,8 +11,8 @@
     <table class="table table-users table-hover mb-0 table-sm">
         <thead>
         <tr>
+            <th style="width: 350px">Nama Pengguna</th>
             <th>ID</th>
-            <th>Nama Pengguna</th>
             <th>Hak Akses</th>
             <th>Status</th>
             <th style="width: 350px" class="text-start">Aktivasi</th>
@@ -21,12 +21,12 @@
         <tbody>
         @foreach($users as $i => $user)
             <tr>
-                <td>{{$user->name}}</td>
                 <td>
                     <a href="{{route('admin.users.edit', [$user])}}">
                         {{$user->username}}
                     </a>
                 </td>
+                <td>{{$user->name}}</td>
                 <td>
                     {!! $user->role_display !!}
                 </td>

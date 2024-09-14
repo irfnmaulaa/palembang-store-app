@@ -95,6 +95,10 @@
                     }
                 }
             })
+
+            $('#username, #name').css({
+                textTransform: 'uppercase'
+            })
         })
     </script>
 @endsection
