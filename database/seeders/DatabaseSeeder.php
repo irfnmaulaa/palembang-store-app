@@ -31,8 +31,8 @@ class DatabaseSeeder extends Seeder
         ];
         foreach (User::all() as $user) {
             \App\Models\User::create([
-                'name' => $user->identifier,
-                'username' => $user->username,
+                'name' => strtoupper($user->identifier),
+                'username' => strtoupper($user->username),
                 'password' => $user->password,
                 'role' => $roles[$user->identifier],
             ]);

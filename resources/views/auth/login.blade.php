@@ -47,7 +47,7 @@
                                 <div class="d-flex flex-column gap-3">
                                     <div>
                                         <div class="form-outline" data-mdb-input-init>
-                                            <input type="text" id="username" class="form-control form-control-lg" name="username" value="{{old('username')}}" autofocus/>
+                                            <input type="text" id="username" class="form-control form-control-lg" name="username" value="{{old('username')}}" autofocus style="text-transform: uppercase;"/>
                                             <label class="form-label" for="username">Username</label>
                                         </div>
                                         @if($errors->first('username'))
