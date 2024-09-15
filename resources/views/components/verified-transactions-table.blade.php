@@ -35,7 +35,7 @@
             </td>
             <td rowspan="{{$count}}" class="{{$className}}">
                 <label for="tp-{{$transaction->id}}" class="d-flex align-items-center">
-                    {{$transaction->code}}
+                    <a href="{{route('admin.transactions.show', [$transaction])}}" class="{{$className}}">{{$transaction->code}}</a>
                 </label>
             </td>
         </tr>

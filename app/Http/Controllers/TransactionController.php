@@ -225,6 +225,11 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function show(Request $request, Transaction $transaction)
+    {
+        return view('admin.transactions.show', compact('transaction'));
+    }
+
     public function verify(Request $request)
     {
         $validated = $request->validate([

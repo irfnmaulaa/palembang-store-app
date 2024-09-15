@@ -65,12 +65,8 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     // Settings
     Route::resource('/settings', \App\Http\Controllers\SettingsController::class);
 
-    // For testing
-    Route::get('/test', function () {
-        broadcast(new \App\Events\RefreshPageEvent('hello'));
-    });
-
-    Route::get('/rec/check', [\App\Http\Controllers\RedundantErrorCheckerController::class, 'check'])->name('rec.check');
-    Route::resource('/rec', \App\Http\Controllers\RedundantErrorCheckerController::class);
+    // App Errors
+    Route::post('/app_errors/check', [\App\Http\Controllers\AppErrorsController::class, 'check'])->name('app_errors.check');
+    Route::resource('/app_errors', \App\Http\Controllers\AppErrorsController::class);
 
 });

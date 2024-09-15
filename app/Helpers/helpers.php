@@ -35,6 +35,11 @@ if (!function_exists('get_menus')) {
                 'link' => 'admin.users.index',
                 'allowed_roles' => ['admin']
             ],
+            (object) [
+                'label' => 'REC',
+                'link' => 'admin.app_errors.index',
+                'allowed_roles' => ['admin', 'staff']
+            ],
         ];
     }
 }
@@ -49,7 +54,7 @@ if (!function_exists('get_per_page_default')) {
 if (!function_exists('get_table_row_classname')) {
     function get_table_row_classname($type)
     {
-        return $type == 'in' ? 'text-danger' : '';
+        return $type == 'in' ? 'text-danger' : 'text-black';
     }
 }
 

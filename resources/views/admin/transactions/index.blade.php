@@ -97,7 +97,9 @@
                                                 <input class="form-check-input transaction-checkbox" type="checkbox" value="" id="tp-{{$tp->id}}" />
                                             </div>
                                             @endif
+                                            <a href="{{route('admin.transactions.show', [$tp])}}" class="{{$className}}">
                                             {{$tp->code}}
+                                            </a>
                                         </label>
                                     </td>
                                 </tr>
@@ -115,7 +117,9 @@
                                                     <input data-parent="tp-{{$tp->id}}" class="form-check-input product-checkbox" type="checkbox" name="transaction_product_ids[]" value="{{$product->pivot->id}}" id="product-{{$product->id}}" />
                                                 </div>
                                                 @endif
-                                                {{$product->name}} {{$product->variant}}
+                                                <a href="{{route('admin.products.show', [$product])}}" class="{{$className}}">
+                                                    {{$product->name}} {{$product->variant}}
+                                                </a>
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
@@ -134,7 +138,7 @@
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
-                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-start">
+                                            <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
                                                 @if($tp->creator)
                                                     {{$tp->creator->name}}
                                                 @endif

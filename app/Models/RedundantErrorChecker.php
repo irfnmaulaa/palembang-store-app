@@ -9,20 +9,20 @@ class RedundantErrorChecker extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $with = ['from_transaction_product', 'to_transaction_product'];
+    protected $with = ['transaction', 'product', 'creator'];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
+    }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function from_transaction_product()
+    public function creator()
     {
-        return $this->belongsTo(TransactionProduct::class, 'from_transaction_product_id');
-    }
-
-    public function to_transaction_product()
-    {
-        return $this->belongsTo(TransactionProduct::class, 'to_transaction_product_id');
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

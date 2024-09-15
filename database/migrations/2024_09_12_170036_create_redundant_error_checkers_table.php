@@ -15,13 +15,15 @@ class CreateRedundantErrorCheckersTable extends Migration
     {
         Schema::create('redundant_error_checkers', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\Transaction::class)->constrained();
             $table->foreignIdFor(\App\Models\Product::class)->constrained();
-            $table->unsignedBigInteger('from_transaction_product_id');
-            $table->foreign('from_transaction_product_id')->references('id')->on('transaction_products');
-            $table->unsignedBigInteger('to_transaction_product_id');
-            $table->foreign('to_transaction_product_id')->references('id')->on('transaction_products');
-            $table->integer('expected_current_stock');
-            $table->integer('actual_current_stock');
+            $table->integer('quantity');
+            $table->text('note');
+            $table->integer('from_stock');
+            $table->integer('to_stock');
+            $table->tinyInteger('duplicate_count');
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }
