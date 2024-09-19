@@ -39,11 +39,17 @@
                         <div class="card-body text-center">
                             Akun kamu sedang tidak aktif. <br> Hubungi admin untuk mengaktifkan akun.
                         </div>
-                        <div class="card-body pt-0 text-center">
+                        <div class="card-body pt-0 text-center d-flex gap-3 justify-content-center">
                             <a href="" class="btn btn-lg btn-primary">
                                 Muat Ulang
                             </a>
+                            <a href="" onclick="event.preventDefault(); document.getElementById('form-logout').submit()" class="btn btn-lg btn-outline-primary">
+                                Kembali ke Login
+                            </a>
                         </div>
+                        <form action="{{route('logout')}}" method="POST" id="form-logout">
+                            @csrf
+                        </form>
                     </div>
                 </div>
             </div>
