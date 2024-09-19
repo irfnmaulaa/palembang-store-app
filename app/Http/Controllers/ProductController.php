@@ -42,9 +42,17 @@ class ProductController extends Controller
 
         // searching settings
         if ($request->query('keyword')) {
-            $products = $products
-                ->where(DB::raw("CONCAT(products.name, ' ', products.variant)"), 'LIKE', '%' . $request->get('keyword') . '%')
-                ->orWhere('product_categories.name', 'LIKE', '%' . $request->get('keyword') . '%');
+            // Split the keyword into words
+            $words = explode(' ', $request->query('keyword'));
+
+            foreach ($words as $word) {
+                $products = $products->where(function ($subQuery) use ($word) {
+                    // Use REGEXP to match partial words in name, variant, or the concatenated field
+                    $subQuery->where('products.name', 'LIKE', "%{$word}%")
+                        ->orWhere('products.variant', 'LIKE', "%{$word}%")
+                        ->orWhere('product_categories.name', 'LIKE', '%' . $word . '%');
+                });
+            }
         }
 
         // filter by product category
@@ -95,7 +103,7 @@ class ProductController extends Controller
                             'code' => $product->code,
                             'stock' => $product->stock,
                         ]),
-                        'text' => $product->name . ' ' . $product->variant . ($product->code ? (' / ' . $product->code) : ''),
+                        'text' => $product->name . ' ' . $product->variant,
                     ];
                 })->toArray(),
                 'pagination' => [

@@ -8,7 +8,7 @@
     <div class="card shadow-none border">
         <div class="card-body">
             <div class="mb-3 d-flex align-items-center justify-content-between">
-                <h3 class="text-uppercase mb-0">{{$product->name}} {{$product->variant}}</h3>
+                <h3 class="text-uppercase mb-0">{{$product->name}}</h3>
                 @if(auth()->user()->role === 'admin')
                 <div class="d-flex gap-3">
                     <a href="{{route('admin.products.edit', [$product])}}" class="btn btn-lg btn-outline-primary">
@@ -25,9 +25,9 @@
                     <table class="table table-sm mb-0">
                         <tbody>
                         <tr>
-                            <td style="width: 160px;">Nama Barang</td>
+                            <td style="width: 160px;">Variant</td>
                             <td style="width: 10px" class="text-center">:</td>
-                            <td>{{$product->name}} {{$product->variant}}</td>
+                            <td>{{$product->variant}}</td>
                         </tr>
                         <tr>
                             <td>Kode Barang</td>

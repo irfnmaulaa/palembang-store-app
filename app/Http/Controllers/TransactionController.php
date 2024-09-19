@@ -42,9 +42,18 @@ class TransactionController extends Controller
         if ($request->has('keyword')) {
             $transactions_pending = $transactions_pending
                 ->where(function ($query) use ($request) {
-                    $query->where('products.name', 'LIKE', '%' . $request->get('keyword') . '%')
-                        ->orWhere('products.code', 'LIKE', '%' . $request->get('keyword') . '%')
-                        ->orWhere('transactions.code', 'LIKE', '%' . $request->get('keyword') . '%');
+                    // Split the keyword into words
+                    $words = explode(' ', $request->query('keyword'));
+
+                    foreach ($words as $word) {
+                        $query->where(function ($subQuery) use ($word) {
+                            // Use REGEXP to match partial words in name, variant, or the concatenated field
+                            $subQuery->where('products.name', 'LIKE', "%{$word}%")
+                                ->orWhere('products.variant', 'LIKE', "%{$word}%")
+                                ->orWhere('products.code', 'LIKE', "%{$word}%")
+                                ->orWhere('transactions.code', 'LIKE', '%' . $word . '%');
+                        });
+                    }
                 });
 
         }
@@ -96,9 +105,18 @@ class TransactionController extends Controller
         if ($request->has('keyword2')) {
             $transactions_verified = $transactions_verified
                 ->where(function ($query) use ($request) {
-                    $query->where('products.name', 'LIKE', '%' . $request->get('keyword2') . '%')
-                        ->orWhere('products.code', 'LIKE', '%' . $request->get('keyword2') . '%')
-                        ->orWhere('transactions.code', 'LIKE', '%' . $request->get('keyword2') . '%');
+                    // Split the keyword into words
+                    $words = explode(' ', $request->query('keyword2'));
+
+                    foreach ($words as $word) {
+                        $query->where(function ($subQuery) use ($word) {
+                            // Use REGEXP to match partial words in name, variant, or the concatenated field
+                            $subQuery->where('products.name', 'LIKE', "%{$word}%")
+                                ->orWhere('products.variant', 'LIKE', "%{$word}%")
+                                ->orWhere('products.code', 'LIKE', "%{$word}%")
+                                ->orWhere('transactions.code', 'LIKE', '%' . $word . '%');
+                        });
+                    }
                 });
 
         }

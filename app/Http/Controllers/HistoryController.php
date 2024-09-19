@@ -50,9 +50,18 @@ class HistoryController extends Controller
         if ($request->query('keyword')) {
             $transactions = $transactions
                 ->where(function ($query) use ($request) {
-                    $query->where(DB::raw("CONCAT(products.name, ' ', products.variant)"), 'LIKE', '%' . $request->get('keyword') . '%')
-                        ->orWhere('transaction_products.note', 'LIKE', '%' . $request->get('keyword') . '%')
-                        ->orWhere('transactions.code', 'LIKE', '%' . $request->get('keyword') . '%');
+                    // Split the keyword into words
+                    $words = explode(' ', $request->query('keyword'));
+
+                    foreach ($words as $word) {
+                        $query->where(function ($subQuery) use ($word) {
+                            // Use REGEXP to match partial words in name, variant, or the concatenated field
+                            $subQuery->where('products.name', 'LIKE', "%{$word}%")
+                                ->orWhere('products.variant', 'LIKE', "%{$word}%")
+                                ->orWhere('transaction_products.note', 'LIKE', "%{$word}%")
+                                ->orWhere('transactions.code', 'LIKE', '%' . $word . '%');
+                        });
+                    }
                 });
 
         }
