@@ -20,7 +20,7 @@
 
             <x-textfield label="Satuan" name="unit" type="text" :item="$item"></x-textfield>
 
-            <div class="form-group">
+            <div class="form-group" id="product-category-wrap" style="position:relative;">
                 <label for="product_category_id">Pilih Kategori</label>
                 <select name="product_category_id" id="product_category_id" class="form-control select-category">
                     @if(@$item && $item->category)
@@ -77,7 +77,8 @@
                 tags: true,
                 createTag: function(params) {
                     return { id: `new_${params.term}`, text: `Tambah kategori baru "${params.term}"` };
-                }
+                },
+                dropdownParent: $('.select-category').parents('.form-group')
             } );
         })
 

@@ -13,7 +13,7 @@
                       <h3 class="card-title mb-3">Input {{$action}}</h3>
 
                       <form action="" class="d-flex flex-column gap-3" id="form-add-product">
-                          <div class="form-group">
+                          <div class="form-group" id="select-product-wrap" style="position:relative;">
                               <label for="product">Pilih Barang</label>
                               <select name="product" id="product" class="form-control select-product">
                               </select>
@@ -101,6 +101,7 @@
                         return query;
                     }
                 },
+                dropdownParent: $('.select-product').parents('.form-group')
             } );
 
             $('.select-product').select2('open')
@@ -288,8 +289,8 @@
                 e.preventDefault()
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
-                        confirmButton: "btn btn-outline-danger btn-lg ms-2",
-                        cancelButton: "btn btn-danger btn-lg"
+                        confirmButton: "btn btn-danger btn-lg me-3",
+                        cancelButton: "btn btn-outline-danger btn-lg"
                     },
                     buttonsStyling: false
                 });
@@ -300,7 +301,6 @@
                     showCancelButton: true,
                     confirmButtonText: "Ya, kosongkan",
                     cancelButtonText: "Tidak",
-                    reverseButtons: true
                 }).then((result) => {
                     if ( result.isConfirmed ) {
                         products = []
@@ -364,64 +364,46 @@
 
                 const with_print = $(this).hasClass('with-print')
 
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: "btn btn-primary btn-lg ms-2",
-                        cancelButton: "btn btn-outline-primary btn-lg"
-                    },
-                    buttonsStyling: false
-                });
-                swalWithBootstrapButtons.fire({
-                    title: "Konfirmasi",
-                    text: "Klik proses untuk menyimpan data",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Proses",
-                    cancelButtonText: "Batalkan",
-                    reverseButtons: true
-                }).then((result) => {
-                    const code = codeEl.val()
-                    const date = dateEl.val() || ''
-                    if ( result.isConfirmed ) {
-                        $.ajax({
-                            url: '{{route('admin.transactions.store')}}',
-                            method: 'POST',
-                            data: {
-                                _token: '{{csrf_token()}}',
-                                code,
-                                date,
-                                type: '{{request('type') === 'in' ? 'in' : 'out'}}',
-                                products: products.map(p => {
-                                    return {
-                                        product_id: JSON.parse(getValue(p, 'product')).id,
-                                        product_code: getValue(p, 'product_code'),
-                                        quantity: getValue(p, 'quantity'),
-                                        note: getValue(p, 'note'),
-                                    }
-                                }),
-                                with_print: with_print ? 1 : 0,
-                            },
-                            success: function ({ redirect_url = null }) {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "Sukses",
-                                    text: "Transaksi berhasil disimpan",
-                                }).then(() => {
-                                    localStorage.removeItem('_transaction_code_{{request()->query('type')}}')
-                                    localStorage.removeItem('_products_{{request()->query('type')}}')
-                                    window.location = redirect_url || '{{route('admin.transactions.index')}}'
-                                })
-                            },
-                            error: function (response) {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Gagal",
-                                    text: Object.values(response.responseJSON.errors).flat().join(' '),
-                                })
+                const code = codeEl.val()
+                const date = dateEl.val() || ''
+                $.ajax({
+                    url: '{{route('admin.transactions.store')}}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        code,
+                        date,
+                        type: '{{request('type') === 'in' ? 'in' : 'out'}}',
+                        products: products.map(p => {
+                            return {
+                                product_id: JSON.parse(getValue(p, 'product')).id,
+                                product_code: getValue(p, 'product_code'),
+                                quantity: getValue(p, 'quantity'),
+                                note: getValue(p, 'note'),
                             }
+                        }),
+                        with_print: with_print ? 1 : 0,
+                    },
+                    success: function ({ redirect_url = null }) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Sukses",
+                            text: "Transaksi berhasil disimpan",
+                        }).then(() => {
+                            localStorage.removeItem('_transaction_code_{{request()->query('type')}}')
+                            localStorage.removeItem('_products_{{request()->query('type')}}')
+                            window.location = redirect_url || '{{route('admin.transactions.index')}}'
+                        })
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal",
+                            text: Object.values(response.responseJSON.errors).flat().join(' '),
                         })
                     }
-                });
+                })
+
             })
         })
     </script>

@@ -57,20 +57,6 @@
                 </tr>
             @endif
             </tbody>
-            <tfoot>
-            <tr>
-                <th class="text-center" style="width: 50px">
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="check_all" />
-                        </div>
-                    </div>
-                </th>
-                <th>Nama Barang</th>
-                <th style="width: 150px">Kode Barang</th>
-                <th class="text-center" style="width: 150px">Stok Saat Ini</th>
-            </tr>
-            </tfoot>
         </table>
     </form>
 @endsection

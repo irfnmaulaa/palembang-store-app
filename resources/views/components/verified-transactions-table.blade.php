@@ -17,14 +17,26 @@
     <tbody>
     @foreach($transactions as $i => $transaction)
         @php
-            $count = $transaction
-                ->transaction_products()
-                ->where('is_verified', 1)
-                ->count() + 1;
             $products = $transaction
                 ->products()
+                ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')
+                ->where(function ($query) {
+                    // Split the keyword into words
+                    $words = explode(' ', request()->query('keyword'));
+
+                    foreach ($words as $word) {
+                        $query->where(function ($subQuery) use ($word) {
+                            // Use REGEXP to match partial words in name, variant, or the concatenated field
+                            $subQuery->where('products.name', 'LIKE', "%{$word}%")
+                                ->orWhere('products.variant', 'LIKE', "%{$word}%")
+                                ->orWhere('transaction_products.note', 'LIKE', "%{$word}%")
+                                ->orWhere('transactions.code', 'LIKE', '%' . $word . '%');
+                        });
+                    }
+                })
                 ->wherePivot('is_verified', 1)
                 ->get();
+            $count = $products->count() + 1;
             $className = get_table_row_classname($transaction->type);
         @endphp
         <tr>

@@ -107,7 +107,7 @@
 
         <div class="d-flex align-items-center gap-2" style="min-width: 320px; white-space: nowrap;">
             <span><small class="text-muted">Kategori</small></span>
-            <div class="input-group input-group-lg">
+            <div class="input-group input-group-lg" style="position:relative;">
                 <select name="product_category_id" id="product_category_id" class="form-control form-control-lg select-category">
                     @if(request('product_category_id') && $category = \App\Models\ProductCategory::find(request('product_category_id')))
                         <option value="{{ $category->id }}">
@@ -152,6 +152,7 @@
                         return query;
                     }
                 },
+                dropdownParent: $('.select-category').parents('.input-group')
             } );
         })
     </script>

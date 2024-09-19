@@ -1,7 +1,8 @@
 @extends('layouts.index', [
     'title' => 'Buku Besar',
     'data' => $transaction_products,
-    'order_options' => $order_options
+    'order_options' => $order_options,
+    'withNoOrder' => true,
 ])
 
 @section('header')

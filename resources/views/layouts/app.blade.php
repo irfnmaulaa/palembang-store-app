@@ -158,6 +158,7 @@
             theme: "bootstrap-5",
             width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
             placeholder: $( this ).data( 'placeholder' ),
+            dropdownParent: $('.select-2').parents('.form-group')
         } );
 
 

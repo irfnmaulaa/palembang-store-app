@@ -259,7 +259,7 @@ class UserController extends Controller
         // pin is invalid
         return response()->json([
             'status' => 'failed',
-            'message' => 'Pin tidak valid'
+            'message' => 'PIN yang kamu masukan salah.'
         ], 400);
     }
 
