@@ -25,6 +25,12 @@
         rel="stylesheet"
     />
 
+    <style>
+        .container {
+            zoom: 1.2;
+        }
+    </style>
+
 </head>
 <body class="bg-body-secondary">
 <div id="app">
