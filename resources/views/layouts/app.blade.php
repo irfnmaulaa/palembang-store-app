@@ -36,11 +36,11 @@
             font-family: "Rubik", sans-serif;
             font-optical-sizing: auto;
         }
-        table * {
-            text-transform: uppercase;
+        body, .table, .nav-tabs .nav-link {
+            font-size: 1.15rem;
         }
-        body {
-            font-size: 1.1rem;
+        .navbar, table * {
+            text-transform: uppercase;
         }
         .table th {
             font-weight: bold;
@@ -59,6 +59,14 @@
         }
         a:not(.btn):hover {
             text-decoration: underline;
+        }
+        .navbar-brand {
+            font-weight: 500;
+            font-size: 1.3rem;
+            padding-right: 0.6rem;
+        }
+        .navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
+            font-weight: 500;
         }
     </style>
 
@@ -103,7 +111,7 @@
 
                         @foreach(collect(get_menus())->filter(function ($menu) { return in_array(auth()->user()->role, $menu->allowed_roles); })->all() as $menu)
                             <li class="nav-item">
-                                <a class="nav-link" href="{{route($menu->link)}}">
+                                <a class="nav-link {{ request()->route()->getName() == $menu->link ? 'active' : '' }}" href="{{route($menu->link)}}">
                                     {{$menu->label}}
                                 </a>
                             </li>

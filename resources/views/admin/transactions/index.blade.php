@@ -91,7 +91,7 @@
                                         </label>
                                     </td>
                                     <td rowspan="{{$count}}" class="{{$className}}">
-                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center d-flex gap-2 align-items-center">
+                                        <label for="tp-{{$tp->id}}" class="d-flex align-items-center d-flex gap-1 align-items-center">
                                             @if(auth()->user()->role === 'admin')
                                             <div class="form-check">
                                                 <input class="form-check-input transaction-checkbox" type="checkbox" value="" id="tp-{{$tp->id}}" />
@@ -111,7 +111,7 @@
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
-                                            <label for="product-{{$product->id}}" class="d-flex gap-2 align-items-center">
+                                            <label for="product-{{$product->id}}" class="d-flex gap-1 align-items-center">
                                                 @if(auth()->user()->role === 'admin')
                                                 <div class="form-check">
                                                     <input data-parent="tp-{{$tp->id}}" class="form-check-input product-checkbox" type="checkbox" name="transaction_product_ids[]" value="{{$product->pivot->id}}" id="product-{{$product->id}}" />
