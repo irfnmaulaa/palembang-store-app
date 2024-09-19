@@ -28,7 +28,7 @@
                           <x-textarea label="Keterangan" name="note"></x-textarea>
 
                           <div class="form-group mt-2 d-flex gap-3">
-                              <button type="submit" class="btn btn-outline-primary btn-lg w-100">Input</button>
+                              <button type="submit" class="btn btn-outline-primary btn-lg w-100 btn-input">Input</button>
                           </div>
                       </form>
                   </div>
@@ -362,6 +362,10 @@
                     return
                 }
 
+                const spinner = $('<div class="spinner-border spinner-border-sm me-2" role="status"> <span class="visually-hidden">Loading...</span> </div>')
+                $(this).prepend(spinner)
+                $('.btn-save, .btn-reset, .btn-input').addClass('disabled').attr('disabled', 'disabled')
+
                 const with_print = $(this).hasClass('with-print')
 
                 const code = codeEl.val()
@@ -385,6 +389,7 @@
                         with_print: with_print ? 1 : 0,
                     },
                     success: function ({ redirect_url = null }) {
+                        spinner.remove()
                         Swal.fire({
                             icon: "success",
                             title: "Sukses",
