@@ -36,8 +36,8 @@
             font-family: "Rubik", sans-serif;
             font-optical-sizing: auto;
         }
-        body, .table, .nav-tabs .nav-link {
-            font-size: 1.15rem;
+        body {
+            zoom: 1.25;
         }
         .navbar, table * {
             text-transform: uppercase;
@@ -62,7 +62,6 @@
         }
         .navbar-brand {
             font-weight: 500;
-            font-size: 1.3rem;
             padding-right: 0.6rem;
         }
         .navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
