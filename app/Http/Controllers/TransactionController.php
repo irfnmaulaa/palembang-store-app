@@ -9,6 +9,7 @@ use App\Models\TransactionProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
@@ -293,6 +294,7 @@ class TransactionController extends Controller
     public function export_per_transaction(Transaction $transaction)
     {
         $filename = 'TRANSAKSI_' . str_replace('/', '-', $transaction->code) . '_' . date('YmdHis') . '.pdf';
-        return (new TransactionExport($transaction))->download($filename, \Maatwebsite\Excel\Excel::DOMPDF);
+
+        return Pdf::loadView('admin.transactions.export.transaction-pdf', ['transaction' => $transaction])->setPaper('A6', 'landscape')->download($filename);
     }
 }
