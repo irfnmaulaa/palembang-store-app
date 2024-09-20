@@ -211,7 +211,7 @@ class ProductController extends Controller
         $request->user()->products_created()->create($validated);
 
         // return
-        return redirect()->back()->with('message', 'Barang berhasil ditambahkan');
+        return redirect()->route('admin.products.index')->with('message', 'Barang berhasil ditambahkan');
     }
 
     public function edit(Product $product)
@@ -250,7 +250,7 @@ class ProductController extends Controller
         $product->update(collect($validated)->except(['pin'])->toArray());
 
         // return
-        return redirect()->back()->with('message', 'Barang berhasil diperbarui');
+        return redirect()->route('admin.products.show', $product)->with('message', 'Barang berhasil diperbarui');
     }
 
     public function destroy(Request $request, Product $product)

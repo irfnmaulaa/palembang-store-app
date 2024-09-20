@@ -6,6 +6,7 @@
 ])
 
 @section('header')
+    <x-alert></x-alert>
     <div class="card shadow-none border">
         <div class="card-body">
             <div class="mb-3 d-flex align-items-center justify-content-between">

@@ -6,6 +6,7 @@
 ])
 
 @section('table')
+    <x-alert></x-alert>
     <table class="table table-hover mb-0 table-sm">
         <thead>
         <tr>

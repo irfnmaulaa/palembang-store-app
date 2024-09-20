@@ -94,7 +94,7 @@ class CategoryController extends Controller
         ProductCategory::create($validated);
 
         // return
-        return redirect()->back()->with('message', 'Kategori berhasil ditambahkan');
+        return redirect()->route('admin.categories.index')->with('message', 'Kategori berhasil ditambahkan');
     }
 
     public function show(Request $request, ProductCategory $category)
@@ -133,7 +133,7 @@ class CategoryController extends Controller
         $category->update($validated);
 
         // return
-        return redirect()->back()->with('message', 'Kategori berhasil diperbarui');
+        return redirect()->route('admin.categories.show', $category)->with('message', 'Kategori berhasil diperbarui');
     }
 
     public function destroy(ProductCategory $category)
