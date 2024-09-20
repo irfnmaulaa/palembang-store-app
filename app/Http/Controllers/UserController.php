@@ -273,11 +273,7 @@ class UserController extends Controller
         // logout
         auth()->logout();
 
-        // define pending transaction filename
-        $filename = 'TRANSAKSI PENDING_' . date('YmdHis');
-
         // print pending transaction
-        return (new PendingTransactionsExport())
-            ->download($filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+        return redirect()->route('admin.transactions.export_pending');
     }
 }

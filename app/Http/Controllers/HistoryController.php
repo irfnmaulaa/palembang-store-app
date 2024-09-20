@@ -7,6 +7,7 @@ use App\Exports\TransactionsExport;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Transaction;
+use App\Models\TransactionProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -110,7 +111,7 @@ class HistoryController extends Controller
             $start = $explode[0] . ' 00:00:00';
             $end = $explode[1] . ' 23:59:59';
         } else {
-            $start = date('Y-m') . '-01 00:00:00';
+            $start = date('Y')  . '-01-01 00:00:00';
 
             // get first transaction
             /*

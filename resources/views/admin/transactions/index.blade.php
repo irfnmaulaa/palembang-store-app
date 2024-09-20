@@ -172,6 +172,11 @@
                         <div class="table-pagination">
                             {{ $transactions_pending->links('vendor.pagination.bootstrap-4') }}
                         </div>
+                        <div>
+                            <a href="{{route('admin.transactions.export_pending')}}" class="btn btn-outline-success btn-lg">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,8 +201,18 @@
                 <x-verified-transactions-table :transactions="$transactions_verified"></x-verified-transactions-table>
                 </div>
                 <div class="card-body">
-                    <div class="table-pagination d-flex justify-content-center align-items-center gap-2">
-                        {{ $transactions_verified->links('vendor.pagination.bootstrap-4') }}
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+
+                        </div>
+                        <div class="table-pagination d-flex justify-content-center align-items-center gap-2">
+                            {{ $transactions_verified->links('vendor.pagination.bootstrap-4') }}
+                        </div>
+                        <div>
+                            <a href="{{route('admin.histories.export', ['type' => 'excel', 'date_range' => request()->query('date_range') ?? (date('Y-m-d') . ' - ' . date('Y-m-d'))])}}" class="btn btn-outline-success btn-lg">
+                                <i class="fas fa-table me-2"></i> Ekspor
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

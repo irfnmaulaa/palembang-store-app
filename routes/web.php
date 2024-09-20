@@ -44,6 +44,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     // Transactions
     Route::put('/transactions/verify', [\App\Http\Controllers\TransactionController::class, 'verify'])->name('transactions.verify');
     Route::resource('/transactions', \App\Http\Controllers\TransactionController::class);
+    Route::get('/transactions/pending/export', [\App\Http\Controllers\TransactionController::class, 'export_pending'])->name('transactions.export_pending');
     Route::get('/transactions/{transaction}/export', [\App\Http\Controllers\TransactionController::class, 'export_per_transaction'])->name('transactions.export_per_transaction');
 
     // Histories

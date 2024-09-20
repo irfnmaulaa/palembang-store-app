@@ -27,6 +27,7 @@ class PendingTransactionsExport implements FromView, WithEvents
                 'transactions.code as transaction_code',
                 'transactions.type as transaction_type',
                 'products.name as product_name',
+                'products.variant as product_variant',
                 'products.code as product_code',
                 'products.unit as product_unit',
                 'users.name as creator_name',
