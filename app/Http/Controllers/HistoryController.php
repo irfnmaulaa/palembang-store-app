@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ProductDetailExport;
 use App\Exports\TransactionsExport;
-use App\Models\Product;
-use App\Models\ProductCategory;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class HistoryController extends Controller
 {
@@ -155,7 +151,7 @@ class HistoryController extends Controller
                     'Content-Type' => 'text/csv',
                 ]);
             case 'pdf':
-                return Pdf::loadView('admin.transactions.export.verified-transactions', ['transaction_products' => $transaction_products])->setPaper('A4', 'landscape')->download($filename . '.pdf');
+                return Pdf::loadView('admin.transactions.export.verified-transactions', ['transaction_products' => $transaction_products])->setPaper('a4')->download($filename . '.pdf');
             default:
                 return "url export salah";
         }

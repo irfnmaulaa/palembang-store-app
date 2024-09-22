@@ -26,7 +26,7 @@ class PendingTransactionsExport implements FromView, WithEvents
 
         $transaction_products = $this->transaction_products;
         $printed_by = $this->printed_by;
-        return view('admin.transactions.export.pending-transactions-pdf', compact('transaction_products', 'printed_by'));
+        return view('admin.transactions.export.pending-transactions', compact('transaction_products', 'printed_by'));
     }
 
     public function registerEvents(): array

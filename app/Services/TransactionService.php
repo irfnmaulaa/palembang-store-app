@@ -51,7 +51,7 @@ class TransactionService
                     'Content-Type' => 'text/csv',
                 ]);
             case 'pdf':
-                return Pdf::loadView('admin.transactions.export.pending-transactions-pdf', ['transaction_products' => $transaction_products, 'printed_by' => $printed_by,])->setPaper('a4', 'landscape')->download($filename . '.pdf');
+                return Pdf::loadView('admin.transactions.export.pending-transactions', ['transaction_products' => $transaction_products, 'printed_by' => $printed_by,])->setPaper('a4', 'landscape')->download($filename . '.pdf');
             default:
                 return "url export salah";
         }

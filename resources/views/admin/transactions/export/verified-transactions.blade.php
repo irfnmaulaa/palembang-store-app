@@ -186,7 +186,7 @@
 
 <table
     id="table"
-    class="table-hover"
+    class="table table-hover"
 >
     <thead>
     <tr>
