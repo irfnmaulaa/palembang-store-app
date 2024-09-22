@@ -75,6 +75,6 @@ if (!function_exists('get_start_time_admin_verify')) {
 if (!function_exists('get_max_time_admin_verify')) {
     function get_max_time_admin_verify()
     {
-        return '23:00:00';
+        return '19:00:00';
     }
 }
