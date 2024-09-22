@@ -48,14 +48,23 @@ class DatabaseSeeder extends Seeder
         }
 
         foreach (Item::all() as $item) {
-            if (isset($item->type_id)) {
+            if (!empty($item->type_id)) {
                 $type = ProductCategory::find($item->type_id);
                 if (!$type) {
                     ProductCategory::create([
                         'id' => $item->type_id,
-                        'name' => 'Unknown',
+                        'name' => '-',
                     ]);
                 }
+            } else {
+                // define uncategorized category
+                $uncategorized = ProductCategory::where('name', '-')->first();
+                if (!$uncategorized) {
+                    $uncategorized = ProductCategory::create([
+                        'name' => '-'
+                    ]);
+                }
+                $item->type_id = $uncategorized->id;
             }
 
             Product::create([

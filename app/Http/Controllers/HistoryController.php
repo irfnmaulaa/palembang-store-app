@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -126,15 +127,35 @@ class HistoryController extends Controller
 
         $filename = 'TRANSAKSI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
 
+        $transaction_products = TransactionProduct::query()
+            ->select([
+                'transaction_products.*',
+                'transactions.date as transaction_date',
+                'transactions.code as transaction_code',
+                'transactions.type as transaction_type',
+                'products.unit as product_unit',
+                'products.name as product_name',
+                'products.variant as product_variant',
+                'products.code as product_code',
+                'users.name as creator_name',
+            ])
+            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+            ->join('products', 'products.id', '=', 'transaction_products.product_id')
+            ->join('users', 'transactions.created_by', '=', 'users.id')
+            ->where('transaction_products.is_verified', 1)
+            ->whereBetween('transactions.date', [$start, $end])
+            ->orderByDesc('transactions.date')
+            ->get();
+
         switch ($type) {
             case 'excel':
-                return (new TransactionsExport($start, $end))->download($filename . '.xlsx');
+                return (new TransactionsExport($transaction_products))->download($filename . '.xlsx');
             case 'csv':
-                return (new TransactionsExport($start, $end))->download($filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
+                return (new TransactionsExport($transaction_products))->download($filename . '.csv', \Maatwebsite\Excel\Excel::CSV, [
                     'Content-Type' => 'text/csv',
                 ]);
             case 'pdf':
-                return (new TransactionsExport($start, $end))->download($filename . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+                return Pdf::loadView('admin.transactions.export.verified-transactions', ['transaction_products' => $transaction_products])->setPaper('A4', 'landscape')->download($filename . '.pdf');
             default:
                 return "url export salah";
         }

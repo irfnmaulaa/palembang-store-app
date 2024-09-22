@@ -182,6 +182,14 @@
 </head>
 
 <body>
+<table style="margin-left: auto; margin-bottom: 1rem;">
+    <tr>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FF00FF;"></td>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FFFF00;"></td>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #00FFFF;"></td>
+    </tr>
+</table>
+
 <table class="table">
     <thead>
     <tr>
@@ -247,7 +255,7 @@
     <thead>
     <tr style="">
         <td style="text-align: right; width: 100%">
-            <h3 style="margin-right: 20px;"><span style="font-weight: 400">ID : </span>{{ auth()->user()->name }}</h3>
+            <h3 style="margin-right: 20px;"><span style="font-weight: 400">ID : </span>{{ $printed_by->name }}</h3>
         </td>
     </tr>
     </thead>

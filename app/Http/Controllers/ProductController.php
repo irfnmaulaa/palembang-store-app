@@ -102,6 +102,7 @@ class ProductController extends Controller
                             'name' => $product->name . ' - ' . $product->variant,
                             'code' => $product->code,
                             'stock' => $product->stock,
+                            'unit' => $product->unit,
                         ]),
                         'text' => $product->name . ' ' . $product->variant,
                     ];

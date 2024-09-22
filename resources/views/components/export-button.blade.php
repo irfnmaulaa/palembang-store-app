@@ -1,6 +1,6 @@
 <div class="dropdown">
     <button
-        class="btn btn-success btn-lg dropdown-toggle"
+        class="btn btn-{{ @$variant ?? 'success' }} btn-lg dropdown-toggle"
         type="button"
         data-mdb-dropdown-init
         data-mdb-ripple-init

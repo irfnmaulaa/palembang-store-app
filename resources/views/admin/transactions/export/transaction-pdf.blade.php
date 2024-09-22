@@ -181,13 +181,21 @@
     </style>
 </head>
 
+<body>
+<table style="margin-left: auto; margin-bottom: 1rem;">
+    <tr>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FF00FF;"></td>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FFFF00;"></td>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #00FFFF;"></td>
+    </tr>
+</table>
+
 @foreach ($transaction->transaction_products as $tp)
-    <body>
     <table class="table">
         <thead>
         <tr>
             <td style="width: 25%">
-                <h3 style="font-weight: 400;margin: 0;">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</h3>
+                <h3 style="font-weight: 400;margin: 0;">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}/{{$transaction->code}}</h3>
             </td>
             <td style="width: 50%;text-align: center;">
                 <h3 style="margin: 0;">DO {{ $transaction->type == 'in' ? 'MASUK' : 'KELUAR' }}</h3>
@@ -229,7 +237,7 @@
         @endforeach
         </tbody>
     </table>
-    </body>
 @endforeach
+</body>
 
 </html>

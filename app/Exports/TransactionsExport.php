@@ -13,33 +13,16 @@ class TransactionsExport implements FromView, WithEvents
 {
     use Exportable;
 
-    public function __construct($start, $end)
+    protected $transaction_products;
+
+    public function __construct($transaction_products)
     {
-        $this->start = $start;
-        $this->end = $end;
+        $this->transaction_products = $transaction_products;
     }
 
     public function view(): View
     {
-        $transaction_products = TransactionProduct::query()
-            ->select([
-                'transaction_products.*',
-                'transactions.date as transaction_date',
-                'transactions.code as transaction_code',
-                'transactions.type as transaction_type',
-                'products.unit as product_unit',
-                'products.name as product_name',
-                'products.variant as product_variant',
-                'products.code as product_code',
-                'users.name as creator_name',
-            ])
-            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
-            ->join('products', 'products.id', '=', 'transaction_products.product_id')
-            ->join('users', 'transactions.created_by', '=', 'users.id')
-            ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.date', [$this->start, $this->end])
-            ->orderByDesc('transactions.date')
-            ->get();
+        $transaction_products = $this->transaction_products;
 
         return view('admin.transactions.export.verified-transactions', [
             'transaction_products' => $transaction_products,

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PendingTransactionsExport;
 use App\Exports\UsersExport;
-use App\Models\ProductCategory;
 use App\Models\User;
+use App\Services\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,9 +12,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
-    public function __construct()
+    protected $transactionService;
+
+    public function __construct(TransactionService $transactionService)
     {
         $this->middleware('super_admin')->except(['close_store']);
+
+        $this->transactionService = $transactionService;
     }
 
     public function index(Request $request)
@@ -270,10 +273,16 @@ class UserController extends Controller
             'is_active' => false,
         ]);
 
+        // define printed by
+        $printed_by = auth()->user();
+
         // logout
         auth()->logout();
 
-        // print pending transaction
-        return redirect()->route('admin.transactions.export_pending');
+        // define type
+        $type = 'pdf';
+
+        // download
+        return $this->transactionService->export_pending($type, $printed_by);
     }
 }

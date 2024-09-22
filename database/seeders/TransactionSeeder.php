@@ -42,7 +42,7 @@ class TransactionSeeder extends Seeder
                     if (!$product) {
                         $product = $item->item;
 
-                        if (isset($product->type_id)) {
+                        if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
                             if (!$type) {
                                 ProductCategory::create([
@@ -50,6 +50,14 @@ class TransactionSeeder extends Seeder
                                     'name' => 'Unknown',
                                 ]);
                             }
+                        } else {
+                            $uncategorized = ProductCategory::where('name', '-')->first();
+                            if (!$uncategorized) {
+                                $uncategorized = ProductCategory::create([
+                                    'name' => '-'
+                                ]);
+                            }
+                            $product->type_id = $uncategorized->id;
                         }
 
                         Product::create([
@@ -102,7 +110,7 @@ class TransactionSeeder extends Seeder
                     if (!$product) {
                         $product = $item->item;
 
-                        if (isset($product->type_id)) {
+                        if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
                             if (!$type) {
                                 ProductCategory::create([
@@ -110,6 +118,14 @@ class TransactionSeeder extends Seeder
                                     'name' => 'Unknown',
                                 ]);
                             }
+                        } else {
+                            $uncategorized = ProductCategory::where('name', '-')->first();
+                            if (!$uncategorized) {
+                                $uncategorized = ProductCategory::create([
+                                    'name' => '-'
+                                ]);
+                            }
+                            $product->type_id = $uncategorized->id;
                         }
 
                         Product::create([
@@ -162,7 +178,7 @@ class TransactionSeeder extends Seeder
                     if (!$product) {
                         $product = $item->item;
 
-                        if (isset($product->type_id)) {
+                        if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
                             if (!$type) {
                                 ProductCategory::create([
@@ -170,6 +186,14 @@ class TransactionSeeder extends Seeder
                                     'name' => 'Unknown',
                                 ]);
                             }
+                        } else {
+                            $uncategorized = ProductCategory::where('name', '-')->first();
+                            if (!$uncategorized) {
+                                $uncategorized = ProductCategory::create([
+                                    'name' => '-'
+                                ]);
+                            }
+                            $product->type_id = $uncategorized->id;
                         }
 
                         Product::create([
@@ -222,7 +246,7 @@ class TransactionSeeder extends Seeder
                     if (!$product) {
                         $product = $item->item;
 
-                        if (isset($product->type_id)) {
+                        if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
                             if (!$type) {
                                 ProductCategory::create([
@@ -230,6 +254,14 @@ class TransactionSeeder extends Seeder
                                     'name' => 'Unknown',
                                 ]);
                             }
+                        } else {
+                            $uncategorized = ProductCategory::where('name', '-')->first();
+                            if (!$uncategorized) {
+                                $uncategorized = ProductCategory::create([
+                                    'name' => '-'
+                                ]);
+                            }
+                            $product->type_id = $uncategorized->id;
                         }
 
                         Product::create([

@@ -7,6 +7,7 @@ use App\Exports\TransactionExport;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
+use App\Services\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,10 +15,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
-    public function __construct()
+    protected $transactionService;
+
+    public function __construct(TransactionService $transactionService)
     {
         $this->middleware('cutoff')->only(['verify']);
         $this->middleware('super_admin')->except(['index', 'create', 'store', 'export_per_transaction', 'export_pending']);
+
+        $this->transactionService = $transactionService;
     }
 
     public function index(Request $request)
@@ -235,8 +240,12 @@ class TransactionController extends Controller
             ]);
         }
 
-        // broadcast to other user for transaction update
-        broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja menambahkan transaksi barang ' . ($validated['type'] === 'in' ? 'masuk' : 'keluar')  . '.'));
+        try {
+            // broadcast to other user for transaction update
+            broadcast(new \App\Events\RefreshPageEvent(auth()->user()->name . ' baru saja menambahkan transaksi barang ' . ($validated['type'] === 'in' ? 'masuk' : 'keluar')  . '.'));
+        } catch (\Exception $exception) {
+
+        }
 
         return response()->json([
             'status' => 'success',
@@ -292,35 +301,10 @@ class TransactionController extends Controller
         return redirect()->back()->with('message', 'Transaksi berhasil ' . ($is_deleted ? 'dihapus' : 'diverifikasi'));
     }
 
-    public function export_pending()
+    public function export_pending($type)
     {
-        // define pending transaction filename
-        $filename = 'TRANSAKSI PENDING_' . date('YmdHis');
 
-        $start = date('Y-m-d ') . '00:00:01';
-        $end   = date('Y-m-d ') . '23:59:59';
-
-        $transaction_products = TransactionProduct::query()
-            ->select([
-                'transaction_products.*',
-                'transactions.date as transaction_date',
-                'transactions.code as transaction_code',
-                'transactions.type as transaction_type',
-                'products.name as product_name',
-                'products.variant as product_variant',
-                'products.code as product_code',
-                'products.unit as product_unit',
-                'users.name as creator_name',
-            ])
-            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
-            ->join('products', 'products.id', '=', 'transaction_products.product_id')
-            ->join('users', 'transactions.created_by', '=', 'users.id')
-            ->where('transaction_products.is_verified', 0)
-            ->whereBetween('transactions.date', [$start, $end])
-            ->orderByDesc('transactions.date')
-            ->get();
-
-        return Pdf::loadView('admin.transactions.export.pending-transactions-pdf', ['transaction_products' => $transaction_products])->setPaper('a4', 'landscape')->download($filename);
+        return $this->transactionService->export_pending($type);
     }
 
     public function export_per_transaction(Transaction $transaction)

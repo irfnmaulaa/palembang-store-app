@@ -107,7 +107,7 @@
                                     <tr>
                                         <td class="{{$className}} text-center">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                                                {{$product->pivot->quantity}}
+                                                {{$product->pivot->quantity}} {{$product->unit}}
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
@@ -134,7 +134,7 @@
                                         </td>
                                         <td class="{{$className}} text-center">
                                             <label for="product-{{$product->id}}" class="d-flex align-items-center justify-content-center">
-                                                {{$product->pivot->to_stock}} {{$product->unit}}
+                                                {{$product->pivot->to_stock}}
                                             </label>
                                         </td>
                                         <td class="{{$className}}">
@@ -162,20 +162,20 @@
                             @if(auth()->user()->role === 'admin')
                                 <button type="submit" form="form-verify" class="btn btn-success btn-lg btn-verify disabled">Verifikasi</button>
                                 <button type="submit" form="form-verify" name="delete" value="1" class="btn btn-outline-danger btn-reject btn-lg disabled">Hapus</button>
-                            @elseif(auth()->user()->role === 'staff')
-                                <button type="button" class="btn btn-outline-dark btn-lg btn-close-store">Tutup Gudang <i class="fas fa-sign-out ms-2"></i></button>
-                                <form action="{{ route('admin.users.close_store') }}" id="form-close-store" method="POST">
-                                    @csrf
-                                </form>
                             @endif
                         </div>
                         <div class="table-pagination">
                             {{ $transactions_pending->links('vendor.pagination.bootstrap-4') }}
                         </div>
-                        <div>
-                            <a href="{{route('admin.transactions.export_pending')}}" class="btn btn-outline-success btn-lg">
-                                <i class="fas fa-file-pdf me-2"></i> Ekspor
-                            </a>
+                        <div class="d-flex gap-3">
+                            @if(auth()->user()->role === 'admin')
+                            <x-export-button variant="outline-success" table="pending-transactions" :param="['date_range' => request()->query('date_range')]"></x-export-button>
+                            @elseif(auth()->user()->role === 'staff')
+                            <button type="button" class="btn btn-outline-dark btn-lg btn-close-store">Tutup Gudang <i class="fas fa-sign-out ms-2"></i></button>
+                            <form action="{{ route('admin.users.close_store') }}" id="form-close-store" method="POST">
+                                @csrf
+                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -209,9 +209,15 @@
                             {{ $transactions_verified->links('vendor.pagination.bootstrap-4') }}
                         </div>
                         <div>
-                            <a href="{{route('admin.histories.export', ['type' => 'excel', 'date_range' => request()->query('date_range') ?? (date('Y-m-d') . ' - ' . date('Y-m-d'))])}}" class="btn btn-outline-success btn-lg">
-                                <i class="fas fa-table me-2"></i> Ekspor
-                            </a>
+                            @if(auth()->user()->role === 'admin')
+                                @php
+                                $date_range = date('Y-m-d') . ' - ' . date('Y-m-d');
+                                if(request()->query('date_range')) {
+                                    $date_range = request()->query('date_range');
+                                }
+                                @endphp
+                                <x-export-button variant="outline-success" table="histories" :param="['date_range' => $date_range]"></x-export-button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -434,8 +440,19 @@
                     buttonsStyling: false
                 });
                 swalWithBootstrapButtons.fire({
+                    width: '700px',
                     title: "Konfirmasi tutup gudang",
-                    text: 'Apakah kamu yakin ingin tutup gudang?',
+                    html: `
+                        <hr style="margin-top: -0.5rem;"/>
+                        <ol class="text-start">
+                            <li>Akan muncul laporan yang harus di print dan diserahkan ke atasan.</li>
+                            <li>Anda akan ter log-out dari sistem, dan akun anda menjadi non-aktif.</li>
+                            <li>Untuk masuk kembali, hubungi Administrator untuk mengaktifkan akun.</li>
+                        </ol>
+                        <hr/>
+
+                        <p>Apakah anda yakin ingin menutup gudang?</p>
+                    `,
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: 'Ya, tutup gudang',

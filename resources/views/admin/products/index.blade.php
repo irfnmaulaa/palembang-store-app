@@ -38,7 +38,7 @@
                     {{$product->code}}
                 </td>
                 <td class="text-center">
-                    {{$product->latest_stock ? $product->latest_stock : '0'}}
+                    {{$product->stock ?? '0'}}
                     {{$product->unit}}
                 </td>
             </tr>

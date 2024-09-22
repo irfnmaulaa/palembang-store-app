@@ -54,7 +54,7 @@
         @foreach($products as $product)
             <tr>
                 <td class="text-center {{$className}}">
-                    {{$product->pivot->quantity}}
+                    {{$product->pivot->quantity}} {{$product->unit}}
                 </td>
                 <td class="{{$className}}">
                     <a href="{{route('admin.products.show', [$product])}}" style="color: inherit;">
@@ -68,7 +68,7 @@
                     {{$product->pivot->note}}
                 </td>
                 <td class="text-center {{$className}}">
-                    {{$product->pivot->to_stock}} {{$product->unit}}
+                    {{$product->pivot->to_stock}}
                 </td>
                 <td class="text-center {{$className}}">
                     @if($transaction->creator)

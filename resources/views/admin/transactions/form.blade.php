@@ -158,6 +158,19 @@
                     return
                 }
 
+                if(parseInt(getValue(product, 'quantity'), 0) <= 0) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Quantity minimal 1",
+                    }).then(() => {
+                        setTimeout(() => {
+                            $('textarea[name="quantity"]').focus()
+                        }, 300)
+                    })
+                    return
+                }
+
                 if(getValue(product, 'note') === '') {
                     Swal.fire({
                         icon: "error",
@@ -184,8 +197,8 @@
                 if(prodIndex > -1) {
                     const swalWithBootstrapButtons = Swal.mixin({
                         customClass: {
-                            confirmButton: "btn btn-outline-danger btn-lg ms-2",
-                            cancelButton: "btn btn-danger btn-lg"
+                            confirmButton: "btn btn-primary btn-lg me-3",
+                            cancelButton: "btn btn-outline-primary btn-lg"
                         },
                         buttonsStyling: false
                     });
@@ -196,7 +209,6 @@
                         showCancelButton: true,
                         confirmButtonText: "Ya, perbarui",
                         cancelButtonText: "Tidak",
-                        reverseButtons: true
                     }).then((result) => {
                         if ( result.isConfirmed ) {
                             products[prodIndex] = product
@@ -229,7 +241,7 @@
                         const trInit = `
                         <tr>
                             <td class="${className} text-center">
-                                ${ getValue(product, 'quantity') }
+                                ${ getValue(product, 'quantity') } ${ JSON.parse(getValue(product, 'product'))?.unit || '' }
                             </td>
                             <td class="${className}">
                                 ${ JSON.parse(getValue(product, 'product'))?.name || '-' }
@@ -262,8 +274,8 @@
                 const index = $(this).data('index')
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
-                        confirmButton: "btn btn-outline-danger btn-lg ms-2",
-                        cancelButton: "btn btn-danger btn-lg"
+                        confirmButton: "btn btn-danger btn-lg me-3",
+                        cancelButton: "btn btn-outline-danger btn-lg"
                     },
                     buttonsStyling: false
                 });
@@ -274,7 +286,6 @@
                     showCancelButton: true,
                     confirmButtonText: "Ya, hapus",
                     cancelButtonText: "Tidak",
-                    reverseButtons: true
                 }).then((result) => {
                     if ( result.isConfirmed ) {
                         products = products.filter((product, i) => {
