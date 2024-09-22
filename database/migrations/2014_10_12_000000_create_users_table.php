@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('pin')->nullable();
             $table->enum('role', ['super', 'admin', 'staff'])->default('staff');
             $table->tinyInteger('is_active')->default(1);
+            $table->timestamp('last_login_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -60,6 +60,9 @@ class LoginController extends Controller
         $user = User::where(DB::raw("LOWER({$username})"), $credentials[$username])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
+            $user->update([
+                'last_login_at' => now(),
+            ]);
             $this->guard()->login($user, $request->filled('remember'));
             return true;
         }

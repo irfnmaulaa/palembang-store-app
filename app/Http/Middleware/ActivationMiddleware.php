@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class ActivationMiddleware
             }
 
             // user try to access > get max time user active
-            elseif (date('H:i:s') > get_max_time_user_active()) {
+            elseif (date('Y-m-d H:i:s') > Carbon::parse(auth()->user()->last_login_at)->format('Y-m-d') . ' ' . get_max_time_user_active()) {
                 User::find(auth()->user()->id)->update([
                     'is_active' =>false,
                 ]);
