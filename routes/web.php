@@ -42,6 +42,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::get('/products/{product}/export/{type}', [\App\Http\Controllers\ProductController::class, 'export_detail'])->name('product-detail.export');
 
     // Transactions
+    Route::get('/transactions/import', [\App\Http\Controllers\TransactionController::class, 'import'])->name('transactions.import');
     Route::put('/transactions/verify', [\App\Http\Controllers\TransactionController::class, 'verify'])->name('transactions.verify');
     Route::resource('/transactions', \App\Http\Controllers\TransactionController::class);
     Route::get('/transactions/pending/export/{type}', [\App\Http\Controllers\TransactionController::class, 'export_pending'])->name('pending-transactions.export');

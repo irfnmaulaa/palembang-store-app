@@ -65,7 +65,7 @@ class HistoryController extends Controller
         }
 
         // order-by settings
-        $order = ['transactions.created_at', 'desc'];
+        $order = ['transactions.date', 'desc'];
         if ($request->has('order')) {
             $order_query = explode('-', $request->get('order'));
             if (count($order_query) >= 2) $order = $order_query;
