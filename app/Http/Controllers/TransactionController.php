@@ -973,7 +973,7 @@ class TransactionController extends Controller
                 $transaction = Transaction::updateOrCreate([
                     'code' => $item['transaction_code'],
                     'date' => $date . ' 00:00:01',
-                    'type' => $item['transaction_type'] === 'keluar' ? 'out' : 'in',
+                    'type' => $item['transaction_type'] === 'KELUAR' ? 'out' : 'in',
                 ], [
                     'created_at' => Carbon::now(),
                     'created_by' => 3,

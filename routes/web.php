@@ -68,7 +68,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::resource('/settings', \App\Http\Controllers\SettingsController::class);
 
     // App Errors
-    Route::post('/app_errors/check', [\App\Http\Controllers\AppErrorsController::class, 'check'])->name('app_errors.check');
-    Route::resource('/app_errors', \App\Http\Controllers\AppErrorsController::class);
+    // Route::post('/app_errors/check', [\App\Http\Controllers\AppErrorsController::class, 'check'])->name('app_errors.check');
+    // Route::resource('/app_errors', \App\Http\Controllers\AppErrorsController::class);
 
 });

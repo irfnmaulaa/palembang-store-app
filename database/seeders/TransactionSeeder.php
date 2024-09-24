@@ -44,13 +44,14 @@ class TransactionSeeder extends Seeder
 
                         if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
-                            if (!$type) {
-                                ProductCategory::create([
-                                    'id' => $product->type_id,
-                                    'name' => 'Unknown',
-                                ]);
+                            if ($type) {
+                                $product->type_id = $type->id;
+                            } else {
+                                $product->type_id = null;
                             }
-                        } else {
+                        }
+
+                        if(empty($product->type_id)){
                             $uncategorized = ProductCategory::where('name', '-')->first();
                             if (!$uncategorized) {
                                 $uncategorized = ProductCategory::create([
@@ -112,13 +113,14 @@ class TransactionSeeder extends Seeder
 
                         if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
-                            if (!$type) {
-                                ProductCategory::create([
-                                    'id' => $product->type_id,
-                                    'name' => 'Unknown',
-                                ]);
+                            if ($type) {
+                                $product->type_id = $type->id;
+                            } else {
+                                $product->type_id = null;
                             }
-                        } else {
+                        }
+
+                        if(empty($product->type_id)){
                             $uncategorized = ProductCategory::where('name', '-')->first();
                             if (!$uncategorized) {
                                 $uncategorized = ProductCategory::create([
@@ -180,13 +182,14 @@ class TransactionSeeder extends Seeder
 
                         if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
-                            if (!$type) {
-                                ProductCategory::create([
-                                    'id' => $product->type_id,
-                                    'name' => 'Unknown',
-                                ]);
+                            if ($type) {
+                                $product->type_id = $type->id;
+                            } else {
+                                $product->type_id = null;
                             }
-                        } else {
+                        }
+
+                        if(empty($product->type_id)){
                             $uncategorized = ProductCategory::where('name', '-')->first();
                             if (!$uncategorized) {
                                 $uncategorized = ProductCategory::create([
@@ -248,13 +251,14 @@ class TransactionSeeder extends Seeder
 
                         if (!empty($product->type_id)) {
                             $type = ProductCategory::find($product->type_id);
-                            if (!$type) {
-                                ProductCategory::create([
-                                    'id' => $product->type_id,
-                                    'name' => 'Unknown',
-                                ]);
+                            if ($type) {
+                                $product->type_id = $type->id;
+                            } else {
+                                $product->type_id = null;
                             }
-                        } else {
+                        }
+
+                        if(empty($product->type_id)){
                             $uncategorized = ProductCategory::where('name', '-')->first();
                             if (!$uncategorized) {
                                 $uncategorized = ProductCategory::create([
