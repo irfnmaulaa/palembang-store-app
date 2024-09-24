@@ -42,6 +42,9 @@
         .cta-wrap .btn {
             zoom: 1.4;
         }
+        .cta-wrap .dropdown-menu.show {
+            transform: translate3d(-1px, 71px, 0px) !important;
+        }
         .navbar, table * {
             text-transform: uppercase;
         }
