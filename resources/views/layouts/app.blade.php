@@ -39,6 +39,9 @@
         body {
             zoom: 1.25;
         }
+        .btn {
+            zoom: 1.5;
+        }
         .navbar, table * {
             text-transform: uppercase;
         }
