@@ -950,6 +950,35 @@ class TransactionController extends Controller
             ["date" => "45556", "transaction_code" => "S 2713", "product_name" => "MU 480 / 25 KG", "quantity" => "4", "product_unit" => "SAK", "note" => "0816 BM MEKANIK", "to_stock" => "8", "transaction_type" => "KELUAR"],
         ];
 
+        $items = [
+            ["date" => "45558", "transaction_code" => "M 2714", "product_name" => "ULTRAPROOF 5 KG SKY BLUE", "quantity" => "4", "product_unit" => "GLN", "note" => "MASUK", "to_stock" => "4", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2715", "product_name" => "KNEE POLOS RCD 3'' D", "quantity" => "1", "product_unit" => "DUS", "note" => "MASUK", "to_stock" => "1", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2715", "product_name" => "WAVIN D 2'' D", "quantity" => "50", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "171", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2715", "product_name" => "WAVIN AW 1'' AW", "quantity" => "100", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "142", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2715", "product_name" => "WAVIN AW 1/2'' AW", "quantity" => "200", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "334", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2716", "product_name" => "ROMAN 30 / 60 EMBOSS CATANIA BRUNO", "quantity" => "10", "product_unit" => "DUS", "note" => "MASUK", "to_stock" => "16", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2716", "product_name" => "WH ARISTON AURES EASY", "quantity" => "1", "product_unit" => "BH", "note" => "MASUK", "to_stock" => "1", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "M 2717", "product_name" => "PARALON LISTRIK ANDARU", "quantity" => "200", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "200", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "MELBOX 18 MM 2 MUKA", "quantity" => "1", "product_unit" => "LBR", "note" => "0834 JUAL", "to_stock" => "11", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "MULTIPLEX 9 MM", "quantity" => "3", "product_unit" => "LBR", "note" => "0834 JUAL", "to_stock" => "25", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "SEMEN HOLCIM 40KG", "quantity" => "15", "product_unit" => "ZAK", "note" => "0838 TERUS JAYA", "to_stock" => "170", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "MELAMIN LOTUS PUTIH DNM", "quantity" => "1", "product_unit" => "LBR", "note" => "0851 JUAL", "to_stock" => "17", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "SEMEN HEBEL UNIMIX 40KG", "quantity" => "1", "product_unit" => "SAK", "note" => "0857 ISP", "to_stock" => "12", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "PLASTIK COR -", "quantity" => "10", "product_unit" => "BALL", "note" => "0858 JUAL", "to_stock" => "73", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2718", "product_name" => "GENTONG TERASO PUTIH LR-DL", "quantity" => "1", "product_unit" => "BH", "note" => "0862 JUAL", "to_stock" => "0", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2719", "product_name" => "MULTIPLEX 9 MM", "quantity" => "3", "product_unit" => "LBR", "note" => "RETUR PBL 0006", "to_stock" => "28", "transaction_type" => "MASUK"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "MULTIPLEX 12 MM HP", "quantity" => "1", "product_unit" => "LBR", "note" => "0863 JUAL", "to_stock" => "7", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "WAVIN AW 1/2'' AW", "quantity" => "2", "product_unit" => "BTG", "note" => "0842 DODI ANDRIAN", "to_stock" => "332", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "PAPAN GIPSUM A+", "quantity" => "4", "product_unit" => "LBR", "note" => "0845 KOMINFO", "to_stock" => "160", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "GRC JAYA", "quantity" => "1", "product_unit" => "LBR", "note" => "0841 DODI ANDRIAN", "to_stock" => "88", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "KAYU KASO", "quantity" => "10", "product_unit" => "BTG", "note" => "0841 DODI ANDRIAN", "to_stock" => "110", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "WAVIN D 2 1/2'' D", "quantity" => "4", "product_unit" => "BTG", "note" => "0869 H. MUMU", "to_stock" => "156", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2720", "product_name" => "FLEXSEAL FS GRANITE", "quantity" => "1", "product_unit" => "SAK", "note" => "0871 JUAL", "to_stock" => "8", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "S 2721", "product_name" => "MULTIPLEX 15 MM HP", "quantity" => "1", "product_unit" => "LBR", "note" => "0870 YUSTI ANGKRINGAN", "to_stock" => "18", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "B 0141", "product_name" => "FLEXSEAL FS RENDER", "quantity" => "5", "product_unit" => "SAK", "note" => "BANGUNAN OTISTA", "to_stock" => "45", "transaction_type" => "KELUAR"],
+            ["date" => "45558", "transaction_code" => "B 0141", "product_name" => "SEMEN HOLCIM 40KG", "quantity" => "3", "product_unit" => "ZAK", "note" => "BANGUNAN OTISTA", "to_stock" => "167", "transaction_type" => "KELUAR"],
+        ];
+
         foreach ($items as $i => $item) {
             $products = Product::query()
                 ->select('products.*')

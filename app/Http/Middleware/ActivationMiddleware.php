@@ -18,19 +18,9 @@ class ActivationMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (in_array(auth()->user()->role, ['staff'])) {
-            // if user inactive
-            if (!auth()->user()->is_active) {
-                abort(405);
-            }
-
-            // user try to access > get max time user active
-            elseif (date('Y-m-d H:i:s') > Carbon::parse(auth()->user()->last_login_at)->format('Y-m-d') . ' ' . get_max_time_user_active()) {
-                User::find(auth()->user()->id)->update([
-                    'is_active' =>false,
-                ]);
-                abort(405);
-            }
+        // if user inactive
+        if (in_array(auth()->user()->role, ['staff']) && !auth()->user()->is_active) {
+            abort(405);
         }
         return $next($request);
     }
