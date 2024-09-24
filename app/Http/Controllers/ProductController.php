@@ -119,7 +119,7 @@ class ProductController extends Controller
 
     public function show(Request $request, Product $product)
     {
-        $start = $product->created_at->format('Y-m-d H:i:s');
+        $start = '2020-12-28 00:00:00';
         $end = date('Y-m-d') . ' 23:59:59';
 
         if ($request->has('date_range')) {
