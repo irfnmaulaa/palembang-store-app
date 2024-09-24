@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="d-flex gap-3" style="white-space: nowrap;">
-                    <div class="d-flex gap-3">
+                    <div class="cta-wrap d-flex gap-3">
                         <a href="{{route('admin.transactions.create', ['type' => 'in'])}}" class="btn btn-danger btn-lg">
                             Barang Masuk
                         </a>

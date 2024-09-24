@@ -7,7 +7,9 @@
                 <h2 class="mb-0 text-uppercase">{{$title}}</h2>
                 @yield('breadcrumbs')
             </div>
-            @yield('cta')
+            <div class="cta-wrap">
+                @yield('cta')
+            </div>
         </div>
 
         @yield('header')

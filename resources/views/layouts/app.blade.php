@@ -39,8 +39,8 @@
         body {
             zoom: 1.25;
         }
-        .btn {
-            zoom: 1.5;
+        .cta-wrap .btn {
+            zoom: 1.4;
         }
         .navbar, table * {
             text-transform: uppercase;
