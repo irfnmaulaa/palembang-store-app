@@ -77,6 +77,9 @@
             left: 0;
             top: 0;
         }
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__options:not(.select2-results__options--nested) {
+            max-height: 14.5rem;
+        }
     </style>
 
     <!-- MDB -->
