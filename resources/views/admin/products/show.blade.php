@@ -80,7 +80,11 @@
             @endphp
             <tr>
                 <td class="{{$className}}">{{\Carbon\Carbon::parse($transaction_product->date)->format('d/m/Y')}}</td>
-                <td class="{{$className}}">{{$transaction_product->code}}</td>
+                <td class="{{$className}}">
+                    <a href="{{ route('admin.transactions.show', [$transaction_product]) }}" class="{{$className}}">
+                        {{$transaction_product->code}}
+                    </a>
+                </td>
                 <td class="{{$className}}">{{$transaction_product->note}}</td>
                 <td class="{{$className}} text-center">{{$type === 'in' ? $transaction_product->quantity : '0'}}</td>
                 <td class="{{$className}} text-center">{{$type === 'out' ? $transaction_product->quantity : '0'}}</td>

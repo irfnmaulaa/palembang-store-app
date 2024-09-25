@@ -139,6 +139,7 @@
                         return query;
                     }
                 },
+                dropdownParent: $('.select-product').parents('.form-group')
             } );
 
             $('body').delegate('#check_all', 'change', function() {

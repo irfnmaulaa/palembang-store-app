@@ -61,10 +61,13 @@
                             <tr>
                                 <td class="{{ $className }} text-center">
                                     {{$tp->quantity}}
+                                    @if($tp->product)
+                                    {{$tp->product->unit}}
+                                    @endif
                                 </td>
                                 <td class="{{ $className }}">
                                     @if($tp->product)
-                                        <a href="{{route('admin.products.show', $tp->product)}}">
+                                        <a href="{{route('admin.products.show', $tp->product)}}" class="{{ $className }}">
                                             {{$tp->product->name}} {{$tp->product->variant}}
                                         </a>
                                     @if(!$tp->is_verified)
