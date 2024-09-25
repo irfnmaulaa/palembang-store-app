@@ -101,7 +101,7 @@ class UserController extends Controller
         User::create($validated);
 
         // return
-        return redirect()->back()->with('message', 'Pengguna berhasil ditambahkan');
+        return redirect()->route('admin.users.index')->with('message', 'Pengguna berhasil ditambahkan');
     }
 
     public function edit(User $user)
@@ -127,7 +127,7 @@ class UserController extends Controller
         $user->update($validated);
 
         // return
-        return redirect()->back()->with('message', 'Pengguna berhasil diperbarui');
+        return redirect()->route('admin.users.index')->with('message', 'Pengguna berhasil diperbarui');
     }
 
     public function destroy(Request $request, User $user)

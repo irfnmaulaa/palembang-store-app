@@ -62,6 +62,7 @@ class AppErrorsController extends Controller
     {
         $duplicates = DB::table('transactions as t')
             ->join('transaction_products as tp', 'tp.transaction_id', '=', 't.id')
+            ->join('products as p', 'tp.product_id', '=', 'p.id')
             ->select(
                 't.id as transaction_id',
                 't.code as transaction_code',
@@ -74,6 +75,7 @@ class AppErrorsController extends Controller
                 'tp.to_stock'
             )
             ->selectRaw('COUNT(*) as duplicate_count')
+            ->where('p.deleted_at', '=', null)
             ->groupBy(
                 'transaction_id',
                 'transaction_code',
