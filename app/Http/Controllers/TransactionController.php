@@ -313,7 +313,12 @@ class TransactionController extends Controller
     {
         $filename = 'TRANSAKSI_' . str_replace('/', '-', $transaction->code) . '_' . date('YmdHis') . '.pdf';
 
-        return Pdf::loadView('admin.transactions.export.transaction-pdf', ['transaction' => $transaction])->setPaper('A6', 'landscape')->download($filename);
+        return Pdf::loadView('admin.transactions.export.transaction-pdf', ['transaction' => $transaction])->setPaper('A6', 'landscape')->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'isPhpEnabled' => true,
+            'dpi' => 150,
+        ])->download($filename);
     }
 
     public function import(Request $request)

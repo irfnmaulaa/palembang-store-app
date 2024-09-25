@@ -75,7 +75,7 @@
         }
         .daterangepicker {
             left: 0;
-            top: 0; 
+            top: 0;
         }
     </style>
 

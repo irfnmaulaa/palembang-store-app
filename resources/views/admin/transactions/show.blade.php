@@ -19,7 +19,7 @@
 
         <div class="card border shadow-none overflow-hidden">
             <div class="card-body py-4 d-flex flex-column gap-3">
-                <div class="row">
+                <div class="row justify-content-between">
                     <div class="col-md-4">
                         <table class="table table-sm" style="font-size: 16px;">
                             <tr>
@@ -35,6 +35,11 @@
                                 </td>
                             </tr>
                         </table>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{{route('admin.transactions.export_per_transaction', [$transaction])}}" class="btn btn-lg btn-success">
+                            <i class="fas fa-file-pdf me-2"></i> Cetak
+                        </a>
                     </div>
                 </div>
                 <div>

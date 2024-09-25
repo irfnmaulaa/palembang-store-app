@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <style>
         @page {
             margin: 0;
@@ -12,6 +13,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, Helvetica, sans-serif;
+
             font-size: 10pt;
         }
 
@@ -178,29 +180,36 @@
         .table-responsive.table-bordered {
             border: 0;
         }
+
+        footer {
+            position: fixed;
+            bottom: 10px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        body::after {
+            content: '';
+            display: block;
+            height: 70px; /* Adjust as needed */
+        }
     </style>
+    <title>Transaksi</title>
 </head>
 
 <body>
-<table style="margin-left: auto; margin-bottom: 1rem;">
-    <tr>
-        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FF00FF;"></td>
-        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FFFF00;"></td>
-        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #00FFFF;"></td>
-    </tr>
-</table>
 
-@foreach ($transaction->transaction_products as $tp)
+<main>
     <table class="table">
         <thead>
         <tr>
-            <td style="width: 25%">
+            <td style="width: 35%">
                 <h3 style="font-weight: 400;margin: 0;">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}/{{$transaction->code}}</h3>
             </td>
-            <td style="width: 50%;text-align: center;">
+            <td style="width: 30%;text-align: center;">
                 <h3 style="margin: 0;">DO {{ $transaction->type == 'in' ? 'MASUK' : 'KELUAR' }}</h3>
             </td>
-            <td style="text-align: right;width: 25%;">
+            <td style="text-align: right;width: 35%;">
                 <h3 style="font-weight: 400;margin: 0;">{{ $transaction->creator->name }}</h3>
             </td>
         </tr>
@@ -222,8 +231,8 @@
         <tbody>
         @foreach ($transaction->transaction_products as $tp)
             @php
-            $row_style  = 'text-transform: uppercase;';
-            $row_style .= 'color:' . ($transaction->type === 'in' ? '#f44336' : '#000000') . ';';
+                $row_style  = 'text-transform: uppercase;';
+                $row_style .= 'color:' . ($transaction->type === 'in' ? '#f44336' : '#000000') . ';';
             @endphp
             <tr>
                 <td style="{{ $row_style }}">{{ $tp->quantity . ' ' .  $tp->product->unit }}</td>
@@ -237,7 +246,16 @@
         @endforeach
         </tbody>
     </table>
-@endforeach
+</main>
+
+<table class="bottom-center" style="position:absolute;left: 50%;bottom: 30px;transform: translateX(-50%);">
+    <tr>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FF00FF;"></td>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #FFFF00;"></td>
+        <td style="border: 2px solid #000000; width: 15px; height: 15px; background: #00FFFF;"></td>
+    </tr>
+</table>
+
 </body>
 
 </html>
