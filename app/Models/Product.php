@@ -30,4 +30,9 @@ class Product extends Model
         }
         return 0;
     }
+
+    public function scopeWithTrashed($query)
+    {
+        return $query->withoutGlobalScope('Illuminate\Database\Eloquent\SoftDeletingScope');
+    }
 }

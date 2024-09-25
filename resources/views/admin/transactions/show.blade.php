@@ -63,9 +63,13 @@
                                     {{$tp->quantity}}
                                 </td>
                                 <td class="{{ $className }}">
-                                    {{$tp->product->name}} {{$tp->product->variant}}
+                                    @if($tp->product)
+                                        <a href="{{route('admin.products.show', $tp->product)}}">
+                                            {{$tp->product->name}} {{$tp->product->variant}}
+                                        </a>
                                     @if(!$tp->is_verified)
                                         <span class="badge bg-warning ms-2">Pending</span>
+                                    @endif
                                     @endif
                                 </td>
                                 <td class="{{ $className }}">

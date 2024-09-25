@@ -35,13 +35,11 @@ if (!function_exists('get_menus')) {
                 'link' => 'admin.users.index',
                 'allowed_roles' => ['admin']
             ],
-            /*
             (object) [
                 'label' => 'REC',
                 'link' => 'admin.app_errors.index',
                 'allowed_roles' => ['admin', 'staff']
             ],
-            */
         ];
     }
 }
