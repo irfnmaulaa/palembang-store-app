@@ -73,6 +73,10 @@
         .navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
             font-weight: 500;
         }
+        .daterangepicker {
+            left: 0;
+            top: 0; 
+        }
     </style>
 
     <!-- MDB -->

@@ -948,9 +948,6 @@ class TransactionController extends Controller
             ["date" => "45556", "transaction_code" => "S 2713", "product_name" => "HPL 003 G / HITAM", "quantity" => "1", "product_unit" => "LBR", "note" => "0809 ZIA MOTOR", "to_stock" => "6", "transaction_type" => "KELUAR"],
             ["date" => "45556", "transaction_code" => "S 2713", "product_name" => "MULTIPLEX 18 MM F", "quantity" => "2", "product_unit" => "LBR", "note" => "0809 ZIA MOTOR", "to_stock" => "14", "transaction_type" => "KELUAR"],
             ["date" => "45556", "transaction_code" => "S 2713", "product_name" => "MU 480 / 25 KG", "quantity" => "4", "product_unit" => "SAK", "note" => "0816 BM MEKANIK", "to_stock" => "8", "transaction_type" => "KELUAR"],
-        ];
-
-        $items = [
             ["date" => "45558", "transaction_code" => "M 2714", "product_name" => "ULTRAPROOF 5 KG SKY BLUE", "quantity" => "4", "product_unit" => "GLN", "note" => "MASUK", "to_stock" => "4", "transaction_type" => "MASUK"],
             ["date" => "45558", "transaction_code" => "M 2715", "product_name" => "KNEE POLOS RCD 3'' D", "quantity" => "1", "product_unit" => "DUS", "note" => "MASUK", "to_stock" => "1", "transaction_type" => "MASUK"],
             ["date" => "45558", "transaction_code" => "M 2715", "product_name" => "WAVIN D 2'' D", "quantity" => "50", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "171", "transaction_type" => "MASUK"],
@@ -997,11 +994,12 @@ class TransactionController extends Controller
             if ($products->count() > 0) {
                 $unixTimestamp = ($item['date'] - 25569) * 86400;
                 $date = (new \DateTime("@$unixTimestamp"))->format('Y-m-d');
+                $date = Carbon::parse($date . ' 00:00:01')->addSeconds($i);
                 $product = $products->first();
 
                 $transaction = Transaction::updateOrCreate([
                     'code' => $item['transaction_code'],
-                    'date' => $date . ' 00:00:01',
+                    'date' => $date,
                     'type' => $item['transaction_type'] === 'KELUAR' ? 'out' : 'in',
                 ], [
                     'created_at' => Carbon::now(),

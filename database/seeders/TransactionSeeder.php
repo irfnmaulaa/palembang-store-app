@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Old\Transaction;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class TransactionSeeder extends Seeder
@@ -64,6 +65,7 @@ class TransactionSeeder extends Seeder
                         Product::create([
                             'id' => $product->id,
                             'product_category_id' => isset($product->type_id) ? $product->type_id : null,
+                            'deleted_at' => Carbon::now(),
                             'name' => $product->name,
                             'unit' => $product->unit,
                             'code' => $product->code,
@@ -133,6 +135,7 @@ class TransactionSeeder extends Seeder
                         Product::create([
                             'id' => $product->id,
                             'product_category_id' => isset($product->type_id) ? $product->type_id : null,
+                            'deleted_at' => Carbon::now(),
                             'name' => $product->name,
                             'unit' => $product->unit,
                             'code' => $product->code,
@@ -202,6 +205,7 @@ class TransactionSeeder extends Seeder
                         Product::create([
                             'id' => $product->id,
                             'product_category_id' => isset($product->type_id) ? $product->type_id : null,
+                            'deleted_at' => Carbon::now(),
                             'name' => $product->name,
                             'unit' => $product->unit,
                             'code' => $product->code,
@@ -271,6 +275,7 @@ class TransactionSeeder extends Seeder
                         Product::create([
                             'id' => $product->id,
                             'product_category_id' => isset($product->type_id) ? $product->type_id : null,
+                            'deleted_at' => Carbon::now(),
                             'name' => $product->name,
                             'unit' => $product->unit,
                             'code' => $product->code,
