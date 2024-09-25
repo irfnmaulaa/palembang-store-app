@@ -174,7 +174,7 @@
     .table-responsive.table-bordered {
         border: 0;
     }
-</style> 
+</style>
 
 <table
     id="table"
