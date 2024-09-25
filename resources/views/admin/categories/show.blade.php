@@ -85,7 +85,7 @@
         </a>
 
         <div class="modal fade modal-xl" id="modal-add-product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Masukan Barang ke Kategori</h4>
@@ -124,6 +124,9 @@
 @section('js')
     <script>
         $(document).ready(function () {
+            $('#modal-add-product').on('shown.bs.modal', function () {
+                $('.select-product').select2('open')
+            })
             $( '.select-product' ).select2( {
                 theme: "bootstrap-5",
                 width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
