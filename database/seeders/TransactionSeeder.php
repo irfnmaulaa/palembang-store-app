@@ -6,6 +6,7 @@ use App\Models\Old\Item;
 use App\Models\Old\Transaction;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\TransactionProduct;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -53,6 +54,8 @@ class TransactionSeeder extends Seeder
                 }
             }
         }
+
+        TransactionProduct::destroy(11666);
 
         return;
 

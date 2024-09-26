@@ -133,12 +133,6 @@
     </form>
 @endsection
 
-@section('top-right')
-    <a href="{{route('admin.products.matching_stock')}}" class="btn btn-outline-primary btn-lg">
-        Matching Stock <i class="fas fa-chevron-right ms-2"></i>
-    </a>
-@endsection
-
 @section('js')
     <script>
         $(document).ready(function () {
