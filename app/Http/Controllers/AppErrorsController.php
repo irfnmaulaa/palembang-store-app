@@ -83,6 +83,7 @@ class AppErrorsController extends Controller
                 'tp.note',
             )
             ->where('p.deleted_at', null)
+            ->whereDate('t.date', '>=', get_app_released_date())
             ->havingRaw('COUNT(*) > 1')
             ->get();
 
@@ -108,7 +109,7 @@ class AppErrorsController extends Controller
         // product all
         foreach (Product::where('id', '>', $last_product_id)->take(1000)->get() as $product) {
             $last = null;
-            foreach ($product->transaction_products()->select('transaction_products.*')->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')->where('is_verified', 1)->orderBy('transactions.date')->get() as $i => $tp) {
+            foreach ($product->transaction_products()->select('transaction_products.*')->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')->where('is_verified', 1)->orderBy('transactions.date')->whereDate('transactions.date', '>=', get_app_released_date())->get() as $i => $tp) {
                 if ($i > 0) {
                     $latest_stock = $last->to_stock;
 

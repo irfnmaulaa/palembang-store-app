@@ -78,3 +78,11 @@ if (!function_exists('get_max_time_admin_verify')) {
         return '19:00:00';
     }
 }
+
+
+if (!function_exists('get_app_released_date')) {
+    function get_app_released_date()
+    {
+        return '2024-09-01';
+    }
+}
