@@ -98,7 +98,7 @@ class ProductController extends Controller
                             'id' => $product->id,
                             'name' => $product->name . ' ' . $product->variant,
                             'code' => $product->code,
-                            'stock' => $product->stock,
+                            'stock' => $product->pending_stock,
                             'unit' => $product->unit,
                         ]),
                         'text' => $product->name . ' ' . $product->variant,

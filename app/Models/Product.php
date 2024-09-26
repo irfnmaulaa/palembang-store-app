@@ -32,6 +32,15 @@ class Product extends Model
         return 0;
     }
 
+    public function getPendingStockAttribute()
+    {
+        $tp = $this->transaction_products()->where('is_verified', 0)->orderByDesc('id')->first();
+        if ($tp) {
+            return $tp->to_stock;
+        }
+        return 0;
+    }
+
     public function scopeWithTrashed($query)
     {
         return $query->withoutGlobalScope('Illuminate\Database\Eloquent\SoftDeletingScope');
