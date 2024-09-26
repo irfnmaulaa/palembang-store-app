@@ -68,7 +68,7 @@ class TransactionController extends Controller
         }
 
         // order-by settings
-        $order = ['transactions.created_at', 'desc'];
+        $order = ['transactions.date', 'asc'];
         if ($request->has('order')) {
             $order_query = explode('-', $request->get('order'));
             if (count($order_query) >= 2) $order = $order_query;
@@ -84,6 +84,9 @@ class TransactionController extends Controller
 
         // order-by statements
         $transactions_pending = $transactions_pending->orderBy($order[0], $order[1]);
+        if ($order[0] === 'transactions.date') {
+            $transactions_pending = $transactions_pending->orderBy('transactions.created_at', $order[1]);
+        }
 
         // final statements
         $transactions_pending = $transactions_pending

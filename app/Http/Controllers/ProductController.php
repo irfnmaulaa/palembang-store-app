@@ -72,7 +72,9 @@ class ProductController extends Controller
         if ($order[0] == 'created_at') $order[0] = 'products.created_at';
 
         // order-by statements
-        $products = $products->orderBy($order[0], $order[1]);
+        $products = $products
+            ->orderBy($order[0], $order[1])
+            ->orderBy('name');
 
         // final statements
         $products = $products

@@ -236,7 +236,7 @@
             @endphp
             <tr>
                 <td style="{{ $row_style }}">{{ $tp->quantity . ' ' .  $tp->product->unit }}</td>
-                <td style="{{ $row_style }}">{{ $tp->product->name . ' ' . $tp->product->unit }}</td>
+                <td style="{{ $row_style }}">{{ $tp->product->name . ' ' . $tp->product->variant }}</td>
                 <td style="{{ $row_style }}">{{ $tp->note }}</td>
                 @if ($transaction->type == 'in')
                     <td style="{{ $row_style }}">{{ $tp->product->code }}</td>

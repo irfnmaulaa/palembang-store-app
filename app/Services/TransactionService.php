@@ -23,6 +23,13 @@ class TransactionService
         $start = date('Y-m-d ') . '00:00:01';
         $end   = date('Y-m-d ') . '23:59:59';
 
+        $date_range = request()->query('date_range');
+        if ($date_range) {
+            $date_range = explode(' - ', $date_range);
+            $start = $date_range[0] . ' 00:00:01';
+            $end   = $date_range[1] . ' 23:59:59';
+        }
+
         $transaction_products = TransactionProduct::query()
             ->select([
                 'transaction_products.*',
@@ -40,7 +47,8 @@ class TransactionService
             ->join('users', 'transactions.created_by', '=', 'users.id')
             ->where('transaction_products.is_verified', 0)
             ->whereBetween('transactions.date', [$start, $end])
-            ->orderByDesc('transactions.date')
+            ->orderBy('transactions.date')
+            ->orderBy('transactions.created_at')
             ->get();
 
         switch ($type) {

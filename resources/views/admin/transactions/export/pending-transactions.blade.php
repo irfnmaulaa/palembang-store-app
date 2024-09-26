@@ -235,7 +235,7 @@
                 {{strtoupper($tp->product_code)}}
             </th>
             <th style="text-transform: uppercase;text-align: right;color: {{ $tp->transaction_type === 'out' ? '#000000' : '#f44336'}};">
-                {{$tp->to_stock}} {{strtoupper($tp->product_unit)}}
+                {{$tp->to_stock}}
             </th>
             <th style="text-align: center;text-transform: uppercase;color: {{ $tp->transaction_type === 'out' ? '#000000' : '#f44336'}};">
                 {{strtoupper($tp->creator_name)}}
