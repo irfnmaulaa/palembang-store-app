@@ -18,7 +18,7 @@ class HistoryController extends Controller
 
     public function index(Request $request)
     {
-        $start = date('Y')  . '-01-01 00:00:00';
+        $start = '2020-01-01 00:00:00';
         $end = date('Y-m-d')  . ' 23:59:59';
 
         // get first transaction

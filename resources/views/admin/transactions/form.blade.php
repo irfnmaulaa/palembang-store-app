@@ -184,7 +184,16 @@
                     return
                 }
 
-                if(parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request('type') === 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10) < 0) {
+                // check remaining
+                let to_stock = parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10);
+                to_stock {{ request()->query('type') == 'in' ? '+' : '-' }}= products.filter(prod => {
+                    return JSON.parse(getValue(product, 'product'))?.id === JSON.parse(getValue(prod, 'product'))?.id
+                }).reduce((carry, prod) => {
+                    carry += parseInt(getValue(prod, 'quantity'), 10)
+                    return carry
+                }, 0)
+
+                if(to_stock < 0) {
                     Swal.fire({
                         icon: "error",
                         title: "Gagal",
@@ -193,7 +202,7 @@
                     return
                 }
 
-                const prodIndex = products.findIndex(p => JSON.parse(getValue(p, 'product'))?.id == JSON.parse(getValue(product, 'product'))?.id)
+                // const prodIndex = products.findIndex(p => JSON.parse(getValue(p, 'product'))?.id == JSON.parse(getValue(product, 'product'))?.id)
                 // if(prodIndex > -1) {
                 //     const swalWithBootstrapButtons = Swal.mixin({
                 //         customClass: {
@@ -243,15 +252,13 @@
                 if(products.length > 0) {
                     products.forEach((product, i) => {
 
-                        // update remaining
-                        products[i].to_stock = parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10);
-
-                        const prodIndex = products.findIndex(prod => {
-                            return JSON.parse(getValue(prod, 'product'))?.id === JSON.parse(getValue(product, 'product'))?.id
-                        })
-                        if (prodIndex < i) {
-                            products[i].to_stock = products[prodIndex].to_stock {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10)
-                        }
+                        let to_stock = parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10);
+                        to_stock {{ request()->query('type') == 'in' ? '+' : '-' }}= products.filter((prod, j) => {
+                            return JSON.parse(getValue(product, 'product'))?.id === JSON.parse(getValue(prod, 'product'))?.id && j < i
+                        }).reduce((carry, prod) => {
+                            carry += parseInt(getValue(prod, 'quantity'), 10)
+                            return carry
+                        }, 0)
 
                         const className = '{{get_table_row_classname(request()->query('type'))}}';
                         const trInit = `
@@ -266,7 +273,7 @@
                                 ${ getValue(product, 'note') }
                             </td>
                             <td class="text-center ${className}">
-                                ${ products[i].to_stock }
+                                ${ to_stock }
                             </td>
                             <td class="text-center">
                                 <a href="#" class="text-danger btn-remove-product" data-index=${ i } title="Hapus"><i class="fas fa-trash"></i></a>
