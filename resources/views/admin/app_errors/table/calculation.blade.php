@@ -1,6 +1,10 @@
 @foreach($data as $item)
     <div class="p-3 border rounded w-100">
-        <h6 class="mb-2">{{$item->product->name}} {{$item->product->variant}} / {{$item->product->code}}</h6>
+        <h6 class="mb-2">
+            <a href="{{route('admin.products.show', ['product' => $item->product, ])}}" class="text-dark">
+                {{$item->product->name}} {{$item->product->variant}}
+            </a>
+        </h6>
         <table class="table table-striped table-sm mb-0">
             <thead>
             <tr>
