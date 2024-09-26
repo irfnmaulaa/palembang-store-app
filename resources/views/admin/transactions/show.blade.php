@@ -79,7 +79,7 @@
                                     {{$tp->note}}
                                 </td>
                                 <td class="{{ $className }} text-center">
-                                    {{$tp->from_stock}}
+                                    {{$tp->to_stock}}
                                 </td>
                                 <td class="{{ $className }} text-center">
                                     {{$tp->creator->name}}
