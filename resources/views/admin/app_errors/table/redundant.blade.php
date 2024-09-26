@@ -7,7 +7,6 @@
         <th>Nama Barang</th>
         <th>Kode Barang</th>
         <th>Keterangan</th>
-        <th class="text-center">Sisa</th>
         <th class="text-center">ID</th>
         <th class="text-center">Jumlah Redudansi</th>
     </tr>
@@ -39,9 +38,6 @@
         </td>
         <td class="{{ $className }}">
             {{$item->note}}
-        </td>
-        <td class="{{ $className }} text-center">
-            {{$item->to_stock}}
         </td>
         <td class="{{ $className }} text-center">
             {{$item->creator->name}}

@@ -71,8 +71,6 @@ class AppErrorsController extends Controller
                 'tp.product_id',
                 'tp.quantity',
                 'tp.note',
-                'tp.from_stock',
-                'tp.to_stock'
             )
             ->selectRaw('COUNT(*) as duplicate_count')
             ->groupBy(
@@ -83,8 +81,6 @@ class AppErrorsController extends Controller
                 'tp.product_id',
                 'tp.quantity',
                 'tp.note',
-                'tp.from_stock',
-                'tp.to_stock',
             )
             ->where('p.deleted_at', null)
             ->havingRaw('COUNT(*) > 1')
@@ -96,8 +92,8 @@ class AppErrorsController extends Controller
                 'product_id' => $duplicate->product_id,
                 'quantity' => $duplicate->quantity,
                 'note' => $duplicate->note,
-                'from_stock' => $duplicate->from_stock,
-                'to_stock' => $duplicate->to_stock,
+                'from_stock' => 0,
+                'to_stock' => 0,
                 'duplicate_count' => $duplicate->duplicate_count,
                 'created_by' => $duplicate->transaction_creator,
             ]);
