@@ -72,11 +72,15 @@
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-center align-items-center gap-2">
+                    @if(!empty($data->links))
                     {{ $data->links('vendor.pagination.bootstrap-4') }}
+                    @endif
                 </div>
             </div>
         </div>
 
+        @if(!empty($data->links))
         <div class="text-muted"><small>Ditampilkan {{number_format($data->firstItem(), 0, ',', '.')}} - {{number_format($data->count() - 1 + $data->firstItem(), 0, ',', '.')}} dari {{number_format($data->total(), 0, ',', '.')}} data</small></div>
+        @endif
     </div>
 @endsection

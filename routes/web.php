@@ -36,6 +36,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::delete('/categories/{category}/remove-product', [\App\Http\Controllers\CategoryController::class, 'remove_product'])->name('categories.remove_product');
 
     // Products
+    Route::get('/products/matching-stock', [\App\Http\Controllers\ProductController::class, 'matching_stock'])->name('products.matching_stock');
     Route::post('/products/import', [\App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
     Route::get('/products/export/{type}', [\App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
     Route::resource('/products', \App\Http\Controllers\ProductController::class);

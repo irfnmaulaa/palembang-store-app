@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Old\Item;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,5 +35,22 @@ class Product extends Model
     public function scopeWithTrashed($query)
     {
         return $query->withoutGlobalScope('Illuminate\Database\Eloquent\SoftDeletingScope');
+    }
+
+    public function getStockAtOldAppAttribute()
+    {
+        $item = Item::find($this->id);
+        if ($item) {
+            $histories = json_decode($item->histories);
+            if (is_array($histories)) {
+                return $histories[count($histories) - 1]->remaining;
+            }
+        }
+        return 0;
+    }
+
+    public function getIsMatchedStockAttribute()
+    {
+        return $this->stock_at_old_app == $this->stock;
     }
 }

@@ -6,6 +6,7 @@ use App\Exports\ProductDetailExport;
 use App\Exports\ProductsExport;
 use App\Exports\UsersExport;
 use App\Imports\ProductsImport;
+use App\Models\Old\Item;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Transaction;
@@ -29,15 +30,6 @@ class ProductController extends Controller
         // define instance
         $products = Product::query()
             ->select('products.*')
-            ->addSelect([
-                'latest_stock' => function($query) {
-                    $query->select('to_stock')
-                        ->from('transaction_products')
-                        ->whereColumn('transaction_products.product_id', 'products.id')
-                        ->orderByDesc('id')
-                        ->limit(1);
-                }
-            ])
             ->leftJoin('product_categories', 'products.product_category_id', '=', 'product_categories.id');
 
         // searching settings
@@ -73,8 +65,11 @@ class ProductController extends Controller
 
         // order-by statements
         $products = $products
-            ->orderBy($order[0], $order[1])
-            ->orderBy('name');
+            ->orderBy($order[0], $order[1]);
+        if ($order[1] === 'category') {
+            $products = $products
+                ->orderBy('name', $order[1]);
+        }
 
         // final statements
         $products = $products
@@ -343,5 +338,24 @@ class ProductController extends Controller
         Excel::import(new ProductsImport, $request->file('file'));
 
         return redirect()->back()->with('message', 'Impor data barang berhasil');
+    }
+
+    public function matching_stock(Request $request)
+    {
+        if ($request->query('filter') == 'unmatched') {
+            $products = Product::all()->filter(function ($product) {
+                return $product->stock_at_old_app != $product->stock;
+            })->values();
+        } else {
+            $products = Product::query()
+                ->select('products.*')
+                ->leftJoin('product_categories', 'products.product_category_id', '=', 'product_categories.id')
+                ->paginate(get_per_page_default());
+        }
+
+        if ($request->ajax()) {
+
+        }
+        return view('admin.products.matching_stock', compact('products'));
     }
 }
