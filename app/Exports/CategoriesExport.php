@@ -14,13 +14,13 @@ class CategoriesExport implements FromCollection
     public function collection()
     {
         $data = collect([
-            ['No', 'Nama Kategori', 'Jumlah Barang']
+            ['NAMA KATEGORI', 'JUMLAH BARANG']
         ]);
 
         $categories = ProductCategory::withCount('products')->orderBy('name')->get();
 
         return $data->merge($categories->map(function ($category, $i) {
-            return [ $i + 1, $category->name, (string) $category->products_count ];
+            return [ strtoupper($category->name), (string) $category->products_count ];
         }));
     }
 }

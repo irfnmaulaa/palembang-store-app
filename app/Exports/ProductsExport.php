@@ -14,7 +14,7 @@ class ProductsExport implements FromCollection
     public function collection()
     {
         $data = collect([
-            ['No', 'Kategori', 'Nama Barang', 'Kode Barang', 'Stok']
+            ['KATEGORI', 'NAMA BARANG', 'KODE BARANG', 'STOK SAAT INI']
         ]);
 
         $products = Product::query()
@@ -23,13 +23,13 @@ class ProductsExport implements FromCollection
             ->orderBy('product_categories.name')
             ->get();
 
-        return $data->merge($products->map(function ($product, $i) {
+        return $data->merge($products->map(function ($product) {
             $category = '-';
             if ($product->category) {
                 $category = $product->category->name;
             }
 
-            return [ $i + 1, $category, $product->name . ' ' . $product->variant, $product->code, (string) $product->stock ];
+            return [ strtoupper($category), strtoupper($product->name . ' ' . $product->variant), strtoupper($product->code), strtoupper((string) $product->stock) . ' ' . strtoupper($product->unit) ];
         }));
     }
 }
