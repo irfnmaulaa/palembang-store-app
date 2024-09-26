@@ -129,16 +129,25 @@ class ProductController extends Controller
         $transaction_products = TransactionProduct::query()
             ->select(['transaction_products.*', 'transactions.*'])
             ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+            ->join('products', 'transaction_products.product_id', '=', 'products.id')
             ->where('transaction_products.is_verified', 1)
             ->where('transaction_products.product_id', $product->id)
             ->whereBetween('transactions.date', [$start, $end]);
 
         // searching settings
         if ($request->has('keyword')) {
-            $transaction_products = $transaction_products
-                ->where(function ($query) use ($request) {
-                    $query->where('transaction_products.code', 'LIKE', '%' . $request->get('keyword') . '%');
+
+            // Split the keyword into words
+            $words = explode(' ', $request->query('keyword'));
+
+            foreach ($words as $word) {
+                $transaction_products = $transaction_products->where(function ($subQuery) use ($word) {
+                    // Use REGEXP to match partial words in name, variant, or the concatenated field
+                    $subQuery
+                        ->orWhere('transactions.code', 'LIKE', '%' . $word . '%')
+                        ->orWhere('transaction_products.note', 'LIKE', '%' . $word . '%');
                 });
+            }
 
         }
 
