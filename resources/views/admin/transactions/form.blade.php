@@ -194,37 +194,42 @@
                 }
 
                 const prodIndex = products.findIndex(p => JSON.parse(getValue(p, 'product'))?.id == JSON.parse(getValue(product, 'product'))?.id)
-                if(prodIndex > -1) {
-                    const swalWithBootstrapButtons = Swal.mixin({
-                        customClass: {
-                            confirmButton: "btn btn-primary btn-lg me-3",
-                            cancelButton: "btn btn-outline-primary btn-lg"
-                        },
-                        buttonsStyling: false
-                    });
-                    swalWithBootstrapButtons.fire({
-                        title: "Barang sudah dimasukan",
-                        text: "Apakah ingin memperbarui datanya?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Ya, perbarui",
-                        cancelButtonText: "Tidak",
-                    }).then((result) => {
-                        if ( result.isConfirmed ) {
-                            products[prodIndex] = product
-                            renderTableProducts()
+                // if(prodIndex > -1) {
+                //     const swalWithBootstrapButtons = Swal.mixin({
+                //         customClass: {
+                //             confirmButton: "btn btn-primary btn-lg me-3",
+                //             cancelButton: "btn btn-outline-primary btn-lg"
+                //         },
+                //         buttonsStyling: false
+                //     });
+                //     swalWithBootstrapButtons.fire({
+                //         title: "Barang sudah dimasukan",
+                //         text: "Apakah ingin memperbarui datanya?",
+                //         icon: "warning",
+                //         showCancelButton: true,
+                //         confirmButtonText: "Ya, perbarui",
+                //         cancelButtonText: "Tidak",
+                //     }).then((result) => {
+                //         if ( result.isConfirmed ) {
+                //             products[prodIndex] = product
+                //             renderTableProducts()
+                //
+                //             $(this)[0].reset()
+                //             $( '.select-product' ).val(null).trigger('change').select2('open')
+                //         }
+                //     });
+                // } else {
+                //     products.push(product)
+                //     renderTableProducts()
+                //
+                //     $(this)[0].reset()
+                //     $( '.select-product' ).val(null).trigger('change').select2('open')
+                // }
+                products.push(product)
+                renderTableProducts()
 
-                            $(this)[0].reset()
-                            $( '.select-product' ).val(null).trigger('change').select2('open')
-                        }
-                    });
-                } else {
-                    products.push(product)
-                    renderTableProducts()
-
-                    $(this)[0].reset()
-                    $( '.select-product' ).val(null).trigger('change').select2('open')
-                }
+                $(this)[0].reset()
+                $( '.select-product' ).val(null).trigger('change').select2('open')
 
             })
             renderTableProducts()
@@ -237,6 +242,17 @@
 
                 if(products.length > 0) {
                     products.forEach((product, i) => {
+
+                        // update remaining
+                        products[i].to_stock = parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10);
+
+                        const prodIndex = products.findIndex(prod => {
+                            return JSON.parse(getValue(prod, 'product'))?.id === JSON.parse(getValue(product, 'product'))?.id
+                        })
+                        if (prodIndex < i) {
+                            products[i].to_stock = products[prodIndex].to_stock {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10)
+                        }
+
                         const className = '{{get_table_row_classname(request()->query('type'))}}';
                         const trInit = `
                         <tr>
@@ -250,7 +266,7 @@
                                 ${ getValue(product, 'note') }
                             </td>
                             <td class="text-center ${className}">
-                                ${ parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10) }
+                                ${ products[i].to_stock }
                             </td>
                             <td class="text-center">
                                 <a href="#" class="text-danger btn-remove-product" data-index=${ i } title="Hapus"><i class="fas fa-trash"></i></a>

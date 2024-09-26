@@ -226,7 +226,16 @@ class TransactionController extends Controller
                 ]);
             }
 
-            $last_product_transaction = $product->transaction_products()->where('is_verified', 1)->orderByDesc('id')->first();
+            $last_product_transaction = $product->transaction_products()
+                ->where('is_verified', 1)
+                ->orWhere(function ($query) use ($transaction, $product) {
+                    $query
+                        ->where('is_verified', 0)
+                        ->where('transaction_id', $transaction->id)
+                        ->where('product_id', $product->id);
+                })
+                ->orderByDesc('id')
+                ->first();
             $last_product_stock = $last_product_transaction ? $last_product_transaction->to_stock : 0;
 
             $from_stock = $last_product_stock;

@@ -96,7 +96,7 @@ class ProductController extends Controller
                     return [
                         'id' => json_encode([
                             'id' => $product->id,
-                            'name' => $product->name . ' - ' . $product->variant,
+                            'name' => $product->name . ' ' . $product->variant,
                             'code' => $product->code,
                             'stock' => $product->stock,
                             'unit' => $product->unit,
