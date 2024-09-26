@@ -280,9 +280,10 @@ class UserController extends Controller
         auth()->logout();
 
         // define type
-        $type = 'pdf';
+        $type   = 'pdf';
+        $stream = true;
 
         // download
-        return $this->transactionService->export_pending($type, $printed_by);
+        return $this->transactionService->export_pending($type, $printed_by, $stream);
     }
 }

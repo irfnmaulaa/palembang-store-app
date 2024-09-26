@@ -172,7 +172,7 @@
                             <x-export-button variant="outline-success" table="pending-transactions" :param="['date_range' => request()->query('date_range')]"></x-export-button>
                             @elseif(auth()->user()->role === 'staff')
                             <button type="button" class="btn btn-outline-dark btn-lg btn-close-store">Tutup Gudang <i class="fas fa-sign-out ms-2"></i></button>
-                            <form action="{{ route('admin.users.close_store') }}" id="form-close-store" method="POST" target="_blank">
+                            <form action="{{ route('admin.users.close_store') }}" id="form-close-store" method="POST">
                                 @csrf
                             </form>
                             @endif
@@ -460,9 +460,6 @@
                 }).then((result) => {
                     if(result.isConfirmed) {
                         $('#form-close-store').submit()
-                        setTimeout(() => {
-                            window.location = '{{route('login')}}'
-                        }, 500)
                     }
                 });
 
