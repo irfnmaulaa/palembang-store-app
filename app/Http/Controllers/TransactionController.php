@@ -151,6 +151,9 @@ class TransactionController extends Controller
 
         // order-by statements
         $transactions_verified = $transactions_verified->orderBy($order[0], $order[1]);
+        if ($order[0] === 'transactions.date') {
+            $transactions_verified = $transactions_verified->orderBy('transactions.created_at', $order[1]);
+        }
 
         // final statements
         $transactions_verified = $transactions_verified

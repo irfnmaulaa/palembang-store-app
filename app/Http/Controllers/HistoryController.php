@@ -8,6 +8,7 @@ use App\Models\TransactionProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HistoryController extends Controller
 {
@@ -39,7 +40,7 @@ class HistoryController extends Controller
         $transactions = Transaction::query()
             ->select([
                 'transactions.*',
-                'transaction_products.created_at',
+                DB::raw('transaction_products.id as transaction_product_id'),
             ])
             ->distinct()
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
@@ -85,7 +86,7 @@ class HistoryController extends Controller
         // order-by statements
         $transactions = $transactions->orderBy($order[0], $order[1]);
         if ($order[0] === 'transactions.date') {
-            $transactions = $transactions->orderBy('transaction_products.created_at', $order[1]);
+            $transactions = $transactions->orderBy('transactions.created_at', $order[1]);
         }
 
         // final statements
