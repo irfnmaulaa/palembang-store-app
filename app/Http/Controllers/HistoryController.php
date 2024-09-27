@@ -37,7 +37,10 @@ class HistoryController extends Controller
 
         // define instance
         $transactions = Transaction::query()
-            ->select('transactions.*')
+            ->select([
+                'transactions.*',
+                'transaction_products.created_at',
+            ])
             ->distinct()
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
@@ -81,6 +84,9 @@ class HistoryController extends Controller
 
         // order-by statements
         $transactions = $transactions->orderBy($order[0], $order[1]);
+        if ($order[0] === 'transactions.date') {
+            $transactions = $transactions->orderBy('transaction_products.created_at', $order[1]);
+        }
 
         // final statements
         $transactions = $transactions

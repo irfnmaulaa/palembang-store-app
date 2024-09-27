@@ -1,6 +1,19 @@
+<div>
+    <a href="" class="btn btn-outline-danger">
+        Solve <span id="checked-count" class="ms-1">(0)</span>
+    </a>
+</div>
+
 <table class="table table-striped table-sm mb-0">
     <thead>
     <tr>
+        <th class="text-center" style="width: 50px">
+            <div class="d-flex justify-content-center">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="check_all" />
+                </div>
+            </div>
+        </th>
         <th>Tanggal</th>
         <th>No DO</th>
         <th class="text-center">Quantity</th>
@@ -12,11 +25,16 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($data as $item)
+    @foreach($data as $i => $item)
     @php
     $className = get_table_row_classname($item->transaction->type)
     @endphp
     <tr>
+        <td class="text-center">
+            <label for="item-{{$i}}" class="form-check d-flex justify-content-center">
+                <input class="form-check-input transaction-checkbox" type="checkbox" name="rec_ids[]" value="{{ $item->id }}" id="item-{{$i}}" />
+            </label>
+        </td>
         <td class="{{ $className }}">
             {{\Carbon\Carbon::parse($item->transaction->date)->format('d/m/Y')}}
         </td>

@@ -75,6 +75,30 @@
                 })
 
             })
+
+            $('body').delegate('#check_all', 'change', function() {
+                if($(this).is(':checked')) {
+                    $(this).parents('table').find('tbody input[type="checkbox"]').prop('checked', true).trigger('change');
+                } else {
+                    $(this).parents('table').find('tbody input[type="checkbox"]').prop('checked', false).trigger('change');
+                }
+            })
+
+            $('body').delegate('table tbody input[type="checkbox"]', 'change', function() {
+                const checkedCount = $(this).parents('table').find('tbody input[type="checkbox"]:checked').length
+                $('#checked-count').html(`(${ checkedCount })`)
+                if(checkedCount >= $(this).parents('table').find('tbody input[type="checkbox"]').length) {
+                    $(this).parents('table').find('#check_all').prop('checked', true)
+                } else {
+                    $(this).parents('table').find('#check_all').prop('checked', false)
+                }
+
+                if(checkedCount > 0) {
+                    $('.btn-solve').removeClass('disabled')
+                } else {
+                    $('.btn-solve').addClass('disabled')
+                }
+            })
         })
     </script>
 @endsection

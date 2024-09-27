@@ -31,7 +31,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45532", "transaction_code" => "S 2587", "product_name" => "SOCKET RCAW 3'' AW", "quantity" => "2", "product_unit" => "BH", "note" => "1203 JUAL", "to_stock" => "5", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2587", "product_name" => "HOLO GIPSUM 2/4 PUTIH", "quantity" => "1", "product_unit" => "BTG", "note" => "1204 SINAR TERANG", "to_stock" => "117", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2587", "product_name" => "PARALON LISTRIK ANDARU", "quantity" => "16", "product_unit" => "BTG", "note" => "1199 PT. TRIMMITRA", "to_stock" => "0", "transaction_type" => "KELUAR"],
-            ["date" => "45532", "transaction_code" => "S 2588", "product_name" => "RENG BAJA RINGAN 0.3", "quantity" => "40", "product_unit" => "BTG", "note" => "1200 H. AANG", "to_stock" => "69", "transaction_type" => "KELUAR"],
+            ["date" => "45532", "transaction_code" => "S 2588", "product_name" => "RENG BAJA RINGAN 0,3", "quantity" => "40", "product_unit" => "BTG", "note" => "1200 H. AANG", "to_stock" => "69", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2588", "product_name" => "C - BAJA RINGAN 0,75", "quantity" => "40", "product_unit" => "BTG", "note" => "1200 H. AANG", "to_stock" => "105", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2588", "product_name" => "CASTING A+", "quantity" => "2", "product_unit" => "SAK", "note" => "1208 JUAL", "to_stock" => "109", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2588", "product_name" => "ARWANA 40 / 40 DALLAS GREY", "quantity" => "25", "product_unit" => "DUS", "note" => "1213 SINAR TERANG", "to_stock" => "12", "transaction_type" => "KELUAR"],
@@ -168,7 +168,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45538", "transaction_code" => "S 2616", "product_name" => "SEMEN HOLCIM 40KG", "quantity" => "5", "product_unit" => "ZAK", "note" => "0073 CI YANTI", "to_stock" => "72", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2616", "product_name" => "SEMEN MERDEKA 40KG", "quantity" => "6", "product_unit" => "SAK", "note" => "0075 ENGKONG", "to_stock" => "122", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2617", "product_name" => "C - BAJA RINGAN 0,75", "quantity" => "25", "product_unit" => "BTG", "note" => "0070 IING TOKO KELINCI", "to_stock" => "74", "transaction_type" => "KELUAR"],
-            ["date" => "45538", "transaction_code" => "S 2617", "product_name" => "RENG BAJA RINGAN 0.3", "quantity" => "15", "product_unit" => "BTG", "note" => "0070 IING TOKO KELINCI", "to_stock" => "54", "transaction_type" => "KELUAR"],
+            ["date" => "45538", "transaction_code" => "S 2617", "product_name" => "RENG BAJA RINGAN 0,3", "quantity" => "15", "product_unit" => "BTG", "note" => "0070 IING TOKO KELINCI", "to_stock" => "54", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2617", "product_name" => "GRC ROYAL BOARD 6 MM", "quantity" => "15", "product_unit" => "LBR", "note" => "0070 IING TOKO KELINCI", "to_stock" => "5", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2617", "product_name" => "SEMEN TIGA RODA", "quantity" => "5", "product_unit" => "ZAK", "note" => "0070 IING TOKO KELINCI", "to_stock" => "162", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2617", "product_name" => "KAYU KASO", "quantity" => "20", "product_unit" => "BTG", "note" => "0070 IING TOKO KELINCI", "to_stock" => "120", "transaction_type" => "KELUAR"],
@@ -180,7 +180,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "HOLO GIPSUM 4/4 PUTIH", "quantity" => "65", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "299", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "PAPAN GIPSUM A+", "quantity" => "51", "product_unit" => "LBR", "note" => "0085 TRIMITRA", "to_stock" => "44", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "LISPLANG ROYAL 20 CM / 400 POLOS", "quantity" => "19", "product_unit" => "LBR", "note" => "0085 TRIMITRA", "to_stock" => "52", "transaction_type" => "KELUAR"],
-            ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "RENG BAJA RINGAN 0.3", "quantity" => "54", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "0", "transaction_type" => "KELUAR"],
+            ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "RENG BAJA RINGAN 0,3", "quantity" => "54", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "0", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "C - BAJA RINGAN 0,7 MM", "quantity" => "28", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "94", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "BATA HEBEL 10 X 20 X 60", "quantity" => "166", "product_unit" => "BH", "note" => "0085 TRIMITRA", "to_stock" => "1100", "transaction_type" => "KELUAR"],
             ["date" => "45538", "transaction_code" => "S 2618", "product_name" => "MU 200 / 20 KG", "quantity" => "1", "product_unit" => "SAK", "note" => "0095 LUCKY", "to_stock" => "27", "transaction_type" => "KELUAR"],
@@ -203,7 +203,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45539", "transaction_code" => "M 2620", "product_name" => "KINGKONG 18 KG 131", "quantity" => "2", "product_unit" => "PIL", "note" => "MASUK", "to_stock" => "3", "transaction_type" => "MASUK"],
             ["date" => "45539", "transaction_code" => "M 2621", "product_name" => "HOLO GIPSUM 4/4 PUTIH", "quantity" => "300", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "599", "transaction_type" => "MASUK"],
             ["date" => "45539", "transaction_code" => "M 2621", "product_name" => "C - BAJA RINGAN 0,7 MM", "quantity" => "100", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "194", "transaction_type" => "MASUK"],
-            ["date" => "45539", "transaction_code" => "M 2621", "product_name" => "RENG BAJA RINGAN 0.3", "quantity" => "250", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "250", "transaction_type" => "MASUK"],
+            ["date" => "45539", "transaction_code" => "M 2621", "product_name" => "RENG BAJA RINGAN 0,3", "quantity" => "250", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "250", "transaction_type" => "MASUK"],
             ["date" => "45539", "transaction_code" => "B 0125", "product_name" => "HOLO GIPSUM 4/4 HIJAU / 0.3", "quantity" => "37", "product_unit" => "BTG", "note" => "BANGUNAN OTISTA", "to_stock" => "0", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "B 0125", "product_name" => "HOLO GIPSUM 4/4 PUTIH", "quantity" => "50", "product_unit" => "BTG", "note" => "BANGUNAN OTISTA", "to_stock" => "549", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "S 2622", "product_name" => "WAVIN D 2 1/2'' D", "quantity" => "1", "product_unit" => "BTG", "note" => "0111 H. AANG", "to_stock" => "188", "transaction_type" => "KELUAR"],
@@ -225,7 +225,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45539", "transaction_code" => "S 2624", "product_name" => "BATA HEBEL 10 X 20 X 60", "quantity" => "249", "product_unit" => "BH", "note" => "0121 H. RUDI", "to_stock" => "851", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "S 2624", "product_name" => "ASIA 25 / 25 ROYAL BLUE", "quantity" => "5", "product_unit" => "dus", "note" => "0154 JUAL", "to_stock" => "53", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "S 2625", "product_name" => "C - BAJA RINGAN 0,7 MM", "quantity" => "100", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "94", "transaction_type" => "KELUAR"],
-            ["date" => "45539", "transaction_code" => "S 2625", "product_name" => "RENG BAJA RINGAN 0.3", "quantity" => "128", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "122", "transaction_type" => "KELUAR"],
+            ["date" => "45539", "transaction_code" => "S 2625", "product_name" => "RENG BAJA RINGAN 0,3", "quantity" => "128", "product_unit" => "BTG", "note" => "0085 TRIMITRA", "to_stock" => "122", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "S 2625", "product_name" => "WAVIN AW 2 1/2'' AW", "quantity" => "1", "product_unit" => "BTG", "note" => "0145 JUAL", "to_stock" => "59", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "S 2625", "product_name" => "SEMEN MERDEKA 40KG", "quantity" => "1", "product_unit" => "SAK", "note" => "0145 JUAL", "to_stock" => "119", "transaction_type" => "KELUAR"],
             ["date" => "45539", "transaction_code" => "S 2625", "product_name" => "BATU PROFIL P-URIL", "quantity" => "12", "product_unit" => "BH", "note" => "0145 JUAL", "to_stock" => "71", "transaction_type" => "KELUAR"],
@@ -459,7 +459,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45547", "transaction_code" => "S 2671", "product_name" => "MULTIPLEX 18 MM F", "quantity" => "1", "product_unit" => "LBR", "note" => "0533 ZIA MOTOR", "to_stock" => "16", "transaction_type" => "KELUAR"],
             ["date" => "45547", "transaction_code" => "S 2671", "product_name" => "ARTILE 30 / 60 DARK MAHOGANY", "quantity" => "2", "product_unit" => "DUS", "note" => "0534 JUAL", "to_stock" => "2", "transaction_type" => "KELUAR"],
             ["date" => "45547", "transaction_code" => "S 2671", "product_name" => "VELLINO 60 / 60 TANBI GIARDINO WHITE", "quantity" => "16", "product_unit" => "DUS", "note" => "0532 PAK DODO", "to_stock" => "62", "transaction_type" => "KELUAR"],
-            ["date" => "45547", "transaction_code" => "S 2671", "product_name" => "RENG BAJA RINGAN 0.3", "quantity" => "3", "product_unit" => "BTG", "note" => "0543 ERNA", "to_stock" => "119", "transaction_type" => "KELUAR"],
+            ["date" => "45547", "transaction_code" => "S 2671", "product_name" => "RENG BAJA RINGAN 0,3", "quantity" => "3", "product_unit" => "BTG", "note" => "0543 ERNA", "to_stock" => "119", "transaction_type" => "KELUAR"],
             ["date" => "45547", "transaction_code" => "S 2671", "product_name" => "SOLAR TUFF 210 X 80 BENING", "quantity" => "3", "product_unit" => "LBR", "note" => "0543 ERNA", "to_stock" => "17", "transaction_type" => "KELUAR"],
             ["date" => "45547", "transaction_code" => "T 2672", "product_name" => "COLORAN YOX", "quantity" => "1", "product_unit" => "BKS", "note" => "ISI", "to_stock" => "73", "transaction_type" => "KELUAR"],
             ["date" => "45547", "transaction_code" => "T 2672", "product_name" => "COLORAN YELL", "quantity" => "1", "product_unit" => "BKS", "note" => "ISI", "to_stock" => "61", "transaction_type" => "KELUAR"],
@@ -510,7 +510,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45552", "transaction_code" => "S 2681", "product_name" => "COMPONE A+", "quantity" => "3", "product_unit" => "SAK", "note" => "0610 KOMINFO", "to_stock" => "69", "transaction_type" => "KELUAR"],
             ["date" => "45552", "transaction_code" => "S 2682", "product_name" => "T LUCKY GOLD TM 500 L", "quantity" => "1", "product_unit" => "BH", "note" => "0583 ADE BORDIR", "to_stock" => "0", "transaction_type" => "KELUAR"],
             ["date" => "45552", "transaction_code" => "T 2683", "product_name" => "COLORAN BLACK", "quantity" => "1", "product_unit" => "BKS", "note" => "ISI", "to_stock" => "72", "transaction_type" => "KELUAR"],
-            ["date" => "45553", "transaction_code" => "B 0137", "product_name" => "LISPLANG KAYU  WARNA 20 CM / 300 LEATHER", "quantity" => "3", "product_unit" => "LBR", "note" => "BANGUNAN OTISTA", "to_stock" => "31", "transaction_type" => "KELUAR"],
+            ["date" => "45553", "transaction_code" => "B 0137", "product_name" => "LISPLANG KAYU WARNA 20 CM / 300 LEATHER", "quantity" => "3", "product_unit" => "LBR", "note" => "BANGUNAN OTISTA", "to_stock" => "31", "transaction_type" => "KELUAR"],
             ["date" => "45553", "transaction_code" => "B 0137", "product_name" => "LISPLANG KAYU WARNA 7,5 CM / 300 OAK", "quantity" => "8", "product_unit" => "LBR", "note" => "BANGUNAN OTISTA", "to_stock" => "101", "transaction_type" => "KELUAR"],
             ["date" => "45553", "transaction_code" => "M 2684", "product_name" => "WAVIN D 4'' D", "quantity" => "300", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "315", "transaction_type" => "MASUK"],
             ["date" => "45553", "transaction_code" => "M 2685", "product_name" => "PARALON LISTRIK GANESHA 5/8''", "quantity" => "100", "product_unit" => "BTG", "note" => "MASUK", "to_stock" => "100", "transaction_type" => "MASUK"],
@@ -625,7 +625,7 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45555", "transaction_code" => "S 2708", "product_name" => "ULTRAPROOF 25 KG DARK BROWN", "quantity" => "1", "product_unit" => "PIL", "note" => "0769 JUAL", "to_stock" => "0", "transaction_type" => "KELUAR"],
             ["date" => "45555", "transaction_code" => "S 2709", "product_name" => "ROMAN 30 / 60 EMBOSS CATANIA CREMA", "quantity" => "4", "product_unit" => "DUS", "note" => "0768 BU ANI", "to_stock" => "11", "transaction_type" => "KELUAR"],
             ["date" => "45555", "transaction_code" => "S 2709", "product_name" => "ARTILE 60 / 60 TAIPAN", "quantity" => "3", "product_unit" => "dus", "note" => "0768 BU ANI", "to_stock" => "35", "transaction_type" => "KELUAR"],
-            ["date" => "45555", "transaction_code" => "S 2709", "product_name" => "SOLAR TUFF 240 x 80  BENING", "quantity" => "1", "product_unit" => "lbr", "note" => "0768 BU ANI", "to_stock" => "22", "transaction_type" => "KELUAR"],
+            ["date" => "45555", "transaction_code" => "S 2709", "product_name" => "SOLAR TUFF 240 x 80 BENING", "quantity" => "1", "product_unit" => "lbr", "note" => "0768 BU ANI", "to_stock" => "22", "transaction_type" => "KELUAR"],
             ["date" => "45555", "transaction_code" => "S 2709", "product_name" => "SEMEN HOLCIM 40KG", "quantity" => "3", "product_unit" => "ZAK", "note" => "0768 BU ANI", "to_stock" => "185", "transaction_type" => "KELUAR"],
             ["date" => "45555", "transaction_code" => "S 2709", "product_name" => "ROMAN 30 / 60 HALUS CATANIA SAND", "quantity" => "15", "product_unit" => "DUS", "note" => "0768 BU ANI", "to_stock" => "10", "transaction_type" => "KELUAR"],
             ["date" => "45555", "transaction_code" => "S 2710", "product_name" => "BESI 8 MSI", "quantity" => "5", "product_unit" => "BTG", "note" => "0705 HENDRAWAN", "to_stock" => "395", "transaction_type" => "KELUAR"],
@@ -724,6 +724,36 @@ class OlderAppMigrationSeeder extends Seeder
             ["date" => "45560", "transaction_code" => "S 2732", "product_name" => "ARWANA 40 /40 PUTIH POLOS", "quantity" => "10", "product_unit" => "DUS", "note" => "0955 TRIMITRA", "to_stock" => "72", "transaction_type" => "KELUAR"],
             ["date" => "45560", "transaction_code" => "S 2732", "product_name" => "SEMEN TIGA RODA", "quantity" => "2", "product_unit" => "ZAK", "note" => "0958 JUAL", "to_stock" => "89", "transaction_type" => "KELUAR"],
             ["date" => "45560", "transaction_code" => "S 2733", "product_name" => "WAVIN D 2 1/2'' D", "quantity" => "4", "product_unit" => "BTG", "note" => "RETUR 0946", "to_stock" => "160", "transaction_type" => "MASUK"],
+            ["date" => "45560", "transaction_code" => "B 0142", "product_name" => "PARALON LISTRIK ANDARU", "quantity" => "3", "product_unit" => "BTG", "note" => "BANGUNAN OTISTA", "to_stock" => "197", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "B 0143", "product_name" => "ALUMUNIUM FOIL POLOS", "quantity" => "1", "product_unit" => "ROLL", "note" => "BANGUNAN OTISTA", "to_stock" => "1", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "B 0143", "product_name" => "C - BAJA RINGAN 0,75", "quantity" => "4", "product_unit" => "BTG", "note" => "BANGUNAN OTISTA", "to_stock" => "92", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "B 0143", "product_name" => "GRC ROYAL BOARD 4 MM", "quantity" => "8", "product_unit" => "LBR", "note" => "BANGUNAN OTISTA", "to_stock" => "103", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "B 0143", "product_name" => "HOLO GIPSUM 4/4 PUTIH", "quantity" => "50", "product_unit" => "BTG", "note" => "BANGUNAN OTISTA", "to_stock" => "348", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "B 0144", "product_name" => "FLEXSEAL FS RENDER", "quantity" => "5", "product_unit" => "SAK", "note" => "BANGUNAN OTISTA", "to_stock" => "40", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "B 0144", "product_name" => "SEMEN HOLCIM 40KG", "quantity" => "5", "product_unit" => "ZAK", "note" => "BANGUNAN OTISTA", "to_stock" => "162", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2734", "product_name" => "P ALUMUNIUM JAYCO KACA FULL", "quantity" => "2", "product_unit" => "BH", "note" => "MASUK", "to_stock" => "6", "transaction_type" => "MASUK"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "LIST GRANIT 60 CM POLOS PINGGUL IVORY", "quantity" => "9", "product_unit" => "BH", "note" => "0967 JUAL", "to_stock" => "65", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "PARALON LISTRIK ANDARU", "quantity" => "5", "product_unit" => "BTG", "note" => "0964 IING TK KELINCI", "to_stock" => "192", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "C - BAJA RINGAN 0,75", "quantity" => "8", "product_unit" => "BTG", "note" => "0974 PAK KARYA", "to_stock" => "84", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "MULTIPLEX 8 MM", "quantity" => "1", "product_unit" => "LBR", "note" => "0987 JUAL", "to_stock" => "32", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "ASBES GLB KECIL 300 X 105", "quantity" => "2", "product_unit" => "LBR", "note" => "0992 TERUS JAYA", "to_stock" => "82", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "ASBES GLB KECIL 150 X 105", "quantity" => "5", "product_unit" => "LBR", "note" => "0992 TERUS JAYA", "to_stock" => "56", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2735", "product_name" => "HOLO GIPSUM 2/4 PUTIH", "quantity" => "1", "product_unit" => "BTG", "note" => "0994 SINAR TERANG", "to_stock" => "185", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "ASBES GLB KECIL 150 X 105", "quantity" => "2", "product_unit" => "LBR", "note" => "0995 TERUS JAYA", "to_stock" => "54", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "MULTIPLEX 12 MM HP", "quantity" => "3", "product_unit" => "LBR", "note" => "0971 EUIS DINKES", "to_stock" => "4", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "AM NAT WHITE JASMINE", "quantity" => "2", "product_unit" => "BKS", "note" => "0971 EUIS DINKES", "to_stock" => "18", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "P PVC URAT KAYU TATA PUTIH", "quantity" => "2", "product_unit" => "BH", "note" => "0978 YUYU", "to_stock" => "4", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "BCP HOKISINK 85 CM", "quantity" => "1", "product_unit" => "BH", "note" => "1002 JUAL", "to_stock" => "4", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "ASIA 30 / 30 OSCAR BLACK", "quantity" => "5", "product_unit" => "DUS", "note" => "1008 JUAL", "to_stock" => "74", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2736", "product_name" => "SEMEN TIGA RODA", "quantity" => "1", "product_unit" => "ZAK", "note" => "1010 JUAL", "to_stock" => "88", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2737", "product_name" => "DOP 4\"", "quantity" => "1", "product_unit" => "BH", "note" => "RETUR 0971 EUIS DINKES", "to_stock" => "72", "transaction_type" => "MASUK"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "P ALUMUNIUM POLOS COKLAT", "quantity" => "1", "product_unit" => "Bh", "note" => "1000 ANI", "to_stock" => "4", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "BESI URIL 10 CBS", "quantity" => "1", "product_unit" => "BTG", "note" => "1011 EUIS DINKES", "to_stock" => "191", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "KACA WASTAFEL KECIL", "quantity" => "1", "product_unit" => "BH", "note" => "1013 BU AMI", "to_stock" => "17", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "BCP ROYAL SB 42 PK", "quantity" => "1", "product_unit" => "BH", "note" => "1013 BU AMI", "to_stock" => "3", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "MONOBLOK VOLK TWO PIECS", "quantity" => "1", "product_unit" => "BH", "note" => "1013 BU AMI", "to_stock" => "4", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "WASTAFEL SERICITE 2050 PUTIH", "quantity" => "1", "product_unit" => "BH", "note" => "1013 BU AMI", "to_stock" => "0", "transaction_type" => "KELUAR"],
+            ["date" => "45561", "transaction_code" => "S 2738", "product_name" => "P ALUMUNIUM POLOS PUTIH", "quantity" => "1", "product_unit" => "BH", "note" => "1013 BU AMI", "to_stock" => "5", "transaction_type" => "KELUAR"],
         ];
 
         foreach ($items as $i => $item) {
@@ -752,14 +782,16 @@ class OlderAppMigrationSeeder extends Seeder
                 $date = Carbon::parse($date . ' 00:00:01')->addSeconds($i);
                 $product = $products->first();
 
-                $transaction = Transaction::updateOrCreate([
-                    'code' => $item['transaction_code'],
-                    'date' => $date,
-                    'type' => $item['transaction_type'] === 'KELUAR' ? 'out' : 'in',
-                ], [
-                    'created_at' => Carbon::now(),
-                    'created_by' => 3,
-                ]);
+                $transaction = Transaction::where('code', $item['transaction_code'])->whereDate('date', $date)->where('type', $item['transaction_type'] === 'KELUAR' ? 'out' : 'in')->first();
+                if (!$transaction) {
+                    $transaction = Transaction::create([
+                        'code' => $item['transaction_code'],
+                        'date' => $date,
+                        'type' => $item['transaction_type'] === 'KELUAR' ? 'out' : 'in',
+                        'created_at' => Carbon::now(),
+                        'created_by' => 3,
+                    ]);
+                }
 
                 $transaction->transaction_products()->create([
                     'product_id' => $product->id,
@@ -769,9 +801,9 @@ class OlderAppMigrationSeeder extends Seeder
                     'note' => $item['note'],
                     'is_verified' => 1,
                     'created_by' => 3,
-                    'created_at' => Carbon::now(),
+                    'created_at' => $date,
                     'verified_by' => 3,
-                    'verified_at' => Carbon::now(),
+                    'verified_at' => $date,
                 ]);
             }
         }
