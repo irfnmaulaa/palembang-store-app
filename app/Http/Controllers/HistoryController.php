@@ -62,7 +62,6 @@ class HistoryController extends Controller
                         });
                     }
                 });
-
         }
 
         // order-by settings
@@ -136,6 +135,14 @@ class HistoryController extends Controller
 
         $filename = 'TRANSAKSI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
 
+        // define date range field
+        $date_range_field = 'transactions.date';
+        if ($request->has('is_verified_transaction')) {
+            $date_range_field  = 'transactions.created_at';
+
+            $filename = 'TRANSAKSI TERVERIFIKASI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
+        }
+
         $transaction_products = TransactionProduct::query()
             ->select([
                 'transaction_products.*',
@@ -152,7 +159,7 @@ class HistoryController extends Controller
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->join('users', 'transactions.created_by', '=', 'users.id')
             ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.date', [$start, $end])
+            ->whereBetween($date_range_field, [$start, $end])
             ->orderBy(DB::raw('DATE(transactions.date)'))
 //            ->orderBy('transactions.id')
             ->orderBy('transaction_products.id')

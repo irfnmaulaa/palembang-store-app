@@ -198,12 +198,10 @@
                         <div>
                             @if(auth()->user()->role === 'admin')
                                 @php
-                                $date_range = date('Y-m-d') . ' - ' . date('Y-m-d');
-                                if(request()->query('date_range')) {
-                                    $date_range = request()->query('date_range');
-                                }
+                                $start = date('Y-m-d');
+                                $end = date('Y-m-d');
                                 @endphp
-                                <x-export-button variant="outline-success" table="histories" :param="['date_range' => $date_range]"></x-export-button>
+                                <x-export-button variant="outline-success" table="histories" :param="['start_date' => $start, 'end_date' => $end, 'is_verified_transaction' => 'true']"></x-export-button>
                             @endif
                         </div>
                     </div>

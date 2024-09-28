@@ -28,15 +28,18 @@ class TransactionSeeder extends Seeder
             $product = Product::find($item->id);
             $histories = json_decode($item->histories);
             if (is_array($histories)) {
-                foreach ($histories as $history) {
+                foreach ($histories as $j => $history) {
                     $transaction = \App\Models\Transaction::where('code', $history->invoice)->whereDate('date', Carbon::parse($history->created_at)->format('Y-m-d'))->first();
                     $created_by = User::where('name', $history->identifier)->first();
+                    $created_at = Carbon::parse('2024-09-26 12:00:00')->addSeconds($j)->format('Y-m-d H:i:s');
+
                     if (!$transaction) {
                         $transaction = \App\Models\Transaction::create([
                             'code' => $history->invoice,
                             'date' => Carbon::parse($history->created_at)->format('Y-m-d H:i:s'),
                             'type' => !empty($history->out) ? 'out' : 'in',
                             'created_by' => !empty($created_by) ? $created_by->id : 1,
+                            'created_at' => $created_at,
                         ]);
                     }
 
@@ -50,6 +53,7 @@ class TransactionSeeder extends Seeder
                         'verified_by' => 1,
                         'verified_at' => Carbon::parse($history->created_at)->format('Y-m-d H:i:s'),
                         'created_by' => !empty($created_by) ? $created_by->id : 1,
+                        'created_at' => $created_at,
                     ]);
                 }
             }

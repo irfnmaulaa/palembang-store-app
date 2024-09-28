@@ -830,6 +830,8 @@ class OlderAppMigrationSeeder extends Seeder
                 $product = $products->first();
 
                 $transaction = Transaction::where('code', $item['transaction_code'])->whereDate('date', $date)->where('type', $item['transaction_type'] === 'KELUAR' ? 'out' : 'in')->first();
+                $created_at = Carbon::parse('2024-09-27 12:00:00')->addSeconds($i)->format('Y-m-d H:i:s');
+
                 if (!$transaction) {
                     $transaction = Transaction::create([
                         'code' => $item['transaction_code'],
@@ -837,6 +839,7 @@ class OlderAppMigrationSeeder extends Seeder
                         'type' => $item['transaction_type'] === 'KELUAR' ? 'out' : 'in',
                         'created_at' => Carbon::now(),
                         'created_by' => 3,
+                        'created_at' => $created_at,
                     ]);
                 }
 
@@ -851,6 +854,7 @@ class OlderAppMigrationSeeder extends Seeder
                     'created_at' => $date,
                     'verified_by' => 3,
                     'verified_at' => $date,
+                    'created_at' => $created_at,
                 ]);
             } else {
                 echo "TIDAK ADA BARANG -> " . $item['product_name'] . " \n";
