@@ -55,7 +55,7 @@ class AppErrorsController extends Controller
         $this->checking_calculation_errors($last_product_id);
 
         // delete older history
-        CheckingErrorHistory::whereDate('created_at', '<', Carbon::now()->subWeek()->format('Y-m-d'))->delete();
+        CheckingErrorHistory::whereDate('created_at', '<', Carbon::now()->subDay()->format('Y-m-d'))->delete();
 
         // save check error history
         CheckingErrorHistory::create([
