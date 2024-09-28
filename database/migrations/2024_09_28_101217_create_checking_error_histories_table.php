@@ -15,7 +15,7 @@ class CreateCheckingErrorHistoriesTable extends Migration
     {
         Schema::create('checking_error_histories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('checked_by');
+            $table->unsignedBigInteger('checked_by')->nullable();
             $table->foreign('checked_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

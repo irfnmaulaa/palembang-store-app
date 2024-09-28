@@ -59,7 +59,7 @@ class AppErrorsController extends Controller
 
         // save check error history
         CheckingErrorHistory::create([
-            'checked_by' => auth()->user()->id,
+            'checked_by' => auth()->user() ? auth()->user()->id : null,
         ]);
 
         // response success
