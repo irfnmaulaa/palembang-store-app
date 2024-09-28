@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    <x-alert></x-alert>
+
     <div class="d-flex flex-column gap-3">
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex flex-column gap-1">
@@ -10,7 +12,7 @@
                     Redundant Error Checker
                 </div>
             </div>
-            <div class="d-flex gap-3">
+            <div class="d-flex align-items-center gap-3">
                 <a href="" class="btn btn-primary btn-lg btn-rec-check">
                     Cek Error
                 </a>
@@ -18,7 +20,7 @@
         </div>
 
         <div class="card border shadow-none">
-            <div class="card-body">
+            <div class="card-body d-flex justify-content-between">
                 <!-- Tabs navs -->
                 <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
                     @foreach($errors as $errorName => $value)
@@ -32,9 +34,14 @@
                         </a>
                     </li>
                     @endforeach
-
                 </ul>
                 <!-- Tabs navs -->
+
+                @if(\App\Models\CheckingErrorHistory::count() > 0)
+                <div>
+                    <small><i>Terakhir di cek: {{ \App\Models\CheckingErrorHistory::orderByDesc('created_at')->first()->created_at->diffForHumans() }}</i></small>
+                </div>
+                @endif
             </div>
             <div class="card-body py-0 d-flex flex-column gap-4">
 
@@ -48,7 +55,9 @@
             </div>
         </div>
 
-        <div class="text-muted"><small>Ditampilkan {{number_format($errors[$errorType]['data']->firstItem(), 0, ',', '.')}} - {{number_format($errors[$errorType]['data']->count() - 1 + $errors[$errorType]['data']->firstItem(), 0, ',', '.')}} dari {{number_format($errors[$errorType]['data']->total(), 0, ',', '.')}} data</small></div>
+        @if($errors[$errorType]['data']->total() > 0)
+            <div class="text-muted"><small>Ditampilkan {{number_format($errors[$errorType]['data']->firstItem(), 0, ',', '.')}} - {{number_format($errors[$errorType]['data']->count() - 1 + $errors[$errorType]['data']->firstItem(), 0, ',', '.')}} dari {{number_format($errors[$errorType]['data']->total(), 0, ',', '.')}} data</small></div>
+        @endif
     </div>
 @endsection
 
@@ -84,6 +93,7 @@
                 }
             })
 
+            // for redundant
             $('body').delegate('table tbody input[type="checkbox"]', 'change', function() {
                 const checkedCount = $(this).parents('table').find('tbody input[type="checkbox"]:checked').length
                 $('#checked-count').html(`(${ checkedCount })`)
@@ -99,6 +109,24 @@
                     $('.btn-solve').addClass('disabled')
                 }
             })
+
+            // for calculation
+            $('body').delegate('.calculation-box input[type="checkbox"]', 'change', function() {
+                const checkedCount = $(this).parents('.calculation-form').find('.calculation-box input[type="checkbox"]:checked').length
+                $('#checked-count').html(`(${ checkedCount })`)
+                if(checkedCount >= $(this).parents('table').find('.calculation-box input[type="checkbox"]').length) {
+                    $(this).parents('.calculation-form').find('#check_all').prop('checked', true)
+                } else {
+                    $(this).parents('.calculation-form').find('#check_all').prop('checked', false)
+                }
+
+                if(checkedCount > 0) {
+                    $('.btn-solve').removeClass('disabled')
+                } else {
+                    $('.btn-solve').addClass('disabled')
+                }
+            })
+
         })
     </script>
 @endsection

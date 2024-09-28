@@ -115,9 +115,16 @@
 
 @section('top-right')
     <form action="">
-        <div class="input-group input-group-lg">
-            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 260px">
-            <button class="btn btn-primary">Filter</button>
+        <div class="d-flex align-items-end gap-3">
+            <div class="d-flex flex-column gap-1">
+                <label for="filter-start-date">Tanggal Mulai</label>
+                <input type="date" name="start_date" id="filter-start-date" class="form-control form-control-lg" value="{{$start ? \Carbon\Carbon::parse($start)->format('Y-m-d') : ''}}">
+            </div>
+            <div class="d-flex flex-column gap-1">
+                <label for="filter-start-date">Tanggal Selesai</label>
+                <input type="date" name="end_date" id="filter-start-date" class="form-control form-control-lg" value="{{$end ? \Carbon\Carbon::parse($end)->format('Y-m-d') : ''}}">
+            </div>
+            <button type="submit" class="btn btn-lg btn-primary">Filter</button>
         </div>
     </form>
 @endsection

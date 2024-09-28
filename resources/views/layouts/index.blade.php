@@ -16,7 +16,7 @@
 
         <div class="card border shadow-none">
             <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-end justify-content-between">
                     <div class="d-flex align-items-center gap-3">
                         @yield('top-left')
                         @if(!@$withNoSearch)
@@ -25,10 +25,11 @@
                             @foreach(request()->except(['keyword', 'page']) as $key => $value)
                                 <input type="hidden" name="{{$key}}" value="{{$value}}">
                             @endforeach
+                            <label for="search-box">Pencarian</label>
                             <div class="input-group input-group-lg" style="max-width: 300px;">
-                                <input type="text" id="keyword" class="form-control form-control-lg" placeholder="Cari.." name="keyword" value="{{request('keyword')}}"/>
+                                <input type="text" id="keyword" class="form-control form-control-lg" name="keyword" value="{{request('keyword')}}"/>
                                 <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i>
+                                    Cari
                                 </button>
                             </div>
                         </form>

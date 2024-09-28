@@ -19,30 +19,27 @@ class HistoryController extends Controller
 
     public function index(Request $request)
     {
-        $start = '2020-01-01 00:00:00';
-        $end = date('Y-m-d')  . ' 23:59:59';
+        $start = date('Y-m-d') . ' 00:00:00';
+        $end   = date('Y-m-d') . ' 23:59:59';
 
         // get first transaction
-        /*
-        $first_transaction = Transaction::orderBy('created_at')->first();
+        $first_transaction = Transaction::orderBy('date')->orderBy('created_at')->first();
         if ($first_transaction) {
-            $start = $first_transaction->created_at->format('Y-m-d H:i:s');
+            $start = Carbon::parse($first_transaction->date)->format('Y-m-d') . ' 00:00:00';
         }
-        */
 
-        if ($request->has('date_range')) {
-            $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0]  . ' 00:00:00';
-            $end = $explode[1] . ' 23:59:59';
+        if ($request->query('start_date')) {
+            $start = $request->query('start_date')  . ' 00:00:00';
+        }
+
+        if ($request->query('end_date')) {
+            $end = $request->query('end_date') . ' 23:59:59';
         }
 
         // define instance
         $transactions = Transaction::query()
-            ->select([
-                'transactions.*',
-                DB::raw('transaction_products.id as transaction_product_id'),
-            ])
-            ->distinct()
+            ->select('transactions.*')
+            ->distinct(['transactions.id'])
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
@@ -104,28 +101,37 @@ class HistoryController extends Controller
             ['label' => 'Tipe Z-A', 'order' => 'type-desc'],
         ];
 
+        // clear start date filter
+        if ($first_transaction && Carbon::parse($first_transaction->date)->format('Y-m-d') == Carbon::parse($start)->format('Y-m-d')) {
+            $start = null;
+        }
+
+        // clear end date filter
+        if ($end && Carbon::parse($end)->format('Y-m-d') == Carbon::now()->format('Y-m-d')) {
+            $end = null;
+        }
+
         // return view
         return view('admin.histories.index', compact('transactions', 'order_options', 'start', 'end'));
     }
 
     public function export(Request $request, $type)
     {
-        if ($request->has('date_range') && $request->query('date_range') != '') {
-            $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0] . ' 00:00:00';
-            $end = $explode[1] . ' 23:59:59';
-        } else {
-            $start = date('Y')  . '-01-01 00:00:00';
+        $start = date('Y-m-d') . ' 00:00:00';
+        $end   = date('Y-m-d') . ' 23:59:59';
 
-            // get first transaction
-            /*
-            $first_transaction = Transaction::orderBy('created_at')->first();
-            if ($first_transaction) {
-                $start = $first_transaction->created_at->format('Y-m-d H:i:s');
-            }
-            */
+        // get first transaction
+        $first_transaction = Transaction::orderBy('date')->orderBy('created_at')->first();
+        if ($first_transaction) {
+            $start = Carbon::parse($first_transaction->date)->format('Y-m-d') . ' 00:00:00';
+        }
 
-            $end = date('Y-m-d') . ' 23:59:59';
+        if ($request->query('start_date')) {
+            $start = $request->query('start_date')  . ' 00:00:00';
+        }
+
+        if ($request->query('end_date')) {
+            $end = $request->query('end_date') . ' 23:59:59';
         }
 
         $filename = 'TRANSAKSI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
@@ -147,7 +153,9 @@ class HistoryController extends Controller
             ->join('users', 'transactions.created_by', '=', 'users.id')
             ->where('transaction_products.is_verified', 1)
             ->whereBetween('transactions.date', [$start, $end])
-            ->orderByDesc('transactions.date')
+            ->orderBy(DB::raw('DATE(transactions.date)'))
+//            ->orderBy('transactions.id')
+            ->orderBy('transaction_products.id')
             ->get();
 
         switch ($type) {

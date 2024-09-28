@@ -8,7 +8,6 @@ use App\Models\Old\Transaction;
 use App\Models\Old\User;
 use App\Models\Product;
 use App\Models\ProductCategory;
-use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -77,16 +76,6 @@ class DatabaseSeeder extends Seeder
                 'created_at' => $item->created_at,
                 'updated_at' => $item->updated_at,
             ]);
-        }
-
-        $settings = [
-            [
-                'key' => 'working_end',
-                'value' => '17:00:00',
-            ],
-        ];
-        foreach ($settings as $setting) {
-            Setting::create($setting);
         }
     }
 }

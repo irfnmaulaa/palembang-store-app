@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CheckingErrorHistory;
 use App\Models\Product;
 use App\Models\CalculationErrorChecker;
 use App\Models\RedundantErrorChecker;
+use App\Models\TransactionProduct;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,6 +53,14 @@ class AppErrorsController extends Controller
         // check calculation errors
         $last_product_id = 0;
         $this->checking_calculation_errors($last_product_id);
+
+        // delete older history
+        CheckingErrorHistory::whereDate('created_at', '<', Carbon::now()->subWeek()->format('Y-m-d'))->delete();
+
+        // save check error history
+        CheckingErrorHistory::create([
+            'checked_by' => auth()->user()->id,
+        ]);
 
         // response success
         return response()->json([
@@ -137,4 +148,117 @@ class AppErrorsController extends Controller
 
         $this->checking_calculation_errors($last_product_id);
     }
+
+    // solve errors
+    public function solve(Request $request, $type)
+    {
+        switch ($type) {
+            case 'redundant':
+                return $this->solve_redundant($request);
+            case 'calculation':
+                return $this->solve_calculation($request);
+            default:
+                abort(404);
+        }
+    }
+
+    // solve redundant errors
+    public function solve_redundant(Request $request)
+    {
+        // validation
+        $validated = $request->validate([
+            'rec_ids' => ['required', 'array'],
+            'rec_ids.*' => ['required', 'exists:redundant_error_checkers,id'],
+        ]);
+
+        // get all recs
+        $recs = RedundantErrorChecker::whereIn('id', $validated['rec_ids'])->get();
+
+        foreach ($recs as $rec) {
+
+            // get all duplicated transaction products
+            $transaction_products = TransactionProduct::query()
+                ->where('transaction_id', $rec->transaction_id)
+                ->where('product_id', $rec->product_id)
+                ->where('note', $rec->note)
+                ->where('quantity', $rec->quantity)
+                ->get();
+
+            // check count of duplicated transaction products same as expected
+            if ($transaction_products->count() == $rec->duplicate_count) {
+                // delete rec
+                $rec->delete();
+
+                // get first data of duplicated transaction product
+                $first = $transaction_products->first();
+
+                // define transaction product ids to remove
+                $tp_ids = $transaction_products->pluck('id')->filter(function ($id) use ($first) {
+                    return $id != $first->id;
+                })->values()->toArray();
+
+                // remove calculation
+                CalculationErrorChecker::whereIn('from_transaction_product_id', $tp_ids)
+                    ->orWhereIn('to_transaction_product_id', $tp_ids)
+                    ->delete();
+
+                // remove duplicate
+                TransactionProduct::whereIn('id', $tp_ids)->delete();
+            }
+        }
+
+        return redirect()->back()->with('message', 'Error solved successful');
+    }
+
+    // solve calculation errors
+    public function solve_calculation(Request $request)
+    {
+        // validation
+        $validated = $request->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'exists:products,id'],
+        ]);
+
+        // get all products has calculation errors
+        $products = Product::whereIn('id', $validated['product_ids'])->get();
+
+        foreach ($products as $product) {
+            // get first transaction product error
+            $first_transaction_product = $product->calculation_errors()->orderBy('id')->first()->from_transaction_product;
+
+            // get all transaction products after first transaction product error
+            $transaction_products = $product->transaction_products()->where('id', '>=', $first_transaction_product->id)->with(['transaction'])->orderBy('id')->get();
+
+            foreach ($transaction_products as $i => $transaction_product) {
+
+                // define type of transaction (in/out)
+                $type = $transaction_product->transaction->type;
+
+                // start from first error
+                if ($i > 0) {
+                    // from_stock is to_stock/remaining of transaction product before
+                    $from_stock = $transaction_products[$i-1]->to_stock;
+
+                    // calculate expected to_stock/remaining
+                    $to_stock   = $from_stock + $transaction_product->quantity;
+                    if ($type === 'out') {
+                        $to_stock = $from_stock - $transaction_product->quantity;
+                    }
+
+                    // solve
+                    $transaction_product->update([
+                        'from_stock' => $from_stock,
+                        'to_stock' => $to_stock,
+                    ]);
+                }
+
+            }
+
+            // delete calculation errors of the product
+            $product->calculation_errors()->delete();
+        }
+
+        return redirect()->back()->with('message', 'Error solved successful');
+    }
+
 }

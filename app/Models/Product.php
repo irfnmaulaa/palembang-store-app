@@ -62,4 +62,9 @@ class Product extends Model
     {
         return $this->stock_at_old_app == $this->stock;
     }
+
+    public function calculation_errors()
+    {
+        return $this->hasMany(CalculationErrorChecker::class);
+    }
 }

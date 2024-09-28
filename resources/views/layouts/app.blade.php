@@ -80,6 +80,9 @@
         .select2-container--bootstrap-5 .select2-dropdown .select2-results__options:not(.select2-results__options--nested) {
             max-height: 14.5rem;
         }
+        .nav-tabs .nav-link {
+            font-size: unset;
+        }
     </style>
 
     <!-- MDB -->

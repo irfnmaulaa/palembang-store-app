@@ -12,16 +12,23 @@
 @section('cta')
     <div class="d-flex align-items-center gap-3">
         @if(auth()->user()->role === 'admin')
-            <x-export-button table="histories" :param="['date_range' => request()->query('date_range') ?? '']"></x-export-button>
+            <x-export-button table="histories" :param="['start_date' => $start ? \Carbon\Carbon::parse($start)->format('Y-m-d') : '', 'end_date' => $end ? \Carbon\Carbon::parse($end)->format('Y-m-d') : '',]"></x-export-button>
         @endif
     </div>
 @endsection
 
 @section('top-right')
     <form action="">
-        <div class="input-group input-group-lg">
-            <input type="text" name="date_range" class="form-control form-control-lg date-range-picker" style="min-width: 260px">
-            <button class="btn btn-primary">Filter</button>
+        <div class="d-flex align-items-end gap-3">
+            <div class="d-flex flex-column gap-1">
+                <label for="filter-start-date">Tanggal Mulai</label>
+                <input type="date" name="start_date" id="filter-start-date" class="form-control form-control-lg" value="{{$start ? \Carbon\Carbon::parse($start)->format('Y-m-d') : ''}}">
+            </div>
+            <div class="d-flex flex-column gap-1">
+                <label for="filter-start-date">Tanggal Selesai</label>
+                <input type="date" name="end_date" id="filter-start-date" class="form-control form-control-lg" value="{{$end ? \Carbon\Carbon::parse($end)->format('Y-m-d') : ''}}">
+            </div>
+            <button type="submit" class="btn btn-lg btn-primary">Filter</button>
         </div>
     </form>
 @endsection
@@ -31,27 +38,4 @@
         <a href="{{route('admin.dashboard')}}">Beranda</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
         Riwayat Transaksi
     </div>
-@endsection
-
-@section('js')
-    <script>
-        const start = moment('{{$start}}');
-        const end = moment('{{$end}}');
-
-        $('.date-range-picker').daterangepicker({
-            startDate: start,
-            endDate: end,
-            ranges: {
-                'Hari ini': [moment(), moment()],
-                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                '7 hari terakhir': [moment().subtract(6, 'days'), moment()],
-                '30 hari terakhir': [moment().subtract(29, 'days'), moment()],
-                'Bulan ini': [moment().startOf('month'), moment().endOf('month')],
-                'Bulan lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            },
-            locale: {
-                format: 'YYYY-MM-DD'
-            }
-        });
-    </script>
 @endsection

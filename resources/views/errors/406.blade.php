@@ -46,19 +46,9 @@
                             Akun tidak dapat masuk diluar jam kerja. <br>
                             Jam kerja:
                             @php
-                                $working_start = \App\Models\Setting::where('key', 'working_start')->first();
-                                if ($working_start) {
-                                    $working_start = $working_start->value;
-                                } else {
-                                    $working_start = '07:00:00';
-                                }
+                                $working_start = get_start_time_admin_verify();
 
-                                $working_end = \App\Models\Setting::where('key', 'working_end')->first();
-                                if ($working_end) {
-                                    $working_end = $working_end->value;
-                                } else {
-                                    $working_end = '17:00:00';
-                                }
+                                $working_end   = get_max_time_user_active();
                             @endphp
                             {{ \Carbon\Carbon::parse($working_start)->format('H.i') }} - {{ \Carbon\Carbon::parse($working_end)->format('H.i') }}.
                         </div>

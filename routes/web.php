@@ -63,11 +63,9 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::post('/users/check-pin', [\App\Http\Controllers\UserController::class, 'check_pin'])->name('users.check_pin');
     Route::post('/users/close-store', [\App\Http\Controllers\UserController::class, 'close_store'])->name('users.close_store');
 
-    // Settings
-    Route::resource('/settings', \App\Http\Controllers\SettingsController::class);
-
     // App Errors
      Route::post('/app_errors/check', [\App\Http\Controllers\AppErrorsController::class, 'check'])->name('app_errors.check');
+     Route::post('/app_errors/{type}/solve', [\App\Http\Controllers\AppErrorsController::class, 'solve'])->name('app_errors.solve');
      Route::resource('/app_errors', \App\Http\Controllers\AppErrorsController::class);
 
 });

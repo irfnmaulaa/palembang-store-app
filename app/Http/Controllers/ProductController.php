@@ -116,13 +116,21 @@ class ProductController extends Controller
 
     public function show(Request $request, Product $product)
     {
-        $start = '2020-12-28 00:00:00';
-        $end = date('Y-m-d') . ' 23:59:59';
+        $start = date('Y-m-d') . ' 00:00:00';
+        $end   = date('Y-m-d') . ' 23:59:59';
 
-        if ($request->has('date_range')) {
-            $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0] . ' 00:00:00';
-            $end = $explode[1] . ' 23:59:59';
+        // get first transaction
+        $first_transaction = $product->transaction_products()->with(['transaction'])->orderBy('id')->first();
+        if ($first_transaction) {
+            $start = Carbon::parse($first_transaction->transaction->date)->format('Y-m-d') . ' 00:00:00';
+        }
+
+        if ($request->query('start_date')) {
+            $start = $request->query('start_date')  . ' 00:00:00';
+        }
+
+        if ($request->query('end_date')) {
+            $end = $request->query('end_date') . ' 23:59:59';
         }
 
         // define instance
@@ -183,6 +191,16 @@ class ProductController extends Controller
             ['label' => 'Tipe A-Z', 'order' => 'type-asc'],
             ['label' => 'Tipe Z-A', 'order' => 'type-desc'],
         ];
+
+        // clear start date filter
+        if ($first_transaction && Carbon::parse($first_transaction->transaction->date)->format('Y-m-d') == Carbon::parse($start)->format('Y-m-d')) {
+            $start = null;
+        }
+
+        // clear end date filter
+        if ($end && Carbon::parse($end)->format('Y-m-d') == Carbon::now()->format('Y-m-d')) {
+            $end = null;
+        }
 
         // return view
         return view('admin.products.show', compact('product', 'transaction_products', 'order_options', 'start', 'end'));
