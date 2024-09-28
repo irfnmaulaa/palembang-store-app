@@ -120,9 +120,25 @@ class ProductController extends Controller
         $end   = date('Y-m-d') . ' 23:59:59';
 
         // get first transaction
-        $first_transaction = $product->transaction_products()->with(['transaction'])->orderBy('id')->first();
+        $first_transaction = $product->transaction_products()
+            ->with(['transaction'])
+            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+            ->orderBy('transactions.date')
+            ->orderBy('transaction_products.id')
+            ->first();
         if ($first_transaction) {
             $start = Carbon::parse($first_transaction->transaction->date)->format('Y-m-d') . ' 00:00:00';
+        }
+
+        // get last transaction
+        $last_transaction = $product->transaction_products()
+            ->with(['transaction'])
+            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+            ->orderByDesc('transactions.date')
+            ->orderByDesc('transaction_products.id')
+            ->first();
+        if ($last_transaction) {
+            $end = Carbon::parse($last_transaction->transaction->date)->format('Y-m-d') . ' 23:59:59';
         }
 
         if ($request->query('start_date')) {
@@ -198,7 +214,7 @@ class ProductController extends Controller
         }
 
         // clear end date filter
-        if ($end && Carbon::parse($end)->format('Y-m-d') == Carbon::now()->format('Y-m-d')) {
+        if ($last_transaction && Carbon::parse($last_transaction->transaction->date)->format('Y-m-d') == Carbon::parse($end)->format('Y-m-d')) {
             $end = null;
         }
 

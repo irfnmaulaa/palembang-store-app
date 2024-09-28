@@ -30,14 +30,6 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        $start = date('Y-m-d') . ' 00:00:00';
-        $end = date('Y-m-d') . ' 23:59:59';
-
-        if ($request->has('date_range')) {
-            $explode = explode(' - ', $request->query('date_range'));
-            $start = $explode[0] . ' 00:00:00';
-            $end = $explode[1]  . ' 23:59:59';
-        }
 
         // define instance
         $transactions_pending = Transaction::query()
@@ -45,8 +37,7 @@ class TransactionController extends Controller
             ->distinct()
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
-            ->where('transaction_products.is_verified', 0)
-            ->whereBetween('transactions.date', [$start, $end]);
+            ->where('transaction_products.is_verified', 0);
 
         // searching settings
         if ($request->has('keyword')) {
@@ -104,6 +95,10 @@ class TransactionController extends Controller
             ['label' => 'Tipe Z-A', 'order' => 'type-desc'],
         ];
 
+        // define start and date for verified transactions
+        $start = date('Y-m-d') . ' 00:00:00';
+        $end = date('Y-m-d') . ' 23:59:59';
+
         // define instance
         $transactions_verified = Transaction::query()
             ->select('transactions.*')
@@ -111,7 +106,7 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.date', [$start, $end]);
+            ->whereBetween('transactions.created_at', [$start, $end]);
             // ->orderByDesc('transactions.date');
 
         // searching settings
@@ -135,7 +130,7 @@ class TransactionController extends Controller
         }
 
         // order-by settings
-        $order = ['transactions.created_at', 'desc'];
+        $order = ['transactions.date', 'asc'];
         if ($request->has('order2')) {
             $order_query = explode('-', $request->get('order2'));
             if (count($order_query) >= 2) $order = $order_query;
