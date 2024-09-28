@@ -23,7 +23,7 @@
                         <a href="{{route('admin.transactions.create', ['type' => 'out'])}}" class="btn btn-dark btn-lg">
                             Barang Keluar
                         </a>
-                    </div> 
+                    </div>
                 </div>
             </div>
 

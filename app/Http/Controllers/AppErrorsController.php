@@ -120,7 +120,16 @@ class AppErrorsController extends Controller
         // product all
         foreach (Product::where('id', '>', $last_product_id)->take(1000)->get() as $product) {
             $last = null;
-            foreach ($product->transaction_products()->select('transaction_products.*')->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')->where('is_verified', 1)->orderBy('transactions.date')->whereDate('transactions.date', '>=', get_app_released_date())->get() as $i => $tp) {
+            $transaction_products = $product
+                ->transaction_products()
+                ->select('transaction_products.*')
+                ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')
+                ->where('is_verified', 1)
+                ->orderBy('transactions.date')
+                ->whereDate('transactions.date', '>=', get_app_released_date())
+                ->get();
+
+            foreach ($transaction_products as $i => $tp) {
                 if ($i > 0) {
                     $latest_stock = $last->to_stock;
 
@@ -227,7 +236,15 @@ class AppErrorsController extends Controller
             $first_transaction_product = $product->calculation_errors()->orderBy('id')->first()->from_transaction_product;
 
             // get all transaction products after first transaction product error
-            $transaction_products = $product->transaction_products()->where('id', '>=', $first_transaction_product->id)->with(['transaction'])->orderBy('id')->get();
+            $transaction_products = $product->transaction_products()
+                ->select(['transaction_products.*'])
+                ->with(['transaction'])
+                ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+                ->whereDate('transactions.date', '>=', Carbon::parse($first_transaction_product->transaction->date)->format('Y-m-d'))
+//                ->where('transaction_products.created_at', '>', $first_transaction_product->created_at)
+                ->orderBy('transactions.date')
+                ->orderBy('transaction_products.id')
+                ->get();
 
             foreach ($transaction_products as $i => $transaction_product) {
 
