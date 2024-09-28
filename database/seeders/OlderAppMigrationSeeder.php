@@ -38,7 +38,6 @@ class OlderAppMigrationSeeder extends Seeder
         }
 
         $items = [
-
             ["date" => "45532", "transaction_code" => "S 2585", "product_name" => "COMPONE A+", "quantity" => "2", "product_unit" => "SAK", "note" => "1183 HARYADI", "to_stock" => "42", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2585", "product_name" => "PAPAN GIPSUM KNAUF", "quantity" => "25", "product_unit" => "LBR", "note" => "1183 HARYADI", "to_stock" => "12", "transaction_type" => "KELUAR"],
             ["date" => "45532", "transaction_code" => "S 2585", "product_name" => "HOLO GIPSUM 2/4 PUTIH", "quantity" => "20", "product_unit" => "BTG", "note" => "1183 HARYADI", "to_stock" => "118", "transaction_type" => "KELUAR"],

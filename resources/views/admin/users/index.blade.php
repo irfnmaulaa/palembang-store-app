@@ -36,7 +36,7 @@
                 <td class="text-center">
                     <div class="d-flex justify-content-start gap-2">
                         @if($user->role !== 'admin')
-                        <a href="" onclick="event.preventDefault(); document.getElementById('form-activate-{{$user->id}}').submit()" data-mdb-tooltip-init data-mdb-html="true" title='{{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}} <br/> "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg {{$user->is_active ? '' : 'btn-success'}} d-flex align-items-center gap-2">
+                        <a href="" onclick="event.preventDefault(); document.getElementById('form-activate-{{$user->id}}').submit()" title='{{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}} "{{$user->name}}"' class="btn p-2 shadow-none border btn-lg {{$user->is_active ? '' : 'btn-success'}} d-flex align-items-center gap-2">
                             {{$user->is_active ? 'Nonaktifkan' : 'Aktifkan'}}
                         </a>
                         @endif
