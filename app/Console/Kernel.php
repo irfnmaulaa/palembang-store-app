@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('users:update-active-status')->dailyAt('17:00');
         $schedule->command('transactions:clear-pending')->dailyAt('00:00');
-        $schedule->command('rec:check')->everyFiveMinutes();
+        $schedule->command('rec:check')->everyFifteenMinutes()->between('07:00', '19:00');
     }
 
     /**
