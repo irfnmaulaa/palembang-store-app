@@ -41,8 +41,13 @@
                 @php
                 $last_history = get_last_history();
                 @endphp
-                <div>
-                    <small><i>Terakhir di cek <b>{{ $last_history->created_at->diffForHumans() }}</b> oleh <b>{{ $last_history->checked_by_user ? $last_history->checked_by_user->name : 'Sistem' }}</b></i></small>
+                <div class="text-end">
+                    <div>
+                        <small><i class="fas fa-info-circle me-1"></i> REC mengecek semua transaksi dari tanggal <b>{{ \Carbon\Carbon::parse(get_app_released_date())->format('j F Y') }}</b>.</small>
+                    </div>
+                    <div>
+                        <small><i class="fas fa-clock me-1"></i> Terakhir di cek oleh <b>{{ $last_history->checked_by_user ? $last_history->checked_by_user->name : 'Sistem' }}</b> pada pukul <b>{{ $last_history->created_at->format('H.i') }} WIB.</b></small>
+                    </div>
                 </div>
                 @endif
             </div>

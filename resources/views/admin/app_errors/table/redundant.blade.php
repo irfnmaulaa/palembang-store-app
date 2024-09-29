@@ -75,5 +75,5 @@
 
     </form>
 @else
-    No redundant error detected.
+    Tidak ada error terdeteksi.
 @endif

@@ -67,5 +67,5 @@
     </form>
 
 @else
-    No calculation error detected.
+    Tidak ada error terdeteksi.
 @endif
