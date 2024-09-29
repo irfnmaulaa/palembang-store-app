@@ -126,7 +126,7 @@
 
                         @foreach(collect(get_menus())->filter(function ($menu) { return in_array(auth()->user()->role, $menu->allowed_roles); })->all() as $menu)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->route()->getName() == $menu->link ? 'active' : '' }}" href="{{route($menu->link)}}">
+                                <a class="nav-link {{ collect(explode('.', request()->route()->getName()))->slice(0, 2)->join('.') == collect(explode('.', $menu->link))->slice(0, 2)->join('.') ? 'active' : '' }}" href="{{route($menu->link)}}">
                                     {{$menu->label}}
                                 </a>
                             </li>
