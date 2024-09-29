@@ -9,4 +9,9 @@ class CheckingErrorHistory extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function checked_by_user()
+    {
+        return $this->belongsTo(User::class, 'checked_by');
+    }
 }

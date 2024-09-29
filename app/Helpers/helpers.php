@@ -84,3 +84,10 @@ if (!function_exists('get_app_released_date')) {
         return '2024-09-01';
     }
 }
+
+if (!function_exists('get_last_history')) {
+    function get_last_history()
+    {
+        return \App\Models\CheckingErrorHistory::orderByDesc('created_at')->first();
+    }
+}

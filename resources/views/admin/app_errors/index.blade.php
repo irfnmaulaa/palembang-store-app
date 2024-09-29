@@ -38,8 +38,11 @@
                 <!-- Tabs navs -->
 
                 @if(\App\Models\CheckingErrorHistory::count() > 0)
+                @php
+                $last_history = get_last_history();
+                @endphp
                 <div>
-                    <small><i>Terakhir di cek: {{ \App\Models\CheckingErrorHistory::orderByDesc('created_at')->first()->created_at->diffForHumans() }}</i></small>
+                    <small><i>Terakhir di cek <b>{{ $last_history->created_at->diffForHumans() }}</b> oleh <b>{{ $last_history->checked_by_user ? $last_history->checked_by_user->name : 'Sistem' }}</b></i></small>
                 </div>
                 @endif
             </div>
