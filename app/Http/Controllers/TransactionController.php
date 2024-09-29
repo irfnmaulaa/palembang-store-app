@@ -233,9 +233,18 @@ class TransactionController extends Controller
                         ->where('transaction_products.is_verified', 0)
                         ->whereDate('transactions.date', Carbon::parse($transaction->date)->format('Y-m-d'))
                         ->where('transaction_products.product_id', $product->id);
-                })
+                });
+
+            $date = Carbon::parse($validated['date'])->format('Y-m-d');
+            if ($date != date('Y-m-d')) {
+                $last_product_transaction = $last_product_transaction->whereDate('transactions.date', '<=', $date);
+            }
+
+            $last_product_transaction = $last_product_transaction
+                ->orderByDesc('transactions.date')
                 ->orderByDesc('transaction_products.id')
                 ->first();
+
             $last_product_stock = $last_product_transaction ? $last_product_transaction->to_stock : 0;
 
             $from_stock = $last_product_stock;

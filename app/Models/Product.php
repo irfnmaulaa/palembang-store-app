@@ -25,7 +25,14 @@ class Product extends Model
 
     public function getStockAttribute()
     {
-        $tp = $this->transaction_products()->where('is_verified', 1)->orderByDesc('id')->first();
+        $tp = $this->transaction_products()
+            ->select(['transaction_products.*'])
+            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
+            ->where('is_verified', 1)
+            ->orderByDesc('transactions.date')
+            ->orderByDesc('transaction_products.id')
+            ->first();
+
         if ($tp) {
             return $tp->to_stock;
         }
@@ -34,7 +41,19 @@ class Product extends Model
 
     public function getPendingStockAttribute()
     {
-        $tp = $this->transaction_products()->orderByDesc('id')->first();
+        $tp = $this->transaction_products()
+            ->select(['transaction_products.*'])
+            ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id');
+
+        if (request()->query('date')) {
+            $tp = $tp->whereDate('transactions.date', '<=', request()->query('date'));
+        }
+
+        $tp = $tp
+            ->orderByDesc('transactions.date')
+            ->orderByDesc('transaction_products.id')
+            ->first();
+
         if ($tp) {
             return $tp->to_stock;
         }

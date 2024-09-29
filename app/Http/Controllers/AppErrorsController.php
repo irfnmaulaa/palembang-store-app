@@ -127,8 +127,9 @@ class AppErrorsController extends Controller
                 ->select('transaction_products.*')
                 ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')
                 ->where('is_verified', 1)
-                ->orderBy('transactions.date')
                 ->whereDate('transactions.date', '>=', get_app_released_date())
+                ->orderBy('transactions.date')
+                ->orderBy('transaction_products.id')
                 ->get();
 
             foreach ($transaction_products as $i => $tp) {

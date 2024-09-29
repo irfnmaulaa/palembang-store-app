@@ -86,6 +86,9 @@
 @section('js')
     <script>
         $(document).ready(function () {
+            const codeEl = $('input[name="code"]')
+            const dateEl = $('input[name="date"]')
+
             $( '.select-product' ).select2( {
                 theme: "bootstrap-5",
                 width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
@@ -97,6 +100,9 @@
                         var query = {
                             keyword: params.term,
                             page: params.page || 1
+                        }
+                        if(dateEl.length > 0) {
+                            query.date = dateEl.val()
                         }
                         return query;
                     }
@@ -201,39 +207,6 @@
                     });
                     return
                 }
-
-                // const prodIndex = products.findIndex(p => JSON.parse(getValue(p, 'product'))?.id == JSON.parse(getValue(product, 'product'))?.id)
-                // if(prodIndex > -1) {
-                //     const swalWithBootstrapButtons = Swal.mixin({
-                //         customClass: {
-                //             confirmButton: "btn btn-primary btn-lg me-3",
-                //             cancelButton: "btn btn-outline-primary btn-lg"
-                //         },
-                //         buttonsStyling: false
-                //     });
-                //     swalWithBootstrapButtons.fire({
-                //         title: "Barang sudah dimasukan",
-                //         text: "Apakah ingin memperbarui datanya?",
-                //         icon: "warning",
-                //         showCancelButton: true,
-                //         confirmButtonText: "Ya, perbarui",
-                //         cancelButtonText: "Tidak",
-                //     }).then((result) => {
-                //         if ( result.isConfirmed ) {
-                //             products[prodIndex] = product
-                //             renderTableProducts()
-                //
-                //             $(this)[0].reset()
-                //             $( '.select-product' ).val(null).trigger('change').select2('open')
-                //         }
-                //     });
-                // } else {
-                //     products.push(product)
-                //     renderTableProducts()
-                //
-                //     $(this)[0].reset()
-                //     $( '.select-product' ).val(null).trigger('change').select2('open')
-                // }
                 products.push(product)
                 renderTableProducts()
 
@@ -342,9 +315,6 @@
                     }
                 });
             })
-
-            const codeEl = $('input[name="code"]')
-            const dateEl = $('input[name="date"]')
 
             codeEl.change(function() {
                 localStorage.setItem('_transaction_code_{{request()->query('type')}}', codeEl.val())
