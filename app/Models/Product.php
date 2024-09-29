@@ -6,6 +6,7 @@ use App\Models\Old\Item;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -29,7 +30,7 @@ class Product extends Model
             ->select(['transaction_products.*'])
             ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
             ->where('is_verified', 1)
-            ->orderByDesc('transactions.date')
+            ->orderByDesc(DB::raw('DATE(transactions.date)'))
             ->orderByDesc('transaction_products.id')
             ->first();
 
@@ -41,16 +42,26 @@ class Product extends Model
 
     public function getPendingStockAttribute()
     {
+        $date = null;
+        if (request()->query('date')) {
+            $date = request()->query('date');
+        }
+
+        return $this->get_pending_stock_by_date($date);
+    }
+
+    public function get_pending_stock_by_date($date = null)
+    {
         $tp = $this->transaction_products()
             ->select(['transaction_products.*'])
             ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id');
 
-        if (request()->query('date')) {
-            $tp = $tp->whereDate('transactions.date', '<=', request()->query('date'));
+        if ($date) {
+            $tp = $tp->whereDate('transactions.date', '<=', $date);
         }
 
         $tp = $tp
-            ->orderByDesc('transactions.date')
+            ->orderByDesc(DB::raw('DATE(transactions.date)'))
             ->orderByDesc('transaction_products.id')
             ->first();
 

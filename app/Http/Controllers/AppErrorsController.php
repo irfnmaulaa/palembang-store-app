@@ -128,7 +128,7 @@ class AppErrorsController extends Controller
                 ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')
                 ->where('is_verified', 1)
                 ->whereDate('transactions.date', '>=', get_app_released_date())
-                ->orderBy('transactions.date')
+                ->orderBy(DB::raw('DATE(transactions.date)'))
                 ->orderBy('transaction_products.id')
                 ->get();
 
@@ -245,7 +245,7 @@ class AppErrorsController extends Controller
                 ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
                 ->whereDate('transactions.date', '>=', Carbon::parse($first_transaction_product->transaction->date)->format('Y-m-d'))
 //                ->where('transaction_products.created_at', '>', $first_transaction_product->created_at)
-                ->orderBy('transactions.date')
+                ->orderBy(DB::raw('DATE(transactions.date)'))
                 ->orderBy('transaction_products.id')
                 ->get();
 

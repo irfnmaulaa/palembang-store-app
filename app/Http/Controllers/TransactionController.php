@@ -226,14 +226,7 @@ class TransactionController extends Controller
             }
 
             $last_product_transaction = $product->transaction_products()
-                ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id')
-                ->where('transaction_products.is_verified', 1)
-                ->orWhere(function ($query) use ($transaction, $product) {
-                    $query
-                        ->where('transaction_products.is_verified', 0)
-                        ->whereDate('transactions.date', Carbon::parse($transaction->date)->format('Y-m-d'))
-                        ->where('transaction_products.product_id', $product->id);
-                });
+                ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id');
 
             $date = Carbon::parse($validated['date'])->format('Y-m-d');
             if ($date != date('Y-m-d')) {
@@ -241,7 +234,14 @@ class TransactionController extends Controller
             }
 
             $last_product_transaction = $last_product_transaction
-                ->orderByDesc('transactions.date')
+                ->where('transaction_products.is_verified', 1)
+                ->orWhere(function ($query) use ($transaction, $product) {
+                    $query
+                        ->where('transaction_products.is_verified', 0)
+                        ->whereDate('transactions.date', Carbon::parse($transaction->date)->format('Y-m-d'))
+                        ->where('transaction_products.product_id', $product->id);
+                })
+                ->orderByDesc(DB::raw('DATE(transactions.date)'))
                 ->orderByDesc('transaction_products.id')
                 ->first();
 

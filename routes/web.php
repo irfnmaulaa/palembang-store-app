@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Product;
 use App\Models\ProductCategory;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +43,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::get('/products/export/{type}', [\App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
     Route::resource('/products', \App\Http\Controllers\ProductController::class);
     Route::get('/products/{product}/export/{type}', [\App\Http\Controllers\ProductController::class, 'export_detail'])->name('product-detail.export');
+    Route::post('/products/get-latest-stock-by-date', [\App\Http\Controllers\ProductController::class, 'get_latest_stock_by_date'])->name('products.get_latest_stock_by_date');
 
     // Transactions
     Route::put('/transactions/verify', [\App\Http\Controllers\TransactionController::class, 'verify'])->name('transactions.verify');
@@ -68,4 +72,28 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
      Route::post('/app_errors/{type}/solve', [\App\Http\Controllers\AppErrorsController::class, 'solve'])->name('app_errors.solve');
      Route::resource('/app_errors', \App\Http\Controllers\AppErrorsController::class);
 
+     Route::get('/test', function () {
+         $product = Product::find(26);
+
+         $last_product_transaction = $product->transaction_products()
+             ->join('transactions', 'transactions.id', '=', 'transaction_products.transaction_id');
+
+         $date = '2022-01-10';
+         if ($date != date('Y-m-d')) {
+             $last_product_transaction = $last_product_transaction->whereDate('transactions.date', '<=', $date);
+         }
+
+         $last_product_transaction = $last_product_transaction
+             ->where('transaction_products.is_verified', 1)
+             ->orWhere(function ($query) use ($product) {
+                 $query
+                     ->where('transaction_products.is_verified', 0)
+                     ->where('transaction_products.product_id', $product->id);
+             })
+             ->orderByDesc(DB::raw('DATE(transactions.date)'))
+             ->orderByDesc('transaction_products.id')
+             ->first();
+
+         return $last_product_transaction;
+     });
 });

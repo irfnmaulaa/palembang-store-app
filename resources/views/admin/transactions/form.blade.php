@@ -225,6 +225,7 @@
                 if(products.length > 0) {
                     products.forEach((product, i) => {
 
+                        // calculate stock
                         let to_stock = parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10);
                         to_stock {{ request()->query('type') == 'in' ? '+' : '-' }}= products.filter((prod, j) => {
                             return JSON.parse(getValue(product, 'product'))?.id === JSON.parse(getValue(prod, 'product'))?.id && j < i
@@ -320,8 +321,45 @@
                 localStorage.setItem('_transaction_code_{{request()->query('type')}}', codeEl.val())
             })
 
+            dateEl.change(function() {
+                const product_ids = products.map(prod => JSON.parse(prod.find(({name}) => name ==='product').value).id)
+                const date = $(this).val()
+
+                localStorage.setItem('_date_{{request()->query('type')}}', date)
+
+                $.ajax({
+                    url: '{{route('admin.products.get_latest_stock_by_date')}}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        date,
+                        product_ids,
+                    },
+                    success: function (response) {
+                        response.products.forEach(prod => {
+                            products.forEach((data, i) => {
+                                if(JSON.parse(getValue(data, 'product')).id === prod.product_id) {
+                                    const value = JSON.parse(getValue(products[i], 'product'))
+                                    value.stock = prod.stock
+                                    products[i][0] = {
+                                        name: 'product',
+                                        value: JSON.stringify(value),
+                                    }
+                                }
+                            })
+
+                        })
+                        renderTableProducts()
+                    }
+                })
+            })
+
             if(localStorage.getItem('_transaction_code_{{request()->query('type')}}')) {
                 codeEl.val(localStorage.getItem('_transaction_code_{{request()->query('type')}}'))
+            }
+
+            if(localStorage.getItem('_date_{{request()->query('type')}}')) {
+                dateEl.val(localStorage.getItem('_date_{{request()->query('type')}}'))
             }
 
             $('.btn-save').click(function (e) {
@@ -366,6 +404,31 @@
                     return
                 }
 
+                let stockError = false
+                products.forEach((product, i) => {
+                    // calculate stock
+                    let to_stock = parseInt(JSON.parse(getValue(product, 'product'))?.stock || 0, 10) {{ request()->query('type') == 'in' ? '+' : '-' }} parseInt(getValue(product, 'quantity'), 10);
+                    to_stock {{ request()->query('type') == 'in' ? '+' : '-' }}= products.filter((prod, j) => {
+                        return JSON.parse(getValue(product, 'product'))?.id === JSON.parse(getValue(prod, 'product'))?.id && j < i
+                    }).reduce((carry, prod) => {
+                        carry += parseInt(getValue(prod, 'quantity'), 10)
+                        return carry
+                    }, 0)
+                    stockError = to_stock < 0
+                })
+                if(stockError) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Sisa tidak boleh minus.",
+                    }).then(() => {
+                        setTimeout(() => {
+                            dateEl.focus()
+                        }, 300)
+                    })
+                    return
+                }
+
                 const spinner = $('<div class="spinner-border spinner-border-sm me-2" role="status"> <span class="visually-hidden">Loading...</span> </div>')
                 $(this).prepend(spinner)
                 $('.btn-save, .btn-reset, .btn-input').addClass('disabled').attr('disabled', 'disabled')
@@ -401,6 +464,7 @@
                         }).then(() => {
                             localStorage.removeItem('_transaction_code_{{request()->query('type')}}')
                             localStorage.removeItem('_products_{{request()->query('type')}}')
+                            localStorage.removeItem('_date_{{request()->query('type')}}')
                             window.location = redirect_url || '{{route('admin.transactions.index')}}'
                         })
                     },

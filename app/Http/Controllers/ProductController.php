@@ -123,7 +123,7 @@ class ProductController extends Controller
         $first_transaction = $product->transaction_products()
             ->with(['transaction'])
             ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
-            ->orderBy('transactions.date')
+            ->orderBy(DB::raw('DATE(transactions.date)'))
             ->orderBy('transaction_products.id')
             ->first();
         if ($first_transaction) {
@@ -134,7 +134,7 @@ class ProductController extends Controller
         $last_transaction = $product->transaction_products()
             ->with(['transaction'])
             ->join('transactions', 'transaction_products.transaction_id', '=', 'transactions.id')
-            ->orderByDesc('transactions.date')
+            ->orderByDesc(DB::raw('DATE(transactions.date)'))
             ->orderByDesc('transaction_products.id')
             ->first();
         if ($last_transaction) {
@@ -191,7 +191,13 @@ class ProductController extends Controller
         }
 
         // order-by statements
-        $transaction_products = $transaction_products->orderBy($order[0], $order[1]);
+        if ($order[0] === 'transactions.date') {
+            $transaction_products = $transaction_products
+                ->orderBy(DB::raw('DATE(transactions.date)'))
+                ->orderBy('transaction_products.id');
+        } else {
+            $transaction_products = $transaction_products->orderBy($order[0], $order[1]);
+        }
 
         // final statements
         $transaction_products = $transaction_products
@@ -383,22 +389,30 @@ class ProductController extends Controller
         return redirect()->back()->with('message', 'Impor data barang berhasil');
     }
 
-    public function matching_stock(Request $request)
+    public function get_latest_stock_by_date(Request $request)
     {
-        if ($request->query('filter') == 'unmatched') {
-            $products = Product::all()->filter(function ($product) {
-                return $product->stock_at_old_app != $product->stock;
-            })->values();
-        } else {
-            $products = Product::query()
-                ->select('products.*')
-                ->leftJoin('product_categories', 'products.product_category_id', '=', 'product_categories.id')
-                ->paginate(get_per_page_default());
-        }
+        // validation
+        $validated = $request->validate([
+            'product_ids'   => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', 'exists:products,id'],
+            'date' => ['required', 'date_format:Y-m-d'],
+        ]);
 
-        if ($request->ajax()) {
+        // get products
+        $products = Product::whereIn('id', $validated['product_ids'])->get();
 
-        }
-        return view('admin.products.matching_stock', compact('products'));
+        // define date
+        $date = $validated['date'];
+
+        // get pending stock by date
+        return [
+            'date' => $date,
+            'products' => $products->map(function ($product) use ($date) {
+                return [
+                    'product_id' => $product->id,
+                    'stock' => $product->get_pending_stock_by_date($date),
+                ];
+            }),
+        ];
     }
 }
