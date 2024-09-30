@@ -35,6 +35,7 @@
                     }
                 })
                 ->wherePivot('is_verified', 1)
+                ->orderByPivot('id', @$dir ?? 'asc')
                 ->get();
             $count = $products->count() + 1;
             $className = get_table_row_classname($transaction->type);

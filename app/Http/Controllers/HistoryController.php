@@ -38,7 +38,7 @@ class HistoryController extends Controller
 
         // define instance
         $transactions = Transaction::query()
-            ->select('transactions.*')
+            ->select(['transactions.*'])
             ->distinct(['transactions.id'])
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
@@ -80,9 +80,12 @@ class HistoryController extends Controller
         }
 
         // order-by statements
-        $transactions = $transactions->orderBy($order[0], $order[1]);
         if ($order[0] === 'transactions.date') {
-            $transactions = $transactions->orderBy('transactions.created_at', $order[1]);
+            $transactions = $transactions
+                ->orderBy(DB::raw('DATE(transactions.date)'), $order[1])
+                ->orderBy('transactions.created_at', $order[1]);
+        } else {
+            $transactions = $transactions->orderBy($order[0], $order[1]);
         }
 
         // final statements
@@ -116,21 +119,25 @@ class HistoryController extends Controller
 
     public function export(Request $request, $type)
     {
-        $start = date('Y-m-d') . ' 00:00:00';
+        $start = date('Y-m-d') . ' 00:00:01';
         $end   = date('Y-m-d') . ' 23:59:59';
 
         // get first transaction
         $first_transaction = Transaction::orderBy('date')->orderBy('created_at')->first();
         if ($first_transaction) {
-            $start = Carbon::parse($first_transaction->date)->format('Y-m-d') . ' 00:00:00';
+            $start = Carbon::parse($first_transaction->date)->format('Y-m-d') . ' 00:00:01';
         }
 
         if ($request->query('start_date')) {
-            $start = $request->query('start_date')  . ' 00:00:00';
+            $start = $request->query('start_date')  . ' 00:00:01';
         }
 
         if ($request->query('end_date')) {
             $end = $request->query('end_date') . ' 23:59:59';
+        }
+
+        if (!$request->query('start_date') && !$request->query('end_date')) {
+            $start = Carbon::now()->subMonth()->format('Y-m-d') . ' 00:00:01';
         }
 
         $filename = 'TRANSAKSI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
@@ -160,9 +167,9 @@ class HistoryController extends Controller
             ->join('users', 'transactions.created_by', '=', 'users.id')
             ->where('transaction_products.is_verified', 1)
             ->whereBetween($date_range_field, [$start, $end])
-            ->orderBy(DB::raw('DATE(transactions.date)'))
-//            ->orderBy('transactions.id')
-            ->orderBy('transaction_products.id')
+            ->orderByDesc(DB::raw('DATE(transactions.date)'))
+            ->orderByDesc('transactions.created_at')
+            ->orderByDesc('transaction_products.id')
             ->get();
 
         switch ($type) {

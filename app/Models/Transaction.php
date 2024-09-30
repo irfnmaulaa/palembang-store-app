@@ -27,7 +27,7 @@ class Transaction extends Model
             'verified_by',
             'created_by',
             'updated_by',
-        ])->orderByPivot('id');
+        ]);
     }
 
     public function transaction_products()

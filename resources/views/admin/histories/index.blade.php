@@ -6,7 +6,7 @@
 ])
 
 @section('table')
-    <x-verified-transactions-table :transactions="$transactions"></x-verified-transactions-table>
+    <x-verified-transactions-table dir="desc" :transactions="$transactions"></x-verified-transactions-table>
 @endsection
 
 @section('cta')
