@@ -110,8 +110,17 @@ class HistoryController extends Controller
             $end = null;
         }
 
-        // return view
-        return view('admin.histories.index', compact('transactions', 'order_options', 'start', 'end'));
+        if ($request->ajax()) {
+            // return view
+            return response()->json([
+                'table' => view('admin.histories.ajax.table', compact('transactions', 'order_options', 'start', 'end'))->render(),
+                'pagination' => view('admin.histories.ajax.pagination', compact('transactions', 'order_options', 'start', 'end'))->render(),
+                'summary' => view('admin.histories.ajax.summary', compact('transactions', 'order_options', 'start', 'end'))->render(),
+            ]);
+        } else {
+            // return view
+            return view('admin.histories.index', compact('transactions', 'order_options', 'start', 'end'));
+        }
     }
 
     public function export(Request $request, $type)

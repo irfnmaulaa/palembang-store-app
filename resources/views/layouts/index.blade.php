@@ -72,12 +72,14 @@
                 @yield('table')
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-center align-items-center gap-2">
+                <div id="pagination-wrap" class="d-flex justify-content-center align-items-center gap-2">
                     {{ $data->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
         </div>
 
-        <div class="text-muted"><small>Ditampilkan {{number_format($data->firstItem(), 0, ',', '.')}} - {{number_format($data->count() - 1 + $data->firstItem(), 0, ',', '.')}} dari {{number_format($data->total(), 0, ',', '.')}} data</small></div>
+        <div id="summary-wrap">
+            <div class="text-muted"><small>Ditampilkan {{number_format($data->firstItem(), 0, ',', '.')}} - {{number_format($data->count() - 1 + $data->firstItem(), 0, ',', '.')}} dari {{number_format($data->total(), 0, ',', '.')}} data</small></div>
+        </div>
     </div>
 @endsection

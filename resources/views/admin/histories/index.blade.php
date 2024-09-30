@@ -6,7 +6,9 @@
 ])
 
 @section('table')
-    <x-verified-transactions-table :transactions="$transactions"></x-verified-transactions-table>
+    <div id="history-table">
+        <x-verified-transactions-table :transactions="$transactions"></x-verified-transactions-table>
+    </div>
 @endsection
 
 @section('cta')
@@ -38,4 +40,30 @@
         <a href="{{route('admin.dashboard')}}">Beranda</a> <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
         Riwayat Transaksi
     </div>
+@endsection
+
+@section('js')
+    <script>
+        $(document).ready(function () {
+            let searchTimeout = null
+            $('input[name="keyword"]').on('input', function () {
+                if(searchTimeout) {
+                    clearTimeout(searchTimeout)
+                }
+                searchTimeout = setTimeout(() => {
+                    const keyword = $(this).val()
+
+                    $.ajax({
+                        method: 'GET',
+                        url: `{{ route('admin.histories.index') }}?keyword=${ keyword }`,
+                        success: function (response) {
+                            $('#history-table').html(response.table)
+                            $('#pagination-wrap').html(response.pagination)
+                            $('#summary-wrap').html(response.summary)
+                        }
+                    })
+                }, 200)
+            })
+        })
+    </script>
 @endsection
