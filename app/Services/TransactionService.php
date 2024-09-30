@@ -6,6 +6,7 @@ use App\Exports\PendingTransactionsExport;
 use App\Exports\ProductsExport;
 use App\Models\TransactionProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionService
@@ -19,16 +20,6 @@ class TransactionService
 
         // define pending transaction filename
         $filename = 'TRANSAKSI PENDING_' . date('YmdHis');
-
-        $start = date('Y-m-d ') . '00:00:01';
-        $end   = date('Y-m-d ') . '23:59:59';
-
-        $date_range = request()->query('date_range');
-        if ($date_range) {
-            $date_range = explode(' - ', $date_range);
-            $start = $date_range[0] . ' 00:00:01';
-            $end   = $date_range[1] . ' 23:59:59';
-        }
 
         $transaction_products = TransactionProduct::query()
             ->select([
@@ -46,9 +37,9 @@ class TransactionService
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->join('users', 'transactions.created_by', '=', 'users.id')
             ->where('transaction_products.is_verified', 0)
-            ->whereBetween('transactions.date', [$start, $end])
-            ->orderBy('transactions.date')
+            ->orderBy(DB::raw('transactions.date'))
             ->orderBy('transactions.created_at')
+            ->orderBy('transaction_products.id')
             ->get();
 
         switch ($type) {

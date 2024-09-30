@@ -82,7 +82,7 @@ class TransactionController extends Controller
 
         // final statements
         $transactions_pending = $transactions_pending
-            ->paginate(10)
+            ->paginate( get_per_page_default() * 2 )
             ->appends($request->query());
 
         // define order options for front-end
