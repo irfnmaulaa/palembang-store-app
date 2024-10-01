@@ -15,9 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
         $schedule->command('users:update-active-status')->dailyAt('17:00');
-        $schedule->command('transactions:clear-pending')->dailyAt('00:00');
+        // $schedule->command('transactions:clear-pending')->dailyAt('00:00');
         $schedule->command('rec:check')->everyFifteenMinutes()->between('07:00', '19:00');
     }
 
