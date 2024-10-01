@@ -1,0 +1,1 @@
+<div class="text-muted"><small>Ditampilkan {{number_format($products->firstItem(), 0, ',', '.')}} - {{number_format($products->count() - 1 + $products->firstItem(), 0, ',', '.')}} dari {{number_format($products->total(), 0, ',', '.')}} data</small></div>

@@ -26,14 +26,18 @@
                                 <input type="hidden" name="{{$key}}" value="{{$value}}">
                             @endforeach
                             <label for="search-box">Pencarian</label>
+                            @if(!@$advanceSearching)
                             <div class="input-group input-group-lg" style="max-width: 300px;">
                                 <input type="text" id="keyword" class="form-control form-control-lg" name="keyword" value="{{request('keyword')}}"/>
-                                @if(!@$advanceSearching)
                                 <button class="btn btn-primary" type="submit">
                                     Cari
                                 </button>
-                                @endif
                             </div>
+                            @else
+                            <div>
+                                <input type="text" id="keyword" class="form-control form-control-lg" name="keyword" value="{{request('keyword')}}" style="width: 230px;"/>
+                            </div>
+                            @endif
                         </form>
                         @endif
                     </div>
@@ -70,24 +74,45 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body py-0">
+            <div id="table-wrap" class="card-body py-0">
                 @yield('table')
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-center align-items-center gap-2">
+                <div id="pagination-wrap" class="d-flex justify-content-center align-items-center gap-2">
                     {{ $data->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
         </div>
 
-        <div class="text-muted"><small>Ditampilkan {{number_format($data->firstItem(), 0, ',', '.')}} - {{number_format($data->count() - 1 + $data->firstItem(), 0, ',', '.')}} dari {{number_format($data->total(), 0, ',', '.')}} data</small></div>
+        <div id="summary-wrap">
+            <div class="text-muted"><small>Ditampilkan {{number_format($data->firstItem(), 0, ',', '.')}} - {{number_format($data->count() - 1 + $data->firstItem(), 0, ',', '.')}} dari {{number_format($data->total(), 0, ',', '.')}} data</small></div>
+        </div>
     </div>
 @endsection
 
 @section('advance_js')
-    @if(@$advanceSearching)
+    @if(@$advanceSearching && @$searchingUrl)
         <script>
-
+            $(document).ready(function () {
+                let searchTimeout = null
+                $('input[name="keyword"]').on('input', function () {
+                    if(searchTimeout) {
+                        clearTimeout(searchTimeout)
+                    }
+                    searchTimeout = setTimeout(() => {
+                        const keyword = $(this).val()
+                        $.ajax({
+                            method: 'GET',
+                            url: `{{ $searchingUrl }}?response=view&keyword=${ keyword }`,
+                            success: function (response) {
+                                $('#table-wrap').html(response.table)
+                                $('#pagination-wrap').html(response.pagination)
+                                $('#summary-wrap').html(response.summary)
+                            }
+                        })
+                    }, 200)
+                })
+            })
         </script>
     @endif
 @endsection

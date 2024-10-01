@@ -90,6 +90,15 @@ class ProductController extends Controller
         ];
 
         if ($request->ajax()) {
+            // response view
+            if ($request->query('response') === 'view') {
+                return response()->json([
+                    'table' => view('admin.products.ajax.table', compact('products', 'order_options'))->render(),
+                    'pagination' => view('admin.products.ajax.pagination', compact('products', 'order_options'))->render(),
+                    'summary' => view('admin.products.ajax.summary', compact('products', 'order_options'))->render(),
+                ]);
+            }
+
             // return json
             return response()->json([
                 'results' => collect($products->items())->map(function ($product) {
