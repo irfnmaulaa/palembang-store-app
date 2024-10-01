@@ -37,18 +37,17 @@
     <main style="width: 100vw; height: 100vh;" class="d-flex align-items-center justify-content-center">
         <div class="container">
             <div class="row justify-content-center">
-                <h2 class="text-center mb-4">
-                    {{config('app.name')}}
-                </h2>
                 <div class="col-md-4">
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="card">
                             <div class="card-body">
 
-                                <x-alert></x-alert>
+                                <h3 class="text-center mb-4 d-flex align-items-center gap-2 justify-content-center">
+                                    <img src="{{ asset('/tb-palembang-logo.png') }}" alt="logo" style="height: 44px;"> {{config('app.name')}}
+                                </h3>
 
-                                <h4 class="mb-3">Masuk</h4>
+                                <x-alert></x-alert>
 
                                 <div class="d-flex flex-column gap-3">
                                     <div>
