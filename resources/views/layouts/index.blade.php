@@ -28,9 +28,11 @@
                             <label for="search-box">Pencarian</label>
                             <div class="input-group input-group-lg" style="max-width: 300px;">
                                 <input type="text" id="keyword" class="form-control form-control-lg" name="keyword" value="{{request('keyword')}}"/>
+                                @if(!@$advanceSearching)
                                 <button class="btn btn-primary" type="submit">
                                     Cari
                                 </button>
+                                @endif
                             </div>
                         </form>
                         @endif
@@ -80,4 +82,12 @@
 
         <div class="text-muted"><small>Ditampilkan {{number_format($data->firstItem(), 0, ',', '.')}} - {{number_format($data->count() - 1 + $data->firstItem(), 0, ',', '.')}} dari {{number_format($data->total(), 0, ',', '.')}} data</small></div>
     </div>
+@endsection
+
+@section('advance_js')
+    @if(@$advanceSearching)
+        <script>
+
+        </script>
+    @endif
 @endsection

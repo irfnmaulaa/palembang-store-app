@@ -3,7 +3,8 @@
     'data' => $products,
     'order_options' => $order_options,
     'withNoOrder' => true,
-    'withNoFilter' => true
+    'withNoFilter' => true,
+    'advanceSearching' => true,
 ])
 
 @section('table')

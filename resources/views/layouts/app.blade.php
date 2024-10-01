@@ -259,5 +259,6 @@
         })
     </script>
     @yield('js')
+    @yield('advance_js')
 </body>
 </html>
