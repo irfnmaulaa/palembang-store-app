@@ -353,8 +353,8 @@
                                 },
                                 success: () => {
                                     const pinInput = $(`<input type="hidden" name="pin" value="${ pin }"/>`)
-                                    $('#form-verify').prepend(pinInput)
-                                    resolve()
+                                    const deleteForm = $(`<input type="hidden" name="delete" value="1"/>`)
+                                    $('#form-verify').prepend(pinInput).append(deleteForm).submit()
                                 },
                                 error: ({responseJSON}) => {
                                     Swal.showValidationMessage(responseJSON.message || `Pin tidak valid`);
@@ -363,12 +363,7 @@
                             })
                         }),
                         allowOutsideClick: () => !Swal.isLoading()
-                    }).then((result) => {
-                        if(result.isConfirmed) {
-                            const deleteForm = $(`<input type="hidden" name="delete" value="1"/>`)
-                            $('#form-verify').append(deleteForm).submit()
-                        }
-                    });
+                    })
                 } else {
                     const swalWithBootstrapButtons = Swal.mixin({
                         customClass: {
@@ -396,8 +391,7 @@
                                 },
                                 success: () => {
                                     const pinInput = $(`<input type="hidden" name="pin" value="${ pin }"/>`)
-                                    $('#form-verify').prepend(pinInput)
-                                    resolve()
+                                    $('#form-verify').prepend(pinInput).submit()
                                 },
                                 error: ({responseJSON}) => {
                                     Swal.showValidationMessage(responseJSON.message || `Pin tidak valid`);
@@ -406,11 +400,7 @@
                             })
                         }),
                         allowOutsideClick: () => !Swal.isLoading()
-                    }).then((result) => {
-                        if(result.isConfirmed) {
-                            $('#form-verify').submit()
-                        }
-                    });
+                    })
                 }
             })
 
