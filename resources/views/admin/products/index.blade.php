@@ -28,7 +28,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li>
-                    <a class="dropdown-item" href="{{asset('/template/template-data-barang.xlsx')}}" download="template-data-barang.xlsx">
+                    <a class="dropdown-item" href="{{asset('/template/template-impor-data-barang.xlsx')}}" download="template-data-barang.xlsx">
                         <i class="fas fa-table me-1"></i> Download Template Excel
                     </a>
                 </li>
