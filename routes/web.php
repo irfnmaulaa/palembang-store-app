@@ -39,6 +39,7 @@ Route::group(['prefix' => '/admin', 'as' => 'admin.', 'middleware' => ['auth', '
     Route::delete('/categories/{category}/remove-product', [\App\Http\Controllers\CategoryController::class, 'remove_product'])->name('categories.remove_product');
 
     // Products
+    Route::post('/products/import/preview', [\App\Http\Controllers\ProductController::class, 'import_preview'])->name('products.import_preview');
     Route::post('/products/import', [\App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
     Route::get('/products/export/{type}', [\App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
     Route::resource('/products', \App\Http\Controllers\ProductController::class);

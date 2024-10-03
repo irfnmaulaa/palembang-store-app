@@ -5,10 +5,13 @@ namespace App\Imports;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Cookie;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class ProductsImport implements ToModel
 {
+    protected $products = [];
+
     /**
     * @param array $row
     *
@@ -19,33 +22,56 @@ class ProductsImport implements ToModel
         // skip to 2nd row
         if (strtoupper($row[0]) != 'KATEGORI') {
 
+            $category_name = $row[0];
+            $name = $row[1];
+            $variant = $row[2];
+            $code = $row[3];
+            $unit = $row[4];
+
+            $product = [
+                'category_name' => $category_name,
+                'name' => $name,
+                'variant' => $variant,
+                'code' => $code,
+                'unit' => $unit,
+                'is_valid' => true,
+                'note' => '',
+            ];
+
             // define category. create if doesn't exist
-            $category = ProductCategory::where('name', $row[0])->first();
+            $category = ProductCategory::where('name', $category_name)->first();
             if (!$category) {
-                $category = ProductCategory::create([
-                    'name' => $row[0],
-                ]);
+                $product['is_valid'] = false;
+                $product['note'] .= 'Kategori tidak ditemukan. ';
             }
 
-            // define product by code
-            $product = Product::where('name', $row[0])
-                ->where('variant', $row[2])
-                ->where('code', $row[3])
-                ->where('unit', $row[4])
-                ->first();
-
-            // import if product doesn't duplicated
-            if (!$product) {
-                // create product
-                return Product::create([
-                    'product_category_id' => $category->id,
-                    'name'    => $row[1],
-                    'variant'    => $row[2],
-                    'code'     => $row[3],
-                    'unit'    => $row[4],
-                    'created_by'    => auth()->user()->id,
-                ]);
+            // if product is exist
+            $products_count = Product::where('name', $name)
+                ->where('variant', $variant)
+                ->count();
+            $is_product_exist = collect($this->products)->first(function($prod) use ($name, $variant) {
+                return $prod['name'] == $name && $prod['variant'] == $variant;
+            });
+            if ($products_count > 0 || $is_product_exist) {
+                $product['is_valid'] = false;
+                $product['note'] .= 'Barang sudah ada. ';
             }
+
+
+            // check if field doesn't fill
+            foreach (['name', 'variant', 'code', 'unit'] as $key) {
+                if (!$product[$key]) {
+                    $product['is_valid'] = false;
+                    $product['note'] .=  strtoupper($key) . ' tidak diisi. ';
+                }
+            }
+
+            $this->products[] = $product;
         }
+    }
+
+    public function getProducts(): \Illuminate\Support\Collection
+    {
+        return collect($this->products);
     }
 }

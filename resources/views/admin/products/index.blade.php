@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li>
-                    <form action="{{route('admin.products.import')}}" method="POST" enctype="multipart/form-data" id="form-import-products">
+                    <form action="{{route('admin.products.import_preview')}}" method="POST" enctype="multipart/form-data" id="form-import-products">
                         @csrf
                         <label class="dropdown-item" for="file-products">
                             <i class="fas fa-upload me-1"></i> Impor dari File Excel

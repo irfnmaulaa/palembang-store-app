@@ -38,6 +38,7 @@
         }
         body {
             zoom: 1.25;
+            overflow-x: hidden;
         }
         .cta-wrap .btn {
             zoom: 1.4;

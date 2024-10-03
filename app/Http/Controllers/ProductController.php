@@ -14,6 +14,7 @@ use App\Models\TransactionProduct;
 use App\Rules\ProductCategoryIdRule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -386,16 +387,46 @@ class ProductController extends Controller
         }
     }
 
-    public function import(Request $request)
+    public function import_preview(Request $request)
     {
         // validation
         $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx']
         ]);
 
-        Excel::import(new ProductsImport, $request->file('file'));
+        $import = new ProductsImport;
+        Excel::import($import, $request->file('file'));
 
-        return redirect()->back()->with('message', 'Impor data barang berhasil');
+        $products = $import->getProducts();
+        $products_valid_count = $products->filter(function ($product) { return $product['is_valid']; })->count();
+
+        return view('admin.products.import_preview', compact('products', 'products_valid_count'));
+    }
+
+    public function import(Request $request)
+    {
+        // validation
+        $validated = $request->validate([
+            'products' => ['required', 'array'],
+            'products.*.category_name' => ['required', 'exists:product_categories,name'],
+            'products.*.name' => ['required'],
+            'products.*.variant' => ['required'],
+            'products.*.code' => ['required'],
+            'products.*.unit' => ['required'],
+        ]);
+
+        foreach ($validated['products'] as $product) {
+            $category = ProductCategory::where('name', $product['category_name'])->first();
+
+            $category->products()->create([
+               'name' => $product['name'],
+               'variant' => $product['variant'],
+               'code' => $product['code'],
+               'unit' => $product['unit'],
+            ]);
+        }
+
+        return redirect()->route('admin.products.index')->with('message', count($validated['products']) . ' barang berhasil ditambahkan');
     }
 
     public function get_latest_stock_by_date(Request $request)
