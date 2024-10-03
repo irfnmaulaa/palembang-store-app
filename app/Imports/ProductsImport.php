@@ -28,13 +28,16 @@ class ProductsImport implements ToModel
             }
 
             // define product by code
-            $product = Product::where('code', $row[3])->first();
+            $product = Product::where('name', $row[0])
+                ->where('variant', $row[2])
+                ->where('code', $row[3])
+                ->where('unit', $row[4])
+                ->first();
 
             // import if product doesn't duplicated
             if (!$product) {
-
                 // create product
-                $product = Product::create([
+                return Product::create([
                     'product_category_id' => $category->id,
                     'name'    => $row[1],
                     'variant'    => $row[2],
@@ -42,29 +45,6 @@ class ProductsImport implements ToModel
                     'unit'    => $row[4],
                     'created_by'    => auth()->user()->id,
                 ]);
-
-                // if current stock is filled. create a products-in transaction
-                if (!empty($row[5])) {
-                    $transaction = Transaction::create([
-                        'date' => date('Y-m-d H:i:s'),
-                        'type' => 'in',
-                        'created_by' => auth()->user()->id,
-                        'code' => 'I ' . date('dmyHis'),
-                    ]);
-                    $transaction->transaction_products()->create([
-                        'product_id' => $product->id,
-                        'quantity' => $row[5],
-                        'from_stock' => 0,
-                        'to_stock' => $row[5],
-                        'note' => 'IMPORT',
-                        'is_verified' => 1,
-                        'verified_by' => auth()->user()->id,
-                        'created_by' => auth()->user()->id,
-                        'verified_at' => date('Y-m-d H:i:s'),
-                    ]);
-                }
-
-                return $product;
             }
         }
     }
