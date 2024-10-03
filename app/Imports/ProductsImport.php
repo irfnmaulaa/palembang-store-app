@@ -49,12 +49,18 @@ class ProductsImport implements ToModel
             $products_count = Product::where('name', $name)
                 ->where('variant', $variant)
                 ->count();
+            if ($products_count > 0) {
+                $product['is_valid'] = false;
+                $product['note'] .= 'Barang sudah ada. ';
+            }
+
+            // if product is duplicated
             $is_product_exist = collect($this->products)->first(function($prod) use ($name, $variant) {
                 return $prod['name'] == $name && $prod['variant'] == $variant;
             });
-            if ($products_count > 0 || $is_product_exist) {
+            if ($is_product_exist) {
                 $product['is_valid'] = false;
-                $product['note'] .= 'Barang sudah ada. ';
+                $product['note'] .= 'Barang duplikat. ';
             }
 
 
