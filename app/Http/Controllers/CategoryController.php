@@ -140,6 +140,10 @@ class CategoryController extends Controller
     {
         // delete
         try {
+            if ($category->products()->count() == 0) {
+                $category->products()->onlyTrashed()->forceDelete();
+            }
+
             $category->delete();
         } catch (\Exception $exception) {
             return response()->json([

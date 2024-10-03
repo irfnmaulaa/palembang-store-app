@@ -326,7 +326,7 @@ class ProductController extends Controller
 
         // delete
         try {
-            $product->delete();
+            $product->forceDelete();
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'failed',
