@@ -106,7 +106,7 @@ class TransactionController extends Controller
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
-            ->whereBetween('transactions.created_at', [$start, $end]);
+             ->whereBetween('transaction_products.verified_at', [$start, $end]);
             // ->orderByDesc('transactions.date');
 
         // searching settings
@@ -314,6 +314,7 @@ class TransactionController extends Controller
                 $transaction_product->update([
                     'is_verified' => 1,
                     'verified_by' => auth()->user()->id,
+                    'verified_at' => Carbon::now(),
                 ]);
             }
         }

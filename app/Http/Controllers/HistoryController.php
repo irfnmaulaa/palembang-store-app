@@ -145,7 +145,7 @@ class HistoryController extends Controller
         // define date range field
         $date_range_field = 'transactions.date';
         if ($request->has('is_verified_transaction')) {
-            $date_range_field  = 'transactions.created_at';
+            $date_range_field  = 'transaction_products.verified_at';
 
             $filename = 'TRANSAKSI TERVERIFIKASI PERIODE ' . Carbon::parse($start)->format('d-m-Y') . ' SD ' . Carbon::parse($end)->format('d-m-Y') . '_' . Carbon::now()->format('YmdHis');
         }
