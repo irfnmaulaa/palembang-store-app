@@ -34,7 +34,7 @@ class TransactionController extends Controller
         // define instance
         $transactions_pending = Transaction::query()
             ->select('transactions.*')
-            ->distinct()
+            ->distinct(['transactions.id'])
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 0);
@@ -102,7 +102,7 @@ class TransactionController extends Controller
         // define instance
         $transactions_verified = Transaction::query()
             ->select('transactions.*')
-            ->distinct()
+            ->distinct(['transactions.id'])
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
             ->join('products', 'products.id', '=', 'transaction_products.product_id')
             ->where('transaction_products.is_verified', 1)
@@ -130,7 +130,7 @@ class TransactionController extends Controller
         }
 
         // order-by settings
-        $order = ['transactions.date', 'asc'];
+        $order = ['transactions.date', 'desc'];
         if ($request->has('order2')) {
             $order_query = explode('-', $request->get('order2'));
             if (count($order_query) >= 2) $order = $order_query;
@@ -145,9 +145,12 @@ class TransactionController extends Controller
         }
 
         // order-by statements
-        $transactions_verified = $transactions_verified->orderBy($order[0], $order[1]);
         if ($order[0] === 'transactions.date') {
-            $transactions_verified = $transactions_verified->orderBy('transactions.created_at', $order[1]);
+            $transactions_verified = $transactions_verified
+                ->orderByDesc(DB::raw('DATE(transactions.date)'))
+                ->orderByDesc('transactions.created_at');
+        } else {
+            $transactions_verified = $transactions_verified->orderBy($order[0], $order[1]);
         }
 
         // final statements
