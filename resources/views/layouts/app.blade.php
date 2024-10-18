@@ -84,6 +84,39 @@
         .nav-tabs .nav-link {
             font-size: unset;
         }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .loading-container {
+            width: 100%;
+            height: 4px;
+            background-color: #f3f3f3;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            transform: translateY(-100%);
+        }
+
+        .loading-bar {
+            width: 50%;
+            height: 100%;
+            background-color: #4285F4;
+            position: absolute;
+            animation: loading 1.5s infinite linear;
+        }
+
+        @keyframes loading {
+            0% {
+                left: -50%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
     </style>
 
     <!-- MDB -->

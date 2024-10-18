@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </div>
-            <div id="table-wrap" class="card-body py-0">
+            <div id="table-wrap" class="card-body py-0 position-relative">
                 @yield('table')
             </div>
             <div class="card-body">
@@ -101,9 +101,15 @@
         <script>
             $(document).ready(function () {
                 let searchTimeout = null
+                const tableLoading = $('<div class="loading-container"><div class="loading-bar"></div></div>')
                 $('input[name="keyword"]').on('input', function () {
                     if(searchTimeout) {
                         clearTimeout(searchTimeout)
+                    }
+                    if(!$('#table-wrap').data('is-loading')) {
+                        $('#table-wrap').css({
+                            opacity: '0.5',
+                        }).append(tableLoading).data('is-loading', true)
                     }
                     searchTimeout = setTimeout(() => {
                         const keyword = $(this).val()
@@ -114,6 +120,11 @@
                                 $('#table-wrap').html(response.table)
                                 $('#pagination-wrap').html(response.pagination)
                                 $('#summary-wrap').html(response.summary)
+                            },
+                            complete: function() {
+                                $('#table-wrap').css({
+                                    opacity: '1',
+                                }).remove(tableLoading).removeData('is-loading')
                             }
                         })
                     }, 200)
