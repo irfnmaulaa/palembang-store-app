@@ -459,12 +459,5 @@
                 }
             });
         })
-
-        @if(request()->has('with_print') && request()->has('transaction_id'))
-            window.location = '{{ route('admin.transactions.export_per_transaction', ['transaction' => request()->query('transaction_id')]) }}'
-            setTimeout(() => {
-                window.location = '{{ route('admin.transactions.index') }}'
-            }, 500)
-        @endif
     </script>
 @endsection

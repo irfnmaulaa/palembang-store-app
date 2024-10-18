@@ -455,8 +455,16 @@
                         }),
                         with_print: with_print ? 1 : 0,
                     },
-                    success: function ({ redirect_url = null }) {
+                    success: function ({ print_url = '' }) {
                         spinner.remove()
+                        if(print_url) {
+                            const link = document.createElement('a')
+                            link.href = print_url
+                            link.target = '_blank'
+                            document.body.appendChild(link)
+                            link.click()
+                            document.body.removeChild(link)
+                        }
                         Swal.fire({
                             icon: "success",
                             title: "Sukses",
@@ -465,7 +473,7 @@
                             localStorage.removeItem('_transaction_code_{{request()->query('type')}}')
                             localStorage.removeItem('_products_{{request()->query('type')}}')
                             localStorage.removeItem('_date_{{request()->query('type')}}')
-                            window.location = redirect_url || '{{route('admin.transactions.index')}}'
+                            window.location = '{{route('admin.transactions.index')}}'
                         })
                     },
                     error: function (response) {

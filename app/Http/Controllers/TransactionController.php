@@ -276,7 +276,7 @@ class TransactionController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Transaksi berhasil disimpan',
-            'redirect_url' => $validated['with_print'] ? route('admin.transactions.index', ['with_print' => 1, 'transaction_id' => $transaction->id]) : route('admin.transactions.index')
+            'print_url' => $validated['with_print'] ? route('admin.transactions.export_per_transaction', ['transaction' => $transaction->id]) : '',
         ]);
     }
 
