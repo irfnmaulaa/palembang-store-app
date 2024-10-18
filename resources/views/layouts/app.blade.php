@@ -106,14 +106,16 @@
             height: 100%;
             background-color: #4285F4;
             position: absolute;
-            animation: loading 1.5s infinite linear;
+            animation: loading 1.3s infinite linear;
         }
 
         @keyframes loading {
             0% {
                 left: -50%;
+                width: 50%;
             }
             100% {
+                width: 50%;
                 left: 100%;
             }
         }
